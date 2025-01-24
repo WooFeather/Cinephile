@@ -8,14 +8,14 @@
 import UIKit
 import SnapKit
 
-class ProfileSettingView: BaseView {
+final class ProfileSettingView: BaseView {
     
-    private let doneButton = PointButton(title: "완료")
     private let textFieldUnderline = UIView()
+    private let cameraImageView = UIImageView()
+    let doneButton = PointButton(title: "완료")
     let statusLabel = UILabel()
     let imageSettingButton = UIButton()
     let nicknameTextField = UITextField()
-    let cameraImageView = UIImageView()
     
     override func configureHierarchy() {
         [doneButton, textFieldUnderline, statusLabel, imageSettingButton, cameraImageView, nicknameTextField].forEach {

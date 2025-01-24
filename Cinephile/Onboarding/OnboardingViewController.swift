@@ -18,7 +18,8 @@ final class OnboardingViewController: BaseViewController {
         onboardingView.startButton.addTarget(self, action: #selector(starButtonTapped), for: .touchUpInside)
     }
     
-    @objc func starButtonTapped() {
+    @objc
+    private func starButtonTapped() {
         print(#function)
         let vc = ProfileSettingViewController()
         navigationController?.pushViewController(vc, animated: true)

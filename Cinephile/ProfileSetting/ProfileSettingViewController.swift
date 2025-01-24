@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileSettingViewController: BaseViewController {
+final class ProfileSettingViewController: BaseViewController {
     private var profileSettingView = ProfileSettingView()
     
     override func loadView() {
@@ -16,5 +16,18 @@ class ProfileSettingViewController: BaseViewController {
     
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
+        profileSettingView.imageSettingButton.addTarget(self, action: #selector(imageSettingButtonTapped), for: .touchUpInside)
+        profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func imageSettingButtonTapped() {
+        let vc = ImageSettingViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc
+    private func doneButtonTapped() {
+        print(#function)
     }
 }
