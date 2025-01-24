@@ -13,5 +13,15 @@ final class OnboardingViewController: BaseViewController {
     override func loadView() {
         view = onboardingView
     }
+    
+    override func configureEssential() {
+        onboardingView.startButton.addTarget(self, action: #selector(starButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func starButtonTapped() {
+        print(#function)
+        let vc = ProfileSettingViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 

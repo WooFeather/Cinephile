@@ -17,6 +17,12 @@ class BaseViewController: UIViewController {
         configureEssential()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // view가 willDisappear될 때 백버튼의 타이틀 없애기
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
+    
     func configureView() {
         view.backgroundColor = .cineBlack
     }

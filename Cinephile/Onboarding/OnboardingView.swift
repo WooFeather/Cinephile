@@ -13,7 +13,7 @@ final class OnboardingView: BaseView {
     private let mainImageView = UIImageView()
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
-    private let startButton = PointButton(title: "시작하기")
+    let startButton = PointButton(title: "시작하기")
     
     override func configureHierarchy() {
         [mainImageView, titleLabel, descriptionLabel, startButton].forEach {
@@ -23,7 +23,7 @@ final class OnboardingView: BaseView {
     
     override func configureLayout() {
         mainImageView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(40)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(500)
         }
@@ -42,7 +42,7 @@ final class OnboardingView: BaseView {
         
         startButton.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(20)
-            make.horizontalEdges.equalToSuperview().inset(8)
+            make.horizontalEdges.equalToSuperview().inset(12)
             make.height.equalTo(44)
         }
     }

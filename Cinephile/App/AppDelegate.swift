@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         sleep(2)
         UILabel.appearance().textColor = .white
+        UINavigationBar.appearance().tintColor = .cineAccent
+        // 네비게이션 타이틀 색상 변경
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.cinaWhite]
         
         return true
     }
