@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		79EF0A122D436BBF00243479 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 79EF0A112D436BBF00243479 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		79EF09F72D436A7000243479 /* Cinephile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cinephile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79EF0A112D436BBF00243479 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +50,7 @@
 		79EF09EE2D436A7000243479 = {
 			isa = PBXGroup;
 			children = (
+				79EF0A112D436BBF00243479 /* .gitignore */,
 				79EF09F92D436A7000243479 /* Cinephile */,
 				79EF09F82D436A7000243479 /* Products */,
 			);
@@ -122,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79EF0A122D436BBF00243479 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
