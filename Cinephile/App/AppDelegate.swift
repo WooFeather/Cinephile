@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         sleep(2)
+        UILabel.appearance().textColor = .white
         
         return true
     }
