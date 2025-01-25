@@ -7,12 +7,13 @@
 
 import UIKit
 
-class PointButton: UIButton {
+final class PointButton: UIButton {
     init(title: String) {
         super.init(frame: .zero)
         
         setTitle(title, for: .normal)
         setTitleColor(.cineAccent, for: .normal)
+        setTitleColor(.cinePrimaryGray, for: .disabled)
         titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         backgroundColor = .clear
         DispatchQueue.main.async {
@@ -20,6 +21,17 @@ class PointButton: UIButton {
         }
         layer.borderWidth = 1.5
         layer.borderColor = UIColor.cineAccent.cgColor
+    }
+    
+    // 버튼의 보더컬러 상태에 따라 색 변경
+    override var isEnabled: Bool {
+        didSet {
+            if self.isEnabled {
+                layer.borderColor = UIColor.cineAccent.cgColor
+            } else {
+                layer.borderColor = UIColor.cinePrimaryGray.cgColor
+            }
+        }
     }
     
     @available(*, unavailable)

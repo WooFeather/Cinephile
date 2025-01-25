@@ -11,6 +11,7 @@ class BaseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .cineBlack
         
         configureView()
         configureEssential()
@@ -22,9 +23,7 @@ class BaseViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
-    func configureView() {
-        view.backgroundColor = .cineBlack
-    }
+    func configureView() { }
     
     func configureEssential() { }
 }

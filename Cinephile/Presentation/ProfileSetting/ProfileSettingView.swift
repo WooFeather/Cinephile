@@ -14,7 +14,7 @@ final class ProfileSettingView: BaseView {
     private let cameraImageView = UIImageView()
     private let imageList = ProfileImage.allCases
     let doneButton = PointButton(title: "완료")
-    var statusLabel = UILabel()
+    let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
@@ -82,5 +82,7 @@ final class ProfileSettingView: BaseView {
         
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
+        
+        doneButton.isEnabled = false
     }
 }

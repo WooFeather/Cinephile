@@ -28,7 +28,6 @@ final class ImageSettingViewController: BaseViewController {
     }
     
     override func configureView() {
-        super.configureView()
         imageSettingView.previewImage.image = imageContents
     }
     
