@@ -65,7 +65,8 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func doneButtonTapped() {
-        print(#function)
+        let vc = TabBarController()
+        changeRootViewController(vc: vc, isSigned: true)
     }
     
     @objc
