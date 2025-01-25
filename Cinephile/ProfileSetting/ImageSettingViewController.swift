@@ -38,7 +38,7 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
         
         let data = imageList[indexPath.item]
         
-        cell.imageButton.image = data.image
+        cell.imageSelection.image = data.image
         
         return cell
     }
