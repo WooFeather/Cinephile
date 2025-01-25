@@ -12,11 +12,11 @@ final class ProfileSettingView: BaseView {
     
     private let textFieldUnderline = UIView()
     private let cameraImageView = UIImageView()
+    private let imageList = ProfileImage.allCases
     let doneButton = PointButton(title: "완료")
-    let statusLabel = UILabel()
+    var statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
-    let imageList = ProfileImage.allCases
     
     override func configureHierarchy() {
         [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
@@ -77,9 +77,9 @@ final class ProfileSettingView: BaseView {
         nicknameTextField.borderStyle = .none
         nicknameTextField.textColor = .cineSecondaryGray
         nicknameTextField.tintColor = .cineSecondaryGray
+        nicknameTextField.returnKeyType = .done
         textFieldUnderline.backgroundColor = .cinePrimaryGray
         
-        statusLabel.text = "이건 추후에 변경해야됩니다롱"
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
     }

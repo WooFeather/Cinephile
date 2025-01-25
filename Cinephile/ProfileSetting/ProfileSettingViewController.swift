@@ -24,6 +24,7 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.profileImageView.addGestureRecognizer(tapGesture)
         profileSettingView.profileImageView.isUserInteractionEnabled = true
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
         receiveImage()
     }
     
@@ -33,6 +34,28 @@ final class ProfileSettingViewController: BaseViewController {
             let vc = ImageSettingViewController()
             vc.imageContents = profileSettingView.profileImageView.image
             navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    @objc
+    private func validateText() {
+        print(#function)
+        guard let trimmingText = profileSettingView.nicknameTextField.text?.trimmingCharacters(in: .whitespaces) else { return }
+        
+        // 숫자가 포함되어있는지 확인하는법!
+        let decimalCharacters = CharacterSet.decimalDigits
+        let decimalRange = trimmingText.rangeOfCharacter(from: decimalCharacters)
+        // 위의 코드에 영감을 받아 특수문자도 적용해봤어요
+        let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
+        
+        if trimmingText.count < 2 || trimmingText.count > 10 {
+            profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
+        } else if spacialRange != nil {
+            profileSettingView.statusLabel.text = "닉네임에 @, #, $, % 는 포함될 수 없어요"
+        } else if decimalRange != nil {
+            profileSettingView.statusLabel.text = "닉네임에 숫자는 포함할 수 없어요"
+        } else {
+            profileSettingView.statusLabel.text = "사용할 수 있는 닉네임이에요"
         }
     }
     

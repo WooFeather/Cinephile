@@ -41,7 +41,6 @@ final class ImageSettingViewController: BaseViewController {
                 "image": imageValue
             ]
         )
-        print(imageValue)
     }
 }
 
