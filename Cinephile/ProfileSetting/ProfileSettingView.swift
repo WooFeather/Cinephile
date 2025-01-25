@@ -14,8 +14,9 @@ final class ProfileSettingView: BaseView {
     private let cameraImageView = UIImageView()
     let doneButton = PointButton(title: "완료")
     let statusLabel = UILabel()
-    let imageSettingButton = UIButton()
+    let imageSettingButton = ImageButton()
     let nicknameTextField = UITextField()
+    let imageList = ProfileImage.allCases
     
     override func configureHierarchy() {
         [doneButton, textFieldUnderline, statusLabel, imageSettingButton, cameraImageView, nicknameTextField].forEach {
@@ -62,15 +63,7 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
-        // 추후 커스텀뷰로 빼놓기
-        // 이미지 랜덤으로 설정하기
-        imageSettingButton.setImage(.profile0, for: .normal)
-        DispatchQueue.main.async {
-            self.imageSettingButton.layer.cornerRadius = self.imageSettingButton.frame.width / 2
-            self.imageSettingButton.imageView?.layer.cornerRadius = self.imageSettingButton.frame.width / 2
-        }
-        imageSettingButton.layer.borderColor = UIColor.cineAccent.cgColor
-        imageSettingButton.layer.borderWidth = 3
+        imageSettingButton.setImage(imageList.randomElement()?.image, for: .normal)
         
         // 이미지뷰 안의 이미지의 inset을 정할 수 있음
         cameraImageView.image = UIImage(systemName: "camera.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
