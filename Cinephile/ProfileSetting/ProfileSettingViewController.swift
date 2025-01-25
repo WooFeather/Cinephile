@@ -24,6 +24,7 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.profileImageView.addGestureRecognizer(tapGesture)
         profileSettingView.profileImageView.isUserInteractionEnabled = true
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        receiveImage()
     }
     
     @objc
@@ -38,5 +39,21 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func doneButtonTapped() {
         print(#function)
+    }
+    
+    @objc
+    private func imageReceivedNotification(value: NSNotification) {
+        if let image = value.userInfo!["image"] as? UIImage {
+            profileSettingView.profileImageView.image = image
+        }
+    }
+    
+    private func receiveImage() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(imageReceivedNotification),
+            name: NSNotification.Name("ImageReceived"),
+            object: nil
+        )
     }
 }

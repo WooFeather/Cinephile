@@ -33,6 +33,7 @@ final class ImageCollectionViewCell: BaseCollectionViewCell {
         imageSelection.layer.borderWidth = 1
     }
     
+    // 이걸 쓰기 위해 만들어놓은 커스텀뷰 안썼습니드ㅏ다ㅏ아ㅜㅜㅜ
     override var isSelected: Bool {
         didSet {
             if isSelected {

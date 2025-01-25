@@ -12,7 +12,7 @@ final class ImageSettingView: BaseView {
 
     private let cameraImageView = UIImageView()
     lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
-    let previewImage = ProfileImageView()
+    var previewImage = ProfileImageView()
     
     override func configureHierarchy() {
         [previewImage, cameraImageView, imageCollectionView].forEach {

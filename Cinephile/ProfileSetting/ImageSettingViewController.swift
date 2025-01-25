@@ -16,6 +16,11 @@ final class ImageSettingViewController: BaseViewController {
         view = imageSettingView
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        saveImage()
+    }
+    
     override func configureEssential() {
         navigationItem.title = "프로필 이미지 설정"
         imageSettingView.imageCollectionView.delegate = self
@@ -25,6 +30,18 @@ final class ImageSettingViewController: BaseViewController {
     override func configureView() {
         super.configureView()
         imageSettingView.previewImage.image = imageContents
+    }
+    
+    private func saveImage() {
+        guard let imageValue = imageSettingView.previewImage.image else { return }
+        NotificationCenter.default.post(
+            name: NSNotification.Name("ImageReceived"),
+            object: nil,
+            userInfo: [
+                "image": imageValue
+            ]
+        )
+        print(imageValue)
     }
 }
 
@@ -36,14 +53,15 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = imageSettingView.imageCollectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.id, for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell() }
         
-        let data = imageList[indexPath.item]
+        let item = imageList[indexPath.item]
         
-        cell.imageSelection.image = data.image
+        cell.imageSelection.image = item.image
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.item)
+        let item = imageList[indexPath.item]
+        imageSettingView.previewImage.image = item.image
     }
 }
