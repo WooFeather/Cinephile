@@ -11,7 +11,7 @@ import SnapKit
 final class ImageCollectionViewCell: BaseCollectionViewCell {
     static let id = "ImageCollectionViewCell"
     
-    var imageButton = ImageButton(isActivate: false)
+    var imageButton = ProfileImageView(isActivate: false)
     
     override func configureHierarchy() {
         addSubview(imageButton)

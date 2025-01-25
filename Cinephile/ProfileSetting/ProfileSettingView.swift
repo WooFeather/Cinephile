@@ -14,31 +14,31 @@ final class ProfileSettingView: BaseView {
     private let cameraImageView = UIImageView()
     let doneButton = PointButton(title: "완료")
     let statusLabel = UILabel()
-    let imageSettingButton = ImageButton()
+    let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     let imageList = ProfileImage.allCases
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, imageSettingButton, cameraImageView, nicknameTextField].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
             addSubview($0)
         }
     }
     
     override func configureLayout() {
-        imageSettingButton.snp.makeConstraints { make in
+        profileImageView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(36)
             make.centerX.equalTo(self.snp.centerX)
             make.size.equalTo(100)
         }
         
         cameraImageView.snp.makeConstraints { make in
-            make.top.equalTo(imageSettingButton.snp.bottom).offset(-30)
-            make.trailing.equalTo(imageSettingButton.snp.trailing)
+            make.top.equalTo(profileImageView.snp.bottom).offset(-30)
+            make.trailing.equalTo(profileImageView.snp.trailing)
             make.size.equalTo(25)
         }
         
         nicknameTextField.snp.makeConstraints { make in
-            make.top.equalTo(imageSettingButton.snp.bottom).offset(48)
+            make.top.equalTo(profileImageView.snp.bottom).offset(48)
             make.horizontalEdges.equalToSuperview().inset(20)
             make.height.equalTo(30)
         }
@@ -63,7 +63,7 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
-        imageSettingButton.setImage(imageList.randomElement()?.image, for: .normal)
+        profileImageView.image = imageList.randomElement()?.image
         
         // 이미지뷰 안의 이미지의 inset을 정할 수 있음
         cameraImageView.image = UIImage(systemName: "camera.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))

@@ -20,15 +20,19 @@ final class ProfileSettingViewController: BaseViewController {
     
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
-        profileSettingView.imageSettingButton.addTarget(self, action: #selector(imageSettingButtonTapped), for: .touchUpInside)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
+        profileSettingView.profileImageView.addGestureRecognizer(tapGesture)
+        profileSettingView.profileImageView.isUserInteractionEnabled = true
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
     }
     
     @objc
-    private func imageSettingButtonTapped() {
-        let vc = ImageSettingViewController()
-        vc.imageContents = profileSettingView.imageSettingButton.image(for: .normal)
-        navigationController?.pushViewController(vc, animated: true)
+    private func profileImageTapped(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            let vc = ImageSettingViewController()
+            vc.imageContents = profileSettingView.profileImageView.image
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     @objc

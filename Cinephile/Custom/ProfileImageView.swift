@@ -7,14 +7,14 @@
 
 import UIKit
 
-class ImageButton: UIButton {
+class ProfileImageView: UIImageView {
 
     init(isActivate: Bool = true) {
         super.init(frame: .zero)
         DispatchQueue.main.async {
             self.layer.cornerRadius = self.frame.width / 2
-            self.imageView?.layer.cornerRadius = self.frame.width / 2
         }
+        clipsToBounds = true
         if isActivate {
             layer.borderColor = UIColor.cineAccent.cgColor
             layer.borderWidth = 3

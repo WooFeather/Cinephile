@@ -12,7 +12,7 @@ final class ImageSettingView: BaseView {
 
     private let cameraImageView = UIImageView()
     lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
-    let previewImage = ImageButton()
+    let previewImage = ProfileImageView()
     
     override func configureHierarchy() {
         [previewImage, cameraImageView, imageCollectionView].forEach {
@@ -41,8 +41,6 @@ final class ImageSettingView: BaseView {
     }
     
     override func configureView() {
-        previewImage.isUserInteractionEnabled = false
-        
         cameraImageView.image = UIImage(systemName: "camera.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
         cameraImageView.contentMode = .center
         cameraImageView.backgroundColor = .cineAccent

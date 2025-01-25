@@ -24,7 +24,7 @@ final class ImageSettingViewController: BaseViewController {
     
     override func configureView() {
         super.configureView()
-        imageSettingView.previewImage.setImage(imageContents, for: .normal)
+        imageSettingView.previewImage.image = imageContents
     }
 }
 
@@ -38,8 +38,12 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
         
         let data = imageList[indexPath.item]
         
-        cell.imageButton.setImage(data.image, for: .normal)
+        cell.imageButton.image = data.image
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath.item)
     }
 }
