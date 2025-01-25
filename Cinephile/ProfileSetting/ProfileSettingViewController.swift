@@ -14,10 +14,22 @@ final class ProfileSettingViewController: BaseViewController {
         view = profileSettingView
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        profileSettingView.nicknameTextField.becomeFirstResponder()
+    }
+    
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
         profileSettingView.imageSettingButton.addTarget(self, action: #selector(imageSettingButtonTapped), for: .touchUpInside)
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        profileSettingView.nicknameTextField.addTarget(self, action: #selector(enterTapped), for: .editingDidEndOnExit)
+    }
+    
+    @objc
+    private func enterTapped() {
+        profileSettingView.nicknameTextField.resignFirstResponder()
     }
     
     @objc
