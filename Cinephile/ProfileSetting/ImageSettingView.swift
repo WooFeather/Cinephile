@@ -8,13 +8,14 @@
 import UIKit
 import SnapKit
 
-class ImageSettingView: BaseView {
+final class ImageSettingView: BaseView {
 
     private let cameraImageView = UIImageView()
+    lazy var imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
     let previewImage = ImageButton()
     
     override func configureHierarchy() {
-        [previewImage, cameraImageView].forEach {
+        [previewImage, cameraImageView, imageCollectionView].forEach {
             addSubview($0)
         }
     }
@@ -31,6 +32,12 @@ class ImageSettingView: BaseView {
             make.trailing.equalTo(previewImage.snp.trailing)
             make.size.equalTo(25)
         }
+        
+        imageCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(previewImage.snp.bottom).offset(56)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(300)
+        }
     }
     
     override func configureView() {
@@ -43,5 +50,23 @@ class ImageSettingView: BaseView {
         DispatchQueue.main.async {
             self.cameraImageView.layer.cornerRadius = self.cameraImageView.frame.width / 2
         }
+        
+        imageCollectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.id)
+        imageCollectionView.isScrollEnabled = false
+        imageCollectionView.backgroundColor = .clear
+    }
+    
+    private func createCollectionViewLayout() -> UICollectionViewLayout {
+        let sectionInset: CGFloat = 20
+        let cellSpacing: CGFloat = 20
+        
+        let layout = UICollectionViewFlowLayout()
+        
+        let deviceWidth = UIScreen.main.bounds.width
+        let cellWidth = deviceWidth - (sectionInset * 2) - (cellSpacing * 3)
+        
+        layout.itemSize = CGSize(width: cellWidth / 4, height: (cellWidth / 4))
+        layout.sectionInset = UIEdgeInsets(top: 0, left: sectionInset, bottom: 0, right: sectionInset)
+        return layout
     }
 }

@@ -9,14 +9,20 @@ import UIKit
 
 class ImageButton: UIButton {
 
-    init() {
+    init(isActivate: Bool = true) {
         super.init(frame: .zero)
         DispatchQueue.main.async {
             self.layer.cornerRadius = self.frame.width / 2
             self.imageView?.layer.cornerRadius = self.frame.width / 2
         }
-        layer.borderColor = UIColor.cineAccent.cgColor
-        layer.borderWidth = 3
+        if isActivate {
+            layer.borderColor = UIColor.cineAccent.cgColor
+            layer.borderWidth = 3
+        } else {
+            alpha = 0.5
+            layer.borderColor = UIColor.cinePrimaryGray.cgColor
+            layer.borderWidth = 1
+        }
     }
     
     @available(*, unavailable)
