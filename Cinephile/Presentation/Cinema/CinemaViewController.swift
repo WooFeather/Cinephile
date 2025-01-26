@@ -62,10 +62,12 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.movieBoxButton.addTarget(self, action: #selector(movieButtonTapped), for: .touchUpInside)
             
             return cell
-        } else if indexPath.row == 2 {
+        } else if indexPath.row == 1 {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
-            cell.backgroundColor = .blue
+            cell.backgroundColor = .clear
             cell.selectionStyle = .none
+            
+            // TODO: 검색어 리스트가 empty일 경우 collectionView랑 clear버튼 hidden처리
             
             return cell
         } else {

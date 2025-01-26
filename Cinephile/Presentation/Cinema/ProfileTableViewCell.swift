@@ -18,10 +18,6 @@ final class ProfileTableViewCell: BaseTableViewCell {
     let profileImageView = ProfileImageView()
     let nicknameLabel = UILabel()
     let movieBoxButton = MovieBoxButton(like: 0)
-    
-//    var imageViewTapped: (() -> Void)?
-//    var buttonTapped: (() -> Void)?
-//    var delegate: ButtonTappedDelegate?
 
     override func configureHierarchy() {
         contentView.addSubview(roundBackgroundView)
@@ -32,7 +28,8 @@ final class ProfileTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         roundBackgroundView.snp.makeConstraints { make in
-            make.edges.equalTo(contentView).inset(12)
+            make.top.horizontalEdges.equalTo(contentView).inset(12)
+            make.bottom.equalTo(contentView)
             make.height.equalTo(140)
         }
         
