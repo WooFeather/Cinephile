@@ -7,6 +7,10 @@
 
 import UIKit
 
+//protocol ButtonTappedDelegate {
+//    func movieBoxButtonTapped()
+//}
+
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
@@ -31,6 +35,11 @@ final class CinemaViewController: BaseViewController {
     private func searchButtonTapped() {
         print(#function)
     }
+    
+    @objc
+    private func movieBoxButtonTapped(sender: UIButton) {
+        print("이건될라나아ㅏ")
+    }
 }
 
 extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
@@ -42,6 +51,19 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .clear
+            
+//            cell.imageViewTapped = {
+//                print("제발돼라아아!!!")
+//            }
+            
+//            cell.buttonTapped = {
+//                print("얍얍얍얍 ")
+//            }
+            
+//            cell.delegate = self
+            
+            cell.movieBoxButton.tag = indexPath.row
+            cell.movieBoxButton.addTarget(self, action: #selector(movieBoxButtonTapped), for: .touchUpInside)
             
             return cell
         } else if indexPath.row == 2 {
@@ -57,3 +79,9 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
 }
+
+//extension CinemaViewController: ButtonTappedDelegate {
+//    func movieBoxButtonTapped() {
+//        print("무비박스버튼이 탭이됐다!!!!")
+//    }
+//}
