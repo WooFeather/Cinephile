@@ -19,7 +19,7 @@ final class TabBarController: UITabBarController {
     private func configureTabBarController() {
         tabBar.delegate = self
         
-        let firstVC = CinameViewController()
+        let firstVC = CinemaViewController()
         let secondVC = UpcomingViewController()
         let thirdVC = ProfileViewController()
         
