@@ -25,8 +25,5 @@ final class CinemaView: BaseView {
     override func configureView() {
         tableView.backgroundColor = .clear
         tableView.isScrollEnabled = false
-        tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.id)
-        tableView.register(RecentSearchTableViewCell.self, forCellReuseIdentifier: RecentSearchTableViewCell.id)
-        tableView.register(TodayMovieTableViewCell.self, forCellReuseIdentifier: TodayMovieTableViewCell.id)
     }
 }
