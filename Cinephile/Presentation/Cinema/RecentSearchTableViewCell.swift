@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecentSearchTableViewCell: UITableViewCell {
+final class RecentSearchTableViewCell: UITableViewCell {
     
     static let id = "RecentSearchTableViewCell"
 }

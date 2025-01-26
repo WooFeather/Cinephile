@@ -8,21 +8,15 @@
 import UIKit
 
 final class ProfileImageView: UIImageView {
-
-    init(isActivate: Bool = true) {
+    
+    init() {
         super.init(frame: .zero)
         DispatchQueue.main.async {
             self.layer.cornerRadius = self.frame.width / 2
         }
         clipsToBounds = true
-        if isActivate {
-            layer.borderColor = UIColor.cineAccent.cgColor
-            layer.borderWidth = 3
-        } else {
-            alpha = 0.5
-            layer.borderColor = UIColor.cinePrimaryGray.cgColor
-            layer.borderWidth = 1
-        }
+        layer.borderColor = UIColor.cineAccent.cgColor
+        layer.borderWidth = 3
     }
     
     @available(*, unavailable)

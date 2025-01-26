@@ -22,6 +22,11 @@ final class CinemaViewController: BaseViewController {
         cinemaView.tableView.dataSource = self
     }
     
+    override func configureView() {
+        cinemaView.tableView.separatorStyle = .none
+        cinemaView.tableView.isUserInteractionEnabled = false
+    }
+    
     @objc
     private func searchButtonTapped() {
         print(#function)
@@ -36,7 +41,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
-            cell.backgroundColor = .gray
+            cell.backgroundColor = .clear
             
             return cell
         } else if indexPath.row == 2 {

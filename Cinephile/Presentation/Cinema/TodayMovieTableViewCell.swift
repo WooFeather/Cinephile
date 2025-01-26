@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TodayMovieTableViewCell: UITableViewCell {
+final class TodayMovieTableViewCell: UITableViewCell {
 
     static let id = "TodayMovieTableViewCell"
 }

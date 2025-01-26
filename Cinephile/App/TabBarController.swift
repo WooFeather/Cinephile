@@ -14,6 +14,7 @@ final class TabBarController: UITabBarController {
 
         configureTabBarController()
         setupTabBarAppearance()
+        view.backgroundColor = .cineBlack
     }
     
     private func configureTabBarController() {

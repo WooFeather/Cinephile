@@ -19,4 +19,6 @@ class UserDefaultsManager {
             UserDefaults.standard.set(newValue, forKey: "isSigned")
         }
     }
+    
+    // TODO: 닉네임, 가입날짜, 좋아요 개수, 프로필이미지는 어떡하지..?
 }

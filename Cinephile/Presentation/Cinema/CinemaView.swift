@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class CinemaView: BaseView {
+final class CinemaView: BaseView {
     
     lazy var tableView = UITableView()
 
@@ -23,7 +23,7 @@ class CinemaView: BaseView {
     }
     
     override func configureView() {
-        tableView.backgroundColor = .red
+        tableView.backgroundColor = .clear
         tableView.isScrollEnabled = false
         tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.id)
         tableView.register(RecentSearchTableViewCell.self, forCellReuseIdentifier: RecentSearchTableViewCell.id)
