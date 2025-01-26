@@ -24,7 +24,7 @@ final class ProfileTableViewCell: BaseTableViewCell {
 //    var delegate: ButtonTappedDelegate?
 
     override func configureHierarchy() {
-        addSubview(roundBackgroundView)
+        contentView.addSubview(roundBackgroundView)
         [profileImageView, nicknameLabel, dateLabel, movieBoxButton, chevronImageView].forEach {
             roundBackgroundView.addSubview($0)
         }
@@ -32,7 +32,7 @@ final class ProfileTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         roundBackgroundView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(12)
+            make.edges.equalTo(contentView).inset(12)
             make.height.equalTo(140)
         }
         
@@ -70,9 +70,6 @@ final class ProfileTableViewCell: BaseTableViewCell {
         DispatchQueue.main.async {
             self.roundBackgroundView.layer.cornerRadius = self.roundBackgroundView.frame.width / 20
         }
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundViewTapped))
-//        roundBackgroundView.addGestureRecognizer(tapGesture)
-//        roundBackgroundView.isUserInteractionEnabled = true
         
         // TODO: 넘겨받은 이미지로 대체 / nickname과 date도 수정
         profileImageView.image = ProfileImage.image1.image
@@ -90,26 +87,5 @@ final class ProfileTableViewCell: BaseTableViewCell {
         chevronImageView.image = UIImage(systemName: "chevron.right")
         chevronImageView.contentMode = .scaleAspectFit
         chevronImageView.tintColor = .cinePrimaryGray
-        
-//        movieBoxButton.addTarget(self, action: #selector(movieButtonTapped), for: .touchUpInside)
     }
-    
-//    @objc
-//    private func backgroundViewTapped(sender: UITapGestureRecognizer) {
-//        if sender.state == .ended {
-//            imageViewTapped?()
-//        }
-//    }
-    
-//    @objc
-//    private func movieButtonTapped() {
-//        print(#function)
-//        buttonTapped?()
-//    }
-    
-//    @objc
-//    private func movieButtonTapped() {
-//        print(#function)
-//        delegate?.movieBoxButtonTapped()
-//    }
 }

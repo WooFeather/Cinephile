@@ -7,10 +7,6 @@
 
 import UIKit
 
-//protocol ButtonTappedDelegate {
-//    func movieBoxButtonTapped()
-//}
-
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
@@ -28,7 +24,6 @@ final class CinemaViewController: BaseViewController {
     
     override func configureView() {
         cinemaView.tableView.separatorStyle = .none
-        cinemaView.tableView.isUserInteractionEnabled = false
     }
     
     @objc
@@ -37,8 +32,15 @@ final class CinemaViewController: BaseViewController {
     }
     
     @objc
-    private func movieBoxButtonTapped(sender: UIButton) {
-        print("이건될라나아ㅏ")
+    private func backgroundViewTapped(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            print(#function)
+        }
+    }
+    
+    @objc
+    private func movieButtonTapped() {
+        print(#function)
     }
 }
 
@@ -51,37 +53,27 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.row == 0 {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .clear
+            cell.selectionStyle = .none
             
-//            cell.imageViewTapped = {
-//                print("제발돼라아아!!!")
-//            }
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundViewTapped))
+            cell.roundBackgroundView.addGestureRecognizer(tapGesture)
+            cell.roundBackgroundView.isUserInteractionEnabled = true
             
-//            cell.buttonTapped = {
-//                print("얍얍얍얍 ")
-//            }
-            
-//            cell.delegate = self
-            
-            cell.movieBoxButton.tag = indexPath.row
-            cell.movieBoxButton.addTarget(self, action: #selector(movieBoxButtonTapped), for: .touchUpInside)
+            cell.movieBoxButton.addTarget(self, action: #selector(movieButtonTapped), for: .touchUpInside)
             
             return cell
         } else if indexPath.row == 2 {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .blue
+            cell.selectionStyle = .none
             
             return cell
         } else {
             guard let cell = cinemaView.tableView.dequeueReusableCell(withIdentifier: TodayMovieTableViewCell.id, for: indexPath) as? TodayMovieTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .green
+            cell.selectionStyle = .none
             
             return cell
         }
     }
 }
-
-//extension CinemaViewController: ButtonTappedDelegate {
-//    func movieBoxButtonTapped() {
-//        print("무비박스버튼이 탭이됐다!!!!")
-//    }
-//}
