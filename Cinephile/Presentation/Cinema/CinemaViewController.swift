@@ -67,8 +67,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        tableView.tag = indexPath.row
-        
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
             
@@ -80,6 +78,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
             
+            cell.searchWordsCollectionView.tag = indexPath.row
             cell.searchWordsCollectionView.delegate = self
             cell.searchWordsCollectionView.dataSource = self
             cell.searchWordsCollectionView.register(RecentWordsCollectionViewCell.self, forCellWithReuseIdentifier: RecentWordsCollectionViewCell.id)
@@ -102,6 +101,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TodayMovieTableViewCell.id, for: indexPath) as? TodayMovieTableViewCell else { return UITableViewCell() }
             
+            cell.movieCollectionView.tag = indexPath.row
             cell.movieCollectionView.delegate = self
             cell.movieCollectionView.dataSource = self
             cell.movieCollectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.id)
@@ -111,15 +111,12 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(tableView.tag)
-    }
 }
 
 extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if cinemaView.tableView.tag == 1 {
+        
+        if collectionView.tag == 1 {
             return searchList.count
         } else {
             return 20
@@ -127,7 +124,8 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == 1 {
+        
+        if collectionView.tag == 1 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
             let item = searchList[indexPath.item]
             
