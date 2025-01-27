@@ -74,6 +74,15 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
+            // UserDefaults에 저장된 프로필 이미지 적용
+            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
+               let image = UIImage(data: imageData) {
+                print(image)
+                cell.profileImageView.image = image
+            }
+            cell.nicknameLabel.text = UserDefaultsManager.shared.nickname
+            cell.dateLabel.text = UserDefaultsManager.shared.joinDate
+            
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
@@ -140,5 +149,9 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             
             return cell
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // TODO: 최근검색어 cell을 탭했을 때 값전달과 함께 검색뷰로 이동
     }
 }

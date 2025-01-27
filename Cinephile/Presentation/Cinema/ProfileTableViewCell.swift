@@ -12,10 +12,10 @@ final class ProfileTableViewCell: BaseTableViewCell {
 
     static let id = "ProfileTableViewCell"
     
-    private let dateLabel = UILabel()
     private let chevronImageView = UIImageView()
     let roundBackgroundView = UIView()
     let profileImageView = ProfileImageView()
+    let dateLabel = UILabel()
     let nicknameLabel = UILabel()
     let movieBoxButton = MovieBoxButton(like: 0)
 
@@ -69,15 +69,15 @@ final class ProfileTableViewCell: BaseTableViewCell {
         }
         
         // TODO: 넘겨받은 이미지로 대체 / nickname과 date도 수정
-        profileImageView.image = ProfileImage.image1.image
+//        profileImageView.image = ProfileImage.image1.image
         DispatchQueue.main.async {
             self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2
         }
         
-        nicknameLabel.text = "추후에 수정 예정이지롱"
+//        nicknameLabel.text = "추후에 수정 예정이지롱"
         nicknameLabel.font = .boldSystemFont(ofSize: 16)
         
-        dateLabel.text = "88.88.88 가입"
+//        dateLabel.text = "88.88.88 가입"
         dateLabel.font = .systemFont(ofSize: 14)
         dateLabel.textColor = .cinePrimaryGray
         

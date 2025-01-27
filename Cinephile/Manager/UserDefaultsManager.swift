@@ -20,5 +20,30 @@ class UserDefaultsManager {
         }
     }
     
-    // TODO: 닉네임, 가입날짜, 좋아요 개수, 프로필이미지는 어떡하지..?
+    var nickname: String {
+        get {
+            UserDefaults.standard.string(forKey: "nickname") ?? ""
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "nickname")
+        }
+    }
+    
+    var joinDate: String {
+        get {
+            UserDefaults.standard.string(forKey: "joinDate") ?? ""
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "joinDate")
+        }
+    }
+    
+//    var profileImage: Data {
+//        get {
+//            UserDefaults.standard.data(forKey: "profileImage") ?? Data()
+//        }
+//        set {
+//            UserDefaults.standard.set(newValue, forKey: "profileImage")
+//        }
+//    }
 }
