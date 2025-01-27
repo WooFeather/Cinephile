@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieBoxButton: UIButton {
+final class MovieBoxButton: UIButton {
     init(like: Int) {
         super.init(frame: .zero)
         

@@ -7,9 +7,11 @@
 
 import UIKit
 
-class UserDefaultsManager {
+final class UserDefaultsManager {
     
     static let shared = UserDefaultsManager()
+    
+    private init() { }
     
     var isSigned: Bool {
         get {

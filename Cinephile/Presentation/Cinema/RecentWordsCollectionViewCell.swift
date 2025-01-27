@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class RecentWordsCollectionViewCell: BaseCollectionViewCell {
+final class RecentWordsCollectionViewCell: BaseCollectionViewCell {
     
     static let id = "RecentWordsCollectionViewCell"
     let searchTextLabel = UILabel()
