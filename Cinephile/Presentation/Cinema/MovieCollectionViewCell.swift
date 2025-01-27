@@ -30,7 +30,7 @@ class MovieCollectionViewCell: BaseCollectionViewCell {
         }
         
         titleLebel.snp.makeConstraints { make in
-            make.top.equalTo(posterImageView.snp.bottom).offset(4)
+            make.top.equalTo(posterImageView.snp.bottom).offset(8)
             make.leading.equalTo(contentView)
             make.height.equalTo(20)
         }
@@ -43,14 +43,14 @@ class MovieCollectionViewCell: BaseCollectionViewCell {
         overviewLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLebel.snp.bottom).offset(4)
             make.horizontalEdges.equalTo(contentView)
-            make.height.equalTo(20)
+            make.height.equalTo(30)
         }
     }
     
     override func configureView() {
         posterImageView.backgroundColor = .brown
         DispatchQueue.main.async {
-            self.posterImageView.layer.cornerRadius = self.posterImageView.frame.height / 16
+            self.posterImageView.layer.cornerRadius = self.posterImageView.frame.height / 24
         }
         
         titleLebel.text = "테스트"
@@ -62,7 +62,7 @@ class MovieCollectionViewCell: BaseCollectionViewCell {
         likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
         likeButton.tintColor = .cineAccent
         
-        overviewLabel.text = "안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이"
+        overviewLabel.text = "안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이"
         overviewLabel.font = .systemFont(ofSize: 12)
         overviewLabel.numberOfLines = 2
         overviewLabel.textColor = .cinePrimaryGray

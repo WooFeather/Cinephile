@@ -66,6 +66,9 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        tableView.tag = indexPath.row
+        
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
             
@@ -99,25 +102,45 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TodayMovieTableViewCell.id, for: indexPath) as? TodayMovieTableViewCell else { return UITableViewCell() }
             
+            cell.movieCollectionView.delegate = self
+            cell.movieCollectionView.dataSource = self
+            cell.movieCollectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.id)
+            cell.movieCollectionView.showsHorizontalScrollIndicator = false
+            cell.movieCollectionView.reloadData()
+            
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(tableView.tag)
     }
 }
 
 extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return searchList.count
+        if cinemaView.tableView.tag == 1 {
+            return searchList.count
+        } else {
+            return 20
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
-        let item = searchList[indexPath.item]
+        if indexPath.item == 1 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
+            let item = searchList[indexPath.item]
+            
+            cell.configureData(item: item)
+            
+            cell.removeButton.tag = indexPath.item
+            cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
         
-        cell.configureData(item: item)
-        
-        cell.removeButton.tag = indexPath.item
-        cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
-        
-        return cell
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.id, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
+            
+            return cell
+        }
     }
 }
