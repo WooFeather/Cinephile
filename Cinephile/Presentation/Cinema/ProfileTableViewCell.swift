@@ -68,16 +68,12 @@ final class ProfileTableViewCell: BaseTableViewCell {
             self.roundBackgroundView.layer.cornerRadius = self.roundBackgroundView.frame.width / 20
         }
         
-        // TODO: 넘겨받은 이미지로 대체 / nickname과 date도 수정
-//        profileImageView.image = ProfileImage.image1.image
         DispatchQueue.main.async {
             self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2
         }
         
-//        nicknameLabel.text = "추후에 수정 예정이지롱"
         nicknameLabel.font = .boldSystemFont(ofSize: 16)
         
-//        dateLabel.text = "88.88.88 가입"
         dateLabel.font = .systemFont(ofSize: 14)
         dateLabel.textColor = .cinePrimaryGray
         

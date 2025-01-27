@@ -81,7 +81,7 @@ final class ProfileSettingViewController: BaseViewController {
     
     // 이미지를 UserDefaults에 저장하기
     private func setImage(UIImage value: UIImage, _ key: String) {
-        let imageData = value.jpegData(compressionQuality: 1.0)
+        let imageData = value.pngData()
         UserDefaults.standard.set(imageData, forKey: key)
     }
     

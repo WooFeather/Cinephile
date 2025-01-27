@@ -22,8 +22,12 @@ final class ProfileViewController: BaseViewController {
     
     @objc
     private func testButtonTapped() {
-        // TODO: 알럿 띄우기 / 데이터 삭제하기
+        // TODO: 알럿 띄우기
         
+        // UserDefaults의 데이터 삭제
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key.description)
+        }
         let vc = UINavigationController(rootViewController: OnboardingViewController())
         changeRootViewController(vc: vc, isSigned: false)
     }

@@ -38,12 +38,15 @@ class UserDefaultsManager {
         }
     }
     
-//    var profileImage: Data {
-//        get {
-//            UserDefaults.standard.data(forKey: "profileImage") ?? Data()
-//        }
-//        set {
-//            UserDefaults.standard.set(newValue, forKey: "profileImage")
-//        }
-//    }
+    var likeCount: Int {
+        get {
+            UserDefaults.standard.integer(forKey: "likeCount")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "likeCount")
+        }
+    }
+    
+    // TODO: 최근검색어내역 저장
+    // TODO: 좋아요 여부 저장
 }
