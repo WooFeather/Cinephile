@@ -23,6 +23,7 @@ class RecentWordsCollectionViewCell: BaseCollectionViewCell {
         searchTextLabel.snp.makeConstraints { make in
             make.leading.equalTo(contentView).offset(8)
             make.centerY.equalTo(contentView.snp.centerY)
+            make.width.equalTo(60)
         }
         
         removeButton.snp.makeConstraints { make in

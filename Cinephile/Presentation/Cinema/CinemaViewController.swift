@@ -10,6 +10,8 @@ import UIKit
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
+    // TODO: 실제 검색 데이터로 교체 예정
+    private var searchList = ["해리포터", "소방관", "현빈", "크리스마스", "기생충"]
     
     override func loadView() {
         view = cinemaView
@@ -32,23 +34,29 @@ final class CinemaViewController: BaseViewController {
     @objc
     private func searchButtonTapped() {
         print(#function)
+        // TODO: SearchView로 push
     }
     
     @objc
     private func backgroundViewTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             print(#function)
+            // TODO: 프로필 닉네임 수정화면으로 sheet present
         }
     }
     
-//    @objc
-//    private func movieButtonTapped() {
-//        print(#function)
-//    }
+    @objc
+    private func removeButtonTapped(sender: UIButton) {
+        print(sender.tag)
+        searchList.remove(at: sender.tag)
+        print(searchList)
+        cinemaView.tableView.reloadData()
+    }
     
     @objc
-    private func removeButtonTapped() {
-        print(#function)
+    private func clearButtonTapped(sender: UIButton) {
+        searchList.removeAll()
+        cinemaView.tableView.reloadData()
     }
 }
 
@@ -67,8 +75,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
-            // cell.movieBoxButton.addTarget(self, action: #selector(movieButtonTapped), for: .touchUpInside)
-            
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
@@ -79,11 +85,19 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.searchWordsCollectionView.dataSource = self
             cell.searchWordsCollectionView.register(RecentWordsCollectionViewCell.self, forCellWithReuseIdentifier: RecentWordsCollectionViewCell.id)
             cell.searchWordsCollectionView.showsHorizontalScrollIndicator = false
-//            cell.searchWordsCollectionView.reloadData()
+            cell.searchWordsCollectionView.reloadData()
+
+            cell.clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
             
-            // TODO: 검색어 리스트가 empty일 경우 collectionView랑 clear버튼 hidden처리
-            // TODO: 검색어 리스트가 있을경우 emptyLabel hidden처리
-            cell.emptyLabel.isHidden = true
+            if searchList.isEmpty {
+                cell.emptyLabel.isHidden = false
+                cell.searchWordsCollectionView.isHidden = true
+                cell.clearButton.isHidden = true
+            } else {
+                cell.emptyLabel.isHidden = true
+                cell.searchWordsCollectionView.isHidden = false
+                cell.clearButton.isHidden = false
+            }
             
             return cell
         } else {
@@ -98,17 +112,20 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return searchList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
+        let item = searchList[indexPath.item]
         
-        cell.searchTextLabel.text = "테스트임"
+        cell.searchTextLabel.text = item
         cell.backgroundColor = .cineSecondaryGray
         DispatchQueue.main.async {
             cell.layer.cornerRadius = cell.frame.height / 2
         }
+        
+        cell.removeButton.tag = indexPath.item
         cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
         
         return cell
