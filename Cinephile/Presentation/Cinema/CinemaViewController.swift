@@ -6,15 +6,23 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
     // TODO: 실제 검색 데이터로 교체 예정
     private var searchList = ["해리포터", "소방관", "현빈", "크리스마스", "기생충"]
+    private var movieList: [MovieDetail] = []
     
     override func loadView() {
         view = cinemaView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        callRequest()
     }
     
     override func configureEssential() {
@@ -29,6 +37,15 @@ final class CinemaViewController: BaseViewController {
     
     override func configureView() {
         cinemaView.tableView.separatorStyle = .none
+    }
+    
+    private func callRequest() {
+        NetworkManager.shared.callTMDBAPI(api: .trending, type: Trending.self) { value in
+            self.movieList = value.results
+            self.cinemaView.tableView.reloadData()
+        } failHandler: {
+            print("네트워킹 실패")
+        }
     }
     
     @objc
@@ -77,7 +94,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             // UserDefaults에 저장된 프로필 이미지 적용
             if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
                let image = UIImage(data: imageData) {
-                print(image)
                 cell.profileImageView.image = image
             }
             cell.nicknameLabel.text = UserDefaultsManager.shared.nickname
@@ -128,7 +144,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView.tag == 1 {
             return searchList.count
         } else {
-            return 20
+            return movieList.count
         }
     }
     
@@ -146,6 +162,14 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.id, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
+            let data = movieList[indexPath.item]
+            
+            let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
+            cell.posterImageView.kf.setImage(with: url)
+            cell.titleLebel.text = data.title
+            cell.overviewLabel.text = data.overview
+            
+            // TODO: 좋아요기능 구현
             
             return cell
         }
@@ -153,5 +177,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: 최근검색어 cell을 탭했을 때 값전달과 함께 검색뷰로 이동
+        
+        // TODO: 오늘의 영화 cell을 탭했을 때 값전달과 함께 디테일뷰로 이동
     }
 }

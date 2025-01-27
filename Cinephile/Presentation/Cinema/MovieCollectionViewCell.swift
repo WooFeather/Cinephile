@@ -48,10 +48,12 @@ final class MovieCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureView() {
-        posterImageView.backgroundColor = .brown
+        posterImageView.backgroundColor = .cineBackgroundGray
         DispatchQueue.main.async {
             self.posterImageView.layer.cornerRadius = self.posterImageView.frame.height / 24
         }
+        posterImageView.clipsToBounds = true
+        posterImageView.contentMode = .scaleAspectFill
         
         titleLebel.text = "테스트"
         titleLebel.font = .boldSystemFont(ofSize: 16)

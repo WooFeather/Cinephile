@@ -19,7 +19,7 @@ struct MovieDetail: Decodable {
     let posterImage: String
     let genreList: [Int]
     let releaseDate: String
-    let rating: Int
+    let rating: Double
     
     enum CodingKeys: String, CodingKey {
         case backdropImage = "backdrop_path"
