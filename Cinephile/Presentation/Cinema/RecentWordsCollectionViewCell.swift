@@ -39,4 +39,15 @@ class RecentWordsCollectionViewCell: BaseCollectionViewCell {
         removeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         removeButton.tintColor = .cineBlack
     }
+    
+    override func configureCell() {
+        backgroundColor = .cineSecondaryGray
+        DispatchQueue.main.async {
+            self.layer.cornerRadius = self.frame.height / 2
+        }
+    }
+    
+    func configureData(item: String) {
+        searchTextLabel.text = item
+    }
 }

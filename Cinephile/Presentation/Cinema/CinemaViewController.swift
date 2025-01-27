@@ -68,8 +68,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ProfileTableViewCell.id, for: indexPath) as? ProfileTableViewCell else { return UITableViewCell() }
-            cell.backgroundColor = .clear
-            cell.selectionStyle = .none
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundViewTapped))
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
@@ -78,8 +76,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
-            cell.backgroundColor = .clear
-            cell.selectionStyle = .none
             
             cell.searchWordsCollectionView.delegate = self
             cell.searchWordsCollectionView.dataSource = self
@@ -102,8 +98,6 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TodayMovieTableViewCell.id, for: indexPath) as? TodayMovieTableViewCell else { return UITableViewCell() }
-            cell.backgroundColor = .green
-            cell.selectionStyle = .none
             
             return cell
         }
@@ -119,11 +113,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
         let item = searchList[indexPath.item]
         
-        cell.searchTextLabel.text = item
-        cell.backgroundColor = .cineSecondaryGray
-        DispatchQueue.main.async {
-            cell.layer.cornerRadius = cell.frame.height / 2
-        }
+        cell.configureData(item: item)
         
         cell.removeButton.tag = indexPath.item
         cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)

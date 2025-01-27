@@ -15,6 +15,7 @@ class BaseTableViewCell: UITableViewCell {
         configureHierarchy()
         configureLayout()
         configureView()
+        configureCell()
     }
     
     func configureHierarchy() { }
@@ -22,6 +23,8 @@ class BaseTableViewCell: UITableViewCell {
     func configureLayout() { }
     
     func configureView() { }
+    
+    func configureCell() { }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
