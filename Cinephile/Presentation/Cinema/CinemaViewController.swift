@@ -75,6 +75,14 @@ final class CinemaViewController: BaseViewController {
         searchList.removeAll()
         cinemaView.tableView.reloadData()
     }
+    
+    @objc
+    private func likeButtonTapped(_ sender: UIButton) {
+        // movieList[sender.tag].like.toggle()
+        // movieList의 sender의 tag의 id를 가져와서 해당 id를 좋아요리스트에 등록
+        print(sender.tag)
+        cinemaView.tableView.reloadData()
+    }
 }
 
 extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
@@ -162,14 +170,12 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.id, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
-            let data = movieList[indexPath.item]
+            let item = movieList[indexPath.item]
             
-            let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
-            cell.posterImageView.kf.setImage(with: url)
-            cell.titleLebel.text = data.title
-            cell.overviewLabel.text = data.overview
+            cell.configureData(item: item)
             
-            // TODO: 좋아요기능 구현
+            cell.likeButton.tag = indexPath.item
+            cell.likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
             
             return cell
         }

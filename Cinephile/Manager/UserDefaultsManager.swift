@@ -49,6 +49,15 @@ final class UserDefaultsManager {
         }
     }
     
+    // 좋아요한 영화 관리를 어떻게하지
+//    var likeMovieId: String {
+//        get {
+//            UserDefaults.standard.string(forKey: "likeMovieId") ?? ""
+//        }
+//        set {
+//            UserDefaults.standard.set(newValue, forKey: "likeMovieId")
+//        }
+//    }
+    
     // TODO: 최근검색어내역 저장
-    // TODO: 좋아요 여부 저장
 }
