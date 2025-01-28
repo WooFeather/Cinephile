@@ -10,6 +10,10 @@ import UIKit
 final class SearchMovieViewController: BaseViewController {
 
     private var searchMovieView = SearchMovieView()
+    private var searchList: [MovieDetail] = []
+    private var page = 1
+    private var maxNum = 0
+    private lazy var queryText = searchMovieView.movieSearchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
     var searchTextContents: String?
     
     override func loadView() {
@@ -27,6 +31,7 @@ final class SearchMovieViewController: BaseViewController {
         searchMovieView.searchTableView.delegate = self
         searchMovieView.searchTableView.dataSource = self
         searchMovieView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
+        searchMovieView.searchTableView.prefetchDataSource = self
         
         searchMovieView.movieSearchBar.delegate = self
     }
@@ -37,10 +42,32 @@ final class SearchMovieViewController: BaseViewController {
         searchMovieView.movieSearchBar.text = searchTextContents
     }
     
-    private func callRequest() {
-        searchMovieView.searchTableView.isHidden = false
-        
-        // TODO: 검색결과가 없을 경우 tableView hidden true, emptyLabel hidden false
+    func callRequest(query: String) {
+        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: page), type: Movie.self) { value in
+            if self.page == 1 {
+                self.searchList = value.results
+            } else {
+                self.searchList.append(contentsOf: value.results)
+            }
+            
+            if self.searchList.isEmpty {
+                self.searchMovieView.searchTableView.isHidden = true
+                self.searchMovieView.emptyLabel.isHidden = false
+            } else {
+                self.searchMovieView.searchTableView.isHidden = false
+                self.searchMovieView.emptyLabel.isHidden = true
+            }
+            
+            self.maxNum = value.totalResults
+            self.searchMovieView.searchTableView.reloadData()
+            
+            if self.page == 1 && self.searchList.count != 0 {
+                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            }
+        } failHandler: {
+            print("❌ 네트워킹 실패")
+        }
+
     }
     
     @objc
@@ -55,11 +82,15 @@ final class SearchMovieViewController: BaseViewController {
 
 extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return searchList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.id, for: indexPath) as? SearchTableViewCell else { return UITableViewCell() }
+        
+        let data = searchList[indexPath.row]
+        
+        cell.configureData(data: data)
         
         cell.likeButton.tag = indexPath.row
         cell.likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
@@ -76,10 +107,32 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     }
 }
 
-// TODO: movieSearchBar 검색버튼 눌렀을 때 callRequest함수 실행
+extension SearchMovieViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        print("🔗indexPath \(indexPaths)")
+        
+        for row in indexPaths {
+            if searchList.count - 3 == row.row {
+                if searchList.count < maxNum {
+                    page += 1
+                    callRequest(query: queryText)
+                } else {
+                    print("❗️마지막 페이지")
+                }
+            }
+        }
+    }
+}
+
 extension SearchMovieViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchText = searchBar.text else { return }
+        
+        queryText = searchText.trimmingCharacters(in: .whitespaces)
+        
+        page = 1
+        callRequest(query: queryText)
+        
         searchBar.resignFirstResponder()
-        callRequest()
     }
 }

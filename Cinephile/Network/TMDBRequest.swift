@@ -10,6 +10,7 @@ import Alamofire
 
 enum TMDBRequest {
     case trending
+    case search(query: String, page: Int)
     
     private var baseURL: String {
         return "https://api.themoviedb.org/3/"
@@ -19,6 +20,8 @@ enum TMDBRequest {
         switch self {
         case .trending:
             return URL(string: baseURL + "trending/movie/day?language=ko-KR&page=1")!
+        case .search(let query, let page):
+            return URL(string: baseURL + "search/movie?query=\(query)&include_adult=false&language=ko-KR&page=\(page)")!
         }
     }
     

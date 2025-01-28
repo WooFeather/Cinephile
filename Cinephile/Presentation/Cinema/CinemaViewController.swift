@@ -40,7 +40,7 @@ final class CinemaViewController: BaseViewController {
     }
     
     private func callRequest() {
-        NetworkManager.shared.callTMDBAPI(api: .trending, type: Trending.self) { value in
+        NetworkManager.shared.callTMDBAPI(api: .trending, type: Movie.self) { value in
             self.movieList = value.results
             self.cinemaView.tableView.reloadData()
         } failHandler: {
@@ -161,9 +161,9 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         if collectionView.tag == 1 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
-            let item = searchList[indexPath.item]
+            let data = searchList[indexPath.item]
             
-            cell.configureData(item: item)
+            cell.configureData(data: data)
             
             cell.removeButton.tag = indexPath.item
             cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
@@ -171,9 +171,9 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.id, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
-            let item = movieList[indexPath.item]
+            let data = movieList[indexPath.item]
             
-            cell.configureData(item: item)
+            cell.configureData(data: data)
             
             cell.likeButton.tag = indexPath.item
             cell.likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
@@ -188,6 +188,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             
             let vc = SearchMovieViewController()
             vc.searchTextContents = item
+            vc.callRequest(query: item)
             navigationController?.pushViewController(vc, animated: true)
         } else {
             // TODO: 오늘의 영화 cell을 탭했을 때 값전달과 함께 디테일뷰로 이동

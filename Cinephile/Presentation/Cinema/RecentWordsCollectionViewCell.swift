@@ -47,7 +47,7 @@ final class RecentWordsCollectionViewCell: BaseCollectionViewCell {
         }
     }
     
-    func configureData(item: String) {
-        searchTextLabel.text = item
+    func configureData(data: String) {
+        searchTextLabel.text = data
     }
 }

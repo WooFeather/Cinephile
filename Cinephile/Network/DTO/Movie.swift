@@ -7,12 +7,19 @@
 
 import Foundation
 
-struct Trending: Decodable {
+// TODO: null값 대응
+struct Movie: Decodable {
     let results: [MovieDetail]
+    let totalResults: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case results
+        case totalResults = "total_results"
+    }
 }
 
 struct MovieDetail: Decodable {
-    let backdropImage: String
+    let backdropImage: String? // backdropImage가 null인 경우 대응
     let id: Int
     let title: String
     let overview: String

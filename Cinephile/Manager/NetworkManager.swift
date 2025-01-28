@@ -20,6 +20,7 @@ final class NetworkManager {
     {
         AF.request(api.endpoint, method: api.method, headers: api.header)
             .responseDecodable(of: T.self) { response in
+                print(api.endpoint)
                 switch response.result {
                 case .success(let value):
                     print("✅ SUCCESS")

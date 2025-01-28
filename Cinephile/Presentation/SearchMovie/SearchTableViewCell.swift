@@ -7,11 +7,33 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class SearchTableViewCell: BaseTableViewCell {
     
     static let id = "SearchTableViewCell"
     
+    private let genre: [Int: String] = [
+        28: "액션",
+        16: "애니메이션",
+        80: "범죄",
+        18: "드라마",
+        14: "판타지",
+        27: "공포",
+        9648: "미스터리",
+        878: "SF",
+        53: "스릴러",
+        37: "서부",
+        12: "모험",
+        35: "코미디",
+        99: "다큐멘터리",
+        10751: "가족",
+        36: "역사",
+        10402: "음악",
+        10749: "로맨스",
+        10770: "TV 영화",
+        10752: "전쟁"
+    ]
     private let genreStackView = UIStackView()
     let posterImageView = UIImageView()
     let titleLabel = UILabel()
@@ -67,13 +89,10 @@ final class SearchTableViewCell: BaseTableViewCell {
         posterImageView.clipsToBounds = true
         posterImageView.contentMode = .scaleAspectFill
         
-        // TODO: 교체예정
-        titleLabel.text = "테스트테스트테스트테스트"
         titleLabel.font = .boldSystemFont(ofSize: 16)
         titleLabel.numberOfLines = 2
         
-        // TODO: 교체예정
-        releaseDateLabel.text = "8888. 88. 88"
+        
         releaseDateLabel.font = .systemFont(ofSize: 14)
         releaseDateLabel.textColor = .cinePrimaryGray
         
@@ -81,13 +100,35 @@ final class SearchTableViewCell: BaseTableViewCell {
         
         firstGenreLabel.text = "테스트지롱"
         secondGenreLabel.text = "테스트"
-        
-        // TODO: 좋아요기능 UI 구현
-        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
     }
     
     override func configureCell() {
         backgroundColor = .clear
         selectionStyle = .none
+    }
+    
+    func configureData(data: MovieDetail) {
+        let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
+        posterImageView.kf.setImage(with: url)
+        titleLabel.text = data.title
+        releaseDateLabel.text = data.releaseDate.toDate()?.toReleaseString()
+        
+        // 이렇게 하면 검색 결과가 없거나, genre가 1개일 경우에 fatalError
+//        firstGenreLabel.text = genre[data.genreList[0]]
+//        secondGenreLabel.text = genre[data.genreList[1]]
+        
+        // 어떻게 장르에 대응할 수 있을까
+//        if !data.genreList.isEmpty {
+//            for i in 0...1 {
+//                let genreLabel = GenreLabel()
+//                genreLabel.text = genre[data.genreList[i]]
+//            }
+//        }
+        
+        // TODO: 좋아요기능 UI 구현
+        // 조건이 data의 like가 아니라, 해당 영화의 id가 좋아요리스트에 등록되어있는가가 기준이 될듯
+//        let name = item.like ? "heart.fill" : "heart"
+//        let btn = UIImage(systemName: name)
+        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
     }
 }
