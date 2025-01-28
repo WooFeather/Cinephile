@@ -78,6 +78,7 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
+        // TODO: 좋아요버튼 기능구현
         // movieList[sender.tag].like.toggle()
         // movieList의 sender의 tag의 id를 가져와서 해당 id를 좋아요리스트에 등록
         print(sender.tag)

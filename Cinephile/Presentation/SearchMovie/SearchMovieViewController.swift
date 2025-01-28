@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchMovieViewController: BaseViewController {
+final class SearchMovieViewController: BaseViewController {
 
     private var searchMovieView = SearchMovieView()
     

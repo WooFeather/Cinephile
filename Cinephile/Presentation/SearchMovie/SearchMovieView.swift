@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class SearchMovieView: BaseView{
+final class SearchMovieView: BaseView{
 
     let movieSearchBar = UISearchBar()
     let searchTableView = UITableView()
@@ -25,7 +25,7 @@ class SearchMovieView: BaseView{
         }
         
         searchTableView.snp.makeConstraints { make in
-            make.top.equalTo(movieSearchBar.snp.bottom).offset(8)
+            make.top.equalTo(movieSearchBar.snp.bottom).offset(12)
             make.bottom.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
     }
@@ -36,6 +36,6 @@ class SearchMovieView: BaseView{
         movieSearchBar.searchTextField.textColor = .cinaWhite
         
         searchTableView.keyboardDismissMode = .onDrag
-        searchTableView.backgroundColor = .red
+        searchTableView.backgroundColor = .clear
     }
 }
