@@ -10,7 +10,7 @@ import SnapKit
 
 final class CinemaView: BaseView {
     
-    lazy var tableView = UITableView()
+    let tableView = UITableView()
 
     override func configureHierarchy() {
         addSubview(tableView)

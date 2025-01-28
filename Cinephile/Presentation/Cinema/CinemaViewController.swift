@@ -50,8 +50,8 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func searchButtonTapped() {
-        print(#function)
-        // TODO: SearchView로 push
+        let vc = SearchMovieViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc
