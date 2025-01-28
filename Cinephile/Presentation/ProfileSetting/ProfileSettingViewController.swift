@@ -67,7 +67,7 @@ final class ProfileSettingViewController: BaseViewController {
     private func doneButtonTapped() {
         let vc = TabBarController()
         UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
-        UserDefaultsManager.shared.joinDate = Date().toString()
+        UserDefaultsManager.shared.joinDate = Date().toJoinString()
         setImage(UIImage: profileSettingView.profileImageView.image ?? UIImage(), "profileImage")
         changeRootViewController(vc: vc, isSigned: true)
     }

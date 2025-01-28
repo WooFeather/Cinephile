@@ -183,8 +183,14 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: 최근검색어 cell을 탭했을 때 값전달과 함께 검색뷰로 이동
-        
-        // TODO: 오늘의 영화 cell을 탭했을 때 값전달과 함께 디테일뷰로 이동
+        if collectionView.tag == 1 {
+            let item = searchList[indexPath.item]
+            
+            let vc = SearchMovieViewController()
+            vc.searchTextContents = item
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
+            // TODO: 오늘의 영화 cell을 탭했을 때 값전달과 함께 디테일뷰로 이동
+        }
     }
 }

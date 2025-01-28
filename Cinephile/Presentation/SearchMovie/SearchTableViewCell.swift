@@ -32,7 +32,6 @@ final class SearchTableViewCell: BaseTableViewCell {
     override func configureLayout() {
         posterImageView.snp.makeConstraints { make in
             make.verticalEdges.leading.equalTo(contentView.safeAreaLayoutGuide).inset(16)
-            make.height.equalTo(110)
             make.width.equalTo(90)
         }
         
