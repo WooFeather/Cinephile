@@ -25,5 +25,6 @@ final class MovieDetailView: BaseView {
     override func configureView() {
         tableView.backgroundColor = .clear
         tableView.showsVerticalScrollIndicator = false
+        tableView.rowHeight = UITableView.automaticDimension
     }
 }

@@ -60,8 +60,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             // SynopsisTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SynopsisTableViewCell.id, for: indexPath) as? SynopsisTableViewCell else { return UITableViewCell() }
             
-            cell.backgroundColor = .orange
-            
             return cell
         } else if indexPath.row == 2 {
             // CastTableViewCell
