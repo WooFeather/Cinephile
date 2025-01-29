@@ -100,6 +100,11 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // TODO: 셀 선택시 값 전달과 함께 영화 상세뷰로 push
+        let data = searchList[indexPath.row]
+        
+        let vc = MovieDetailViewController()
+        vc.titleContents = data.title
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

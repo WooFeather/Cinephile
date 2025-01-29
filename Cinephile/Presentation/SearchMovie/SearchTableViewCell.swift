@@ -122,5 +122,6 @@ final class SearchTableViewCell: BaseTableViewCell {
 //        let name = item.like ? "heart.fill" : "heart"
 //        let btn = UIImage(systemName: name)
         likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeButton.tintColor = .cineAccent
     }
 }

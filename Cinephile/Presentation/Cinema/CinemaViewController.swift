@@ -212,7 +212,12 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             vc.callRequest(query: item)
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            // TODO: 오늘의 영화 cell을 탭했을 때 값전달과 함께 디테일뷰로 이동
+            // TODO: 셀 선택시 값 전달과 함께 영화 상세뷰로 push
+            let item = movieList[indexPath.item]
+            
+            let vc = MovieDetailViewController()
+            vc.titleContents = item.title
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
 }
