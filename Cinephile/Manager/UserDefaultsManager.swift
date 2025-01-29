@@ -40,14 +40,23 @@ final class UserDefaultsManager {
         }
     }
     
-    var likeCount: Int {
+    var searchList: [String] {
         get {
-            UserDefaults.standard.integer(forKey: "likeCount")
+            UserDefaults.standard.array(forKey: "searchList") as? [String] ?? []
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "likeCount")
+            UserDefaults.standard.set(newValue, forKey: "searchList")
         }
     }
+    
+//    var likeCount: Int {
+//        get {
+//            UserDefaults.standard.integer(forKey: "likeCount")
+//        }
+//        set {
+//            UserDefaults.standard.set(newValue, forKey: "likeCount")
+//        }
+//    }
     
     // 좋아요한 영화 관리를 어떻게하지
 //    var likeMovieId: String {

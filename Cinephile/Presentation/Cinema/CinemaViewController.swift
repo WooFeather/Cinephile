@@ -11,8 +11,7 @@ import Kingfisher
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
-    // TODO: 실제 검색 데이터로 교체 예정
-    private var searchList = ["해리포터", "소방관", "현빈", "크리스마스", "기생충"]
+    private var searchList: [String] = []
     private var movieList: [MovieDetail] = []
     
     override func loadView() {
@@ -23,6 +22,8 @@ final class CinemaViewController: BaseViewController {
         super.viewDidLoad()
         
         callRequest()
+        receiveSearchText()
+        searchList = UserDefaultsManager.shared.searchList
     }
     
     override func configureEssential() {
@@ -48,6 +49,26 @@ final class CinemaViewController: BaseViewController {
         }
     }
     
+    private func receiveSearchText() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(searchTextReceivedNotification),
+            name: NSNotification.Name("SearchTextReceived"),
+            object: nil
+        )
+    }
+    
+    @objc
+    private func searchTextReceivedNotification(value: NSNotification) {
+        if let searchText = value.userInfo!["searchText"] as? String {
+            searchList.insert(searchText, at: 0)
+            UserDefaultsManager.shared.searchList = searchList
+            cinemaView.tableView.reloadData()
+        } else {
+            return
+        }
+    }
+    
     @objc
     private func searchButtonTapped() {
         let vc = SearchMovieViewController()
@@ -64,15 +85,15 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func removeButtonTapped(sender: UIButton) {
-        print(sender.tag)
         searchList.remove(at: sender.tag)
-        print(searchList)
+        UserDefaultsManager.shared.searchList = searchList
         cinemaView.tableView.reloadData()
     }
     
     @objc
     private func clearButtonTapped(sender: UIButton) {
         searchList.removeAll()
+        UserDefaultsManager.shared.searchList = searchList
         cinemaView.tableView.reloadData()
     }
     
