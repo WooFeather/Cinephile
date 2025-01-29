@@ -65,7 +65,7 @@ final class BackdropTableViewCell: BaseTableViewCell {
         
         let deviceWidth = UIScreen.main.bounds.width
         
-        layout.itemSize = CGSize(width: deviceWidth, height: 200)
+        layout.itemSize = CGSize(width: deviceWidth, height: 250)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing =  0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)

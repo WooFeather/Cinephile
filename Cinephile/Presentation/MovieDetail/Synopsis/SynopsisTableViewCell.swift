@@ -25,7 +25,7 @@ final class SynopsisTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         sectionLabel.snp.makeConstraints { make in
-            make.top.leading.equalTo(contentView).offset(12)
+            make.top.leading.equalTo(contentView).offset(16)
             make.height.equalTo(20)
         }
         

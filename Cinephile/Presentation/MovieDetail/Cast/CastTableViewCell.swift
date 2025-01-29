@@ -6,9 +6,50 @@
 //
 
 import UIKit
+import SnapKit
 
 final class CastTableViewCell: BaseTableViewCell {
 
     static let id = "CastTableViewCell"
 
+    private let sectionLabel = UILabel()
+    lazy var castCollectionViewCell = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
+    
+    override func configureHierarchy() {
+        contentView.addSubview(sectionLabel)
+        contentView.addSubview(castCollectionViewCell)
+    }
+    
+    override func configureLayout() {
+        sectionLabel.snp.makeConstraints { make in
+            make.top.leading.equalTo(contentView).offset(16)
+            make.height.equalTo(20)
+        }
+        
+        castCollectionViewCell.snp.makeConstraints { make in
+            make.top.equalTo(sectionLabel.snp.bottom).offset(8)
+            make.horizontalEdges.equalTo(contentView)
+            make.height.equalTo(130)
+            make.bottom.equalTo(contentView)
+        }
+    }
+    
+    override func configureView() {
+        sectionLabel.text = "Cast"
+        sectionLabel.font = .boldSystemFont(ofSize: 16)
+        
+        castCollectionViewCell.showsHorizontalScrollIndicator = false
+        castCollectionViewCell.backgroundColor = .clear
+    }
+    
+    private func createCollectionViewLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.itemSize = CGSize(width: 180, height: 60)
+        layout.minimumLineSpacing = 30
+        layout.minimumInteritemSpacing =  10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        layout.scrollDirection = .horizontal
+        return layout
+    }
 }

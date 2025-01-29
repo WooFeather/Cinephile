@@ -65,7 +65,10 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             // CastTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CastTableViewCell.id, for: indexPath) as? CastTableViewCell else { return UITableViewCell() }
             
-            cell.backgroundColor = .yellow
+            cell.castCollectionViewCell.tag = indexPath.row
+            cell.castCollectionViewCell.delegate = self
+            cell.castCollectionViewCell.dataSource = self
+            cell.castCollectionViewCell.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.id)
             
             return cell
         } else {
@@ -83,13 +86,23 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         // TODO: 각 collectionView의 데이터 배열 요소 개수만큼 분기처리
-        return 5
+        if collectionView.tag == 0 {
+            return 5
+        } else if collectionView.tag == 2 {
+            return 10
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if collectionView.tag == 0 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as? BackdropCollectionViewCell else { return UICollectionViewCell() }
+            
+            return cell
+        } else if collectionView.tag == 2 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
             
             return cell
         } else {
