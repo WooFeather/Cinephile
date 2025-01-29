@@ -24,7 +24,10 @@ class BaseTableViewCell: UITableViewCell {
     
     func configureView() { }
     
-    func configureCell() { }
+    func configureCell() {
+        backgroundColor = .clear
+        selectionStyle = .none
+    }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {

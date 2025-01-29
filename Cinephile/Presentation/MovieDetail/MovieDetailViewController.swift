@@ -50,7 +50,10 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             // BackdropTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BackdropTableViewCell.id, for: indexPath) as? BackdropTableViewCell else { return UITableViewCell() }
             
-            cell.backgroundColor = .red
+            cell.backdropCollectionView.tag = indexPath.row
+            cell.backdropCollectionView.delegate = self
+            cell.backdropCollectionView.dataSource = self
+            cell.backdropCollectionView.register(BackdropCollectionViewCell.self, forCellWithReuseIdentifier: BackdropCollectionViewCell.id)
             
             return cell
         } else if indexPath.row == 1 {
@@ -74,6 +77,26 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.backgroundColor = .green
             
             return cell
+        }
+    }
+}
+
+extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        // TODO: 각 collectionView의 데이터 배열 요소 개수만큼 분기처리
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if collectionView.tag == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as? BackdropCollectionViewCell else { return UICollectionViewCell() }
+            
+            return cell
+        } else {
+            // TODO: 각 CollectionView 분기처리
+            return UICollectionViewCell()
         }
     }
 }

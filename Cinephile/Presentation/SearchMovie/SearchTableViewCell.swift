@@ -96,11 +96,6 @@ final class SearchTableViewCell: BaseTableViewCell {
         genreStackView.spacing = 4
     }
     
-    override func configureCell() {
-        backgroundColor = .clear
-        selectionStyle = .none
-    }
-    
     func configureData(data: MovieDetail) {
         let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
         posterImageView.kf.setImage(with: url)

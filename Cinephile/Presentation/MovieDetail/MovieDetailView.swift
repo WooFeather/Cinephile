@@ -23,6 +23,7 @@ final class MovieDetailView: BaseView {
     }
     
     override func configureView() {
-        tableView.backgroundColor = .gray
+        tableView.backgroundColor = .clear
+        tableView.showsVerticalScrollIndicator = false
     }
 }

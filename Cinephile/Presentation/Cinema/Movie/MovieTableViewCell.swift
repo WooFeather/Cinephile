@@ -49,9 +49,4 @@ final class MovieTableViewCell: BaseTableViewCell {
         layout.scrollDirection = .horizontal
         return layout
     }
-    
-    override func configureCell() {
-        backgroundColor = .clear
-        selectionStyle = .none
-    }
 }

@@ -81,9 +81,4 @@ final class ProfileTableViewCell: BaseTableViewCell {
         chevronImageView.contentMode = .scaleAspectFit
         chevronImageView.tintColor = .cinePrimaryGray
     }
-    
-    override func configureCell() {
-        backgroundColor = .clear
-        selectionStyle = .none
-    }
 }

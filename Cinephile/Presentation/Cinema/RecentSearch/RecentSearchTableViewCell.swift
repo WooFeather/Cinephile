@@ -13,12 +13,12 @@ final class RecentSearchTableViewCell: BaseTableViewCell {
     static let id = "RecentSearchTableViewCell"
     
     private let sectionLabel = UILabel()
-    lazy var searchWordsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
+    lazy var recentSearchCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
     let emptyLabel = UILabel()
     let clearButton = UIButton()
     
     override func configureHierarchy() {
-        [sectionLabel, clearButton, searchWordsCollectionView, emptyLabel].forEach {
+        [sectionLabel, clearButton, recentSearchCollectionView, emptyLabel].forEach {
             contentView.addSubview($0)
         }
     }
@@ -35,14 +35,14 @@ final class RecentSearchTableViewCell: BaseTableViewCell {
             make.height.equalTo(20)
         }
         
-        searchWordsCollectionView.snp.makeConstraints { make in
+        recentSearchCollectionView.snp.makeConstraints { make in
             make.top.equalTo(sectionLabel.snp.bottom).offset(8)
             make.horizontalEdges.bottom.equalTo(contentView)
             make.height.equalTo(44)
         }
         
         emptyLabel.snp.makeConstraints { make in
-            make.center.equalTo(searchWordsCollectionView.snp.center)
+            make.center.equalTo(recentSearchCollectionView.snp.center)
             make.height.equalTo(16)
         }
     }
@@ -55,7 +55,7 @@ final class RecentSearchTableViewCell: BaseTableViewCell {
         clearButton.setTitleColor(.cineAccent, for: .normal)
         clearButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
         
-        searchWordsCollectionView.backgroundColor = .clear
+        recentSearchCollectionView.backgroundColor = .clear
         
         emptyLabel.text = "최근 검색어 내역이 없습니다."
         emptyLabel.font = .boldSystemFont(ofSize: 12)
@@ -70,10 +70,5 @@ final class RecentSearchTableViewCell: BaseTableViewCell {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         layout.scrollDirection = .horizontal
         return layout
-    }
-    
-    override func configureCell() {
-        backgroundColor = .clear
-        selectionStyle = .none
     }
 }

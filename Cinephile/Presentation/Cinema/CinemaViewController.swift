@@ -133,22 +133,22 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
         } else if indexPath.row == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.id, for: indexPath) as? RecentSearchTableViewCell else { return UITableViewCell() }
             
-            cell.searchWordsCollectionView.tag = indexPath.row
-            cell.searchWordsCollectionView.delegate = self
-            cell.searchWordsCollectionView.dataSource = self
-            cell.searchWordsCollectionView.register(RecentSearchCollectionViewCell.self, forCellWithReuseIdentifier: RecentSearchCollectionViewCell.id)
-            cell.searchWordsCollectionView.showsHorizontalScrollIndicator = false
-            cell.searchWordsCollectionView.reloadData()
+            cell.recentSearchCollectionView.tag = indexPath.row
+            cell.recentSearchCollectionView.delegate = self
+            cell.recentSearchCollectionView.dataSource = self
+            cell.recentSearchCollectionView.register(RecentSearchCollectionViewCell.self, forCellWithReuseIdentifier: RecentSearchCollectionViewCell.id)
+            cell.recentSearchCollectionView.showsHorizontalScrollIndicator = false
+            cell.recentSearchCollectionView.reloadData()
 
             cell.clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
             
             if searchList.isEmpty {
                 cell.emptyLabel.isHidden = false
-                cell.searchWordsCollectionView.isHidden = true
+                cell.recentSearchCollectionView.isHidden = true
                 cell.clearButton.isHidden = true
             } else {
                 cell.emptyLabel.isHidden = true
-                cell.searchWordsCollectionView.isHidden = false
+                cell.recentSearchCollectionView.isHidden = false
                 cell.clearButton.isHidden = false
             }
             
