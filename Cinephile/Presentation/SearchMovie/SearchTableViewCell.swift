@@ -46,9 +46,6 @@ final class SearchTableViewCell: BaseTableViewCell {
         [posterImageView, titleLabel, releaseDateLabel, genreStackView, likeButton].forEach {
             contentView.addSubview($0)
         }
-        [firstGenreLabel, secondGenreLabel].forEach {
-            genreStackView.addArrangedSubview($0)
-        }
     }
     
     override func configureLayout() {
@@ -97,9 +94,6 @@ final class SearchTableViewCell: BaseTableViewCell {
         releaseDateLabel.textColor = .cinePrimaryGray
         
         genreStackView.spacing = 4
-        
-        firstGenreLabel.text = "테스트지롱"
-        secondGenreLabel.text = "테스트"
     }
     
     override func configureCell() {
@@ -113,17 +107,15 @@ final class SearchTableViewCell: BaseTableViewCell {
         titleLabel.text = data.title
         releaseDateLabel.text = data.releaseDate.toDate()?.toReleaseString()
         
-        // 이렇게 하면 검색 결과가 없거나, genre가 1개일 경우에 fatalError
-//        firstGenreLabel.text = genre[data.genreList[0]]
-//        secondGenreLabel.text = genre[data.genreList[1]]
-        
-        // 어떻게 장르에 대응할 수 있을까
-//        if !data.genreList.isEmpty {
-//            for i in 0...1 {
-//                let genreLabel = GenreLabel()
-//                genreLabel.text = genre[data.genreList[i]]
-//            }
-//        }
+        if data.genreList.count == 1 {
+            firstGenreLabel.text = genre[data.genreList[0]]
+            genreStackView.addArrangedSubview(firstGenreLabel)
+        } else if data.genreList.count >= 2 {
+            firstGenreLabel.text = genre[data.genreList[0]]
+            secondGenreLabel.text = genre[data.genreList[1]]
+            genreStackView.addArrangedSubview(firstGenreLabel)
+            genreStackView.addArrangedSubview(secondGenreLabel)
+        }
         
         // TODO: 좋아요기능 UI 구현
         // 조건이 data의 like가 아니라, 해당 영화의 id가 좋아요리스트에 등록되어있는가가 기준이 될듯
