@@ -1,5 +1,5 @@
 //
-//  TodayMovieTableViewCell.swift
+//  MovieTableViewCell.swift
 //  Cinephile
 //
 //  Created by 조우현 on 1/26/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class TodayMovieTableViewCell: BaseTableViewCell {
+final class MovieTableViewCell: BaseTableViewCell {
 
     static let id = "TodayMovieTableViewCell"
     

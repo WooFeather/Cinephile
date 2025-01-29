@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class MovieDetailView: BaseView {
+final class MovieDetailView: BaseView {
     
     let tableView = UITableView()
 
@@ -23,6 +23,6 @@ class MovieDetailView: BaseView {
     }
     
     override func configureView() {
-        tableView.backgroundColor = .red
+        tableView.backgroundColor = .gray
     }
 }

@@ -33,7 +33,7 @@ final class CinemaViewController: BaseViewController {
         cinemaView.tableView.dataSource = self
         cinemaView.tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.id)
         cinemaView.tableView.register(RecentSearchTableViewCell.self, forCellReuseIdentifier: RecentSearchTableViewCell.id)
-        cinemaView.tableView.register(TodayMovieTableViewCell.self, forCellReuseIdentifier: TodayMovieTableViewCell.id)
+        cinemaView.tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: MovieTableViewCell.id)
     }
     
     override func configureView() {
@@ -136,7 +136,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.searchWordsCollectionView.tag = indexPath.row
             cell.searchWordsCollectionView.delegate = self
             cell.searchWordsCollectionView.dataSource = self
-            cell.searchWordsCollectionView.register(RecentWordsCollectionViewCell.self, forCellWithReuseIdentifier: RecentWordsCollectionViewCell.id)
+            cell.searchWordsCollectionView.register(RecentSearchCollectionViewCell.self, forCellWithReuseIdentifier: RecentSearchCollectionViewCell.id)
             cell.searchWordsCollectionView.showsHorizontalScrollIndicator = false
             cell.searchWordsCollectionView.reloadData()
 
@@ -154,7 +154,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             
             return cell
         } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TodayMovieTableViewCell.id, for: indexPath) as? TodayMovieTableViewCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MovieTableViewCell.id, for: indexPath) as? MovieTableViewCell else { return UITableViewCell() }
             
             cell.movieCollectionView.tag = indexPath.row
             cell.movieCollectionView.delegate = self
@@ -181,7 +181,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if collectionView.tag == 1 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentWordsCollectionViewCell.id, for: indexPath) as? RecentWordsCollectionViewCell else { return UICollectionViewCell() }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentSearchCollectionViewCell.id, for: indexPath) as? RecentSearchCollectionViewCell else { return UICollectionViewCell() }
             let data = searchList[indexPath.item]
             
             cell.configureData(data: data)

@@ -1,5 +1,5 @@
 //
-//  RecentWordsCollectionViewCell.swift
+//  RecentSearchCollectionViewCell.swift
 //  Cinephile
 //
 //  Created by 조우현 on 1/27/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class RecentWordsCollectionViewCell: BaseCollectionViewCell {
+final class RecentSearchCollectionViewCell: BaseCollectionViewCell {
     
     static let id = "RecentWordsCollectionViewCell"
     let searchTextLabel = UILabel()
