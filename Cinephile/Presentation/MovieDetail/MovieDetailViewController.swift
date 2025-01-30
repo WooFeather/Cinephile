@@ -10,10 +10,24 @@ import UIKit
 final class MovieDetailViewController: BaseViewController {
     
     private var movieDetailView = MovieDetailView()
+    private var backdropList: [Backdrop] = []
+    private var posterList: [Poster] = []
+    var idContents: Int?
     var titleContents: String?
+    var synopsisContents: String?
+    var releaseDateContents: String?
+    var firstGenreContents: String?
+    var secondGenreContents: String?
+    var ratingContents: Double?
     
     override func loadView() {
         view = movieDetailView
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        callRequest()
     }
     
     override func configureEssential() {
@@ -32,6 +46,24 @@ final class MovieDetailViewController: BaseViewController {
     
     override func configureView() {
         movieDetailView.tableView.separatorStyle = .none
+    }
+    
+    private func callRequest() {
+        NetworkManager.shared.callTMDBAPI(api: .images(id: idContents ?? 0), type: Images.self) { value in
+            
+            if value.backdrops.count >= 5 {
+                for item in 0..<5 {
+                    self.backdropList.append(value.backdrops[item])
+                }
+            } else {
+                self.backdropList = value.backdrops
+            }
+            self.posterList = value.posters
+            
+            self.movieDetailView.tableView.reloadData()
+        } failHandler: {
+            print("네트워킹 실패")
+        }
     }
     
     @objc
@@ -56,6 +88,7 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.backdropCollectionView.delegate = self
             cell.backdropCollectionView.dataSource = self
             cell.backdropCollectionView.register(BackdropCollectionViewCell.self, forCellWithReuseIdentifier: BackdropCollectionViewCell.id)
+            cell.backdropCollectionView.reloadData()
             
             return cell
         } else if indexPath.row == 1 {
@@ -71,6 +104,7 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.castCollectionView.delegate = self
             cell.castCollectionView.dataSource = self
             cell.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.id)
+            cell.castCollectionView.reloadData()
             
             return cell
         } else {
@@ -81,6 +115,7 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.posterCollectionView.delegate = self
             cell.posterCollectionView.dataSource = self
             cell.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.id)
+            cell.posterCollectionView.reloadData()
             
             return cell
         }
@@ -89,14 +124,12 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        // TODO: 각 collectionView의 데이터 배열 요소 개수만큼 분기처리
         if collectionView.tag == 0 {
-            return 5
+            return backdropList.count
         } else if collectionView.tag == 2 {
             return 10
         } else if collectionView.tag == 3 {
-            return 10
+            return posterList.count
         } else {
             return 0
         }
@@ -107,6 +140,9 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         if collectionView.tag == 0 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as? BackdropCollectionViewCell else { return UICollectionViewCell() }
             
+            let data = backdropList[indexPath.item]
+            cell.configureData(data: data)
+            
             return cell
         } else if collectionView.tag == 2 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
@@ -115,9 +151,11 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         } else if collectionView.tag == 3 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.id, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
             
+            let data = posterList[indexPath.item]
+            cell.configureData(data: data)
+            
             return cell
         } else {
-            // TODO: 각 CollectionView 분기처리
             return UICollectionViewCell()
         }
     }

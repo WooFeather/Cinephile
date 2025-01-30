@@ -51,15 +51,15 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = imageSettingView.imageCollectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.id, for: indexPath) as? ImageCollectionViewCell else { return UICollectionViewCell() }
         
-        let item = imageList[indexPath.item]
+        let data = imageList[indexPath.item]
         
-        cell.imageSelection.image = item.image
+        cell.imageSelection.image = data.image
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = imageList[indexPath.item]
-        imageSettingView.previewImage.image = item.image
+        let data = imageList[indexPath.item]
+        imageSettingView.previewImage.image = data.image
     }
 }

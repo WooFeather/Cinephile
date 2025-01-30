@@ -205,18 +205,30 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 {
-            let item = searchList[indexPath.item]
+            let data = searchList[indexPath.item]
             
             let vc = SearchMovieViewController()
-            vc.searchTextContents = item
-            vc.callRequest(query: item)
+            vc.searchTextContents = data
+            vc.callRequest(query: data)
             navigationController?.pushViewController(vc, animated: true)
         } else {
             // TODO: 셀 선택시 값 전달과 함께 영화 상세뷰로 push
-            let item = movieList[indexPath.item]
+            let data = movieList[indexPath.item]
             
             let vc = MovieDetailViewController()
-            vc.titleContents = item.title
+            vc.idContents = data.id
+            vc.titleContents = data.title
+            vc.synopsisContents = data.overview
+            vc.releaseDateContents = data.releaseDate
+            vc.ratingContents = data.rating
+            
+            if data.genreList.count == 1 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+            } else if data.genreList.count >= 2 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+                vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
+            }
+            
             navigationController?.pushViewController(vc, animated: true)
         }
     }

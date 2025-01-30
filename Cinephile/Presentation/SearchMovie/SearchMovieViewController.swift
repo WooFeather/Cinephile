@@ -103,7 +103,18 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
         let data = searchList[indexPath.row]
         
         let vc = MovieDetailViewController()
+        vc.idContents = data.id
         vc.titleContents = data.title
+        vc.synopsisContents = data.overview
+        vc.releaseDateContents = data.releaseDate
+        vc.ratingContents = data.rating
+        
+        if data.genreList.count == 1 {
+            vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+        } else if data.genreList.count >= 2 {
+            vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+            vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     

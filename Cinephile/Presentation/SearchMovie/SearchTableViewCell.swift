@@ -13,7 +13,7 @@ final class SearchTableViewCell: BaseTableViewCell {
     
     static let id = "SearchTableViewCell"
     
-    private let genre: [Int: String] = [
+    static let genre: [Int: String] = [
         28: "액션",
         16: "애니메이션",
         80: "범죄",
@@ -97,17 +97,17 @@ final class SearchTableViewCell: BaseTableViewCell {
     }
     
     func configureData(data: MovieDetail) {
-        let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
+        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.posterImage)")
         posterImageView.kf.setImage(with: url)
         titleLabel.text = data.title
         releaseDateLabel.text = data.releaseDate.toDate()?.toReleaseString()
         
         if data.genreList.count == 1 {
-            firstGenreLabel.text = genre[data.genreList[0]]
+            firstGenreLabel.text = SearchTableViewCell.genre[data.genreList[0]]
             genreStackView.addArrangedSubview(firstGenreLabel)
         } else if data.genreList.count >= 2 {
-            firstGenreLabel.text = genre[data.genreList[0]]
-            secondGenreLabel.text = genre[data.genreList[1]]
+            firstGenreLabel.text = SearchTableViewCell.genre[data.genreList[0]]
+            secondGenreLabel.text = SearchTableViewCell.genre[data.genreList[1]]
             genreStackView.addArrangedSubview(firstGenreLabel)
             genreStackView.addArrangedSubview(secondGenreLabel)
         }

@@ -42,9 +42,9 @@ final class BackdropTableViewCell: BaseTableViewCell {
     
     override func configureView() {
         backdropCollectionView.isPagingEnabled = true
-        backdropCollectionView.backgroundColor = .cineBackgroundGray
+        backdropCollectionView.backgroundColor = .clear
         
-        // TODO: 인디케이터 모양 바꾼 이후에 활성화 예정
+        // TODO: PageControl적용 후 활성화 예정
         // backdropCollectionView.showsHorizontalScrollIndicator = false
         
         infoStackView.spacing = 10

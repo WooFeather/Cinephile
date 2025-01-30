@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class BackdropCollectionViewCell: BaseCollectionViewCell {
     
@@ -24,8 +25,14 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureView() {
-        // TODO: 추후 configureData에서 실제 이미지 들어올 예정
-        backdropImageView.image = UIImage(systemName: "film")
-        backdropImageView.contentMode = .scaleAspectFit
+        backdropImageView.backgroundColor = .cineBackgroundGray
+        backdropImageView.contentMode = .scaleAspectFill
+        backdropImageView.clipsToBounds = true
+    }
+    
+    func configureData(data: Backdrop) {
+        // original로 하면 불러오는데 너무 오래걸려서 이미지 크기를 일단 w500으로 조정
+        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.image)")
+        backdropImageView.kf.setImage(with: url)
     }
 }

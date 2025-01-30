@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class PosterCollectionViewCell: BaseCollectionViewCell {
     
@@ -25,7 +26,13 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureView() {
-        // TODO: ConfigureData에서 포스터 이미지 적용 예정
         posterImageView.backgroundColor = .cineBackgroundGray
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
+    }
+    
+    func configureData(data: Poster) {
+        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.image)")
+        posterImageView.kf.setImage(with: url)
     }
 }
