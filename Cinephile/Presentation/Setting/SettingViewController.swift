@@ -9,26 +9,42 @@ import UIKit
 
 final class SettingViewController: BaseViewController {
     
-    private var profileView = SettingView()
+    private var settingView = SettingView()
     private let settingList = ["자주 묻는 질문", "1:1 문의", "알림 설정", "탈퇴하기"]
     
     override func loadView() {
-        view = profileView
+        view = settingView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     override func configureEssential() {
         navigationItem.title = "설정"
-        profileView.tableView.delegate = self
-        profileView.tableView.dataSource = self
-        profileView.tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.id)
-        profileView.tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
+        settingView.tableView.delegate = self
+        settingView.tableView.dataSource = self
+        settingView.tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.id)
+        settingView.tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
     }
     
     @objc
     private func backgroundViewTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            print(#function)
-            // TODO: 프로필 닉네임 수정화면으로 sheet present
+            if sender.state == .ended {
+                let vc = ProfileSettingSheetViewController()
+                
+                if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
+                   let image = UIImage(data: imageData) {
+                    vc.imageContents = image
+                }
+                vc.nicknameContents = UserDefaultsManager.shared.nickname
+                
+                let nav = UINavigationController(rootViewController: vc)
+                present(nav, animated: true)
+            }
         }
     }
 }

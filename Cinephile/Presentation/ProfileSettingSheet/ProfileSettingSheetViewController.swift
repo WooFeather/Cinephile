@@ -10,23 +10,28 @@ import UIKit
 final class ProfileSettingSheetViewController: BaseViewController {
     
     private var profileSettingSheetView = ProfileSettingSheetView()
+    var imageContents: UIImage?
+    var nicknameContents: String?
     
     override func loadView() {
         view = profileSettingSheetView
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
+        navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
         profileSettingSheetView.profileImageView.addGestureRecognizer(tapGesture)
         profileSettingSheetView.profileImageView.isUserInteractionEnabled = true
-        profileSettingSheetView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingSheetView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
+        profileSettingSheetView.nicknameTextField.delegate = self
         receiveImage()
+    }
+    
+    override func configureView() {
+        profileSettingSheetView.profileImageView.image = imageContents
+        profileSettingSheetView.nicknameTextField.text = nicknameContents
     }
     
     @objc
@@ -40,7 +45,6 @@ final class ProfileSettingSheetViewController: BaseViewController {
     
     @objc
     private func validateText() {
-        print(#function)
         guard let trimmingText = profileSettingSheetView.nicknameTextField.text?.trimmingCharacters(in: .whitespaces) else { return }
         
         // 숫자가 포함되어있는지 확인하는법!
@@ -51,26 +55,29 @@ final class ProfileSettingSheetViewController: BaseViewController {
         
         if trimmingText.count < 2 || trimmingText.count > 10 {
             profileSettingSheetView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
-            profileSettingSheetView.doneButton.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
         } else if spacialRange != nil {
             profileSettingSheetView.statusLabel.text = "닉네임에 @, #, $, % 는 포함될 수 없어요"
-            profileSettingSheetView.doneButton.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
         } else if decimalRange != nil {
             profileSettingSheetView.statusLabel.text = "닉네임에 숫자는 포함할 수 없어요"
-            profileSettingSheetView.doneButton.isEnabled = false
+            navigationItem.rightBarButtonItem?.isEnabled = false
         } else {
             profileSettingSheetView.statusLabel.text = "사용할 수 있는 닉네임이에요"
-            profileSettingSheetView.doneButton.isEnabled = true
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
     }
     
     @objc
     private func doneButtonTapped() {
-        let vc = TabBarController()
         UserDefaultsManager.shared.nickname = profileSettingSheetView.nicknameTextField.text ?? ""
-        UserDefaultsManager.shared.joinDate = Date().toJoinString()
         setImage(UIImage: profileSettingSheetView.profileImageView.image ?? UIImage(), "profileImage")
-        changeRootViewController(vc: vc, isSigned: true)
+        dismiss(animated: true)
+    }
+    
+    @objc
+    private func closeButtonTapped() {
+        dismiss(animated: true)
     }
     
     @objc
@@ -93,5 +100,11 @@ final class ProfileSettingSheetViewController: BaseViewController {
             name: NSNotification.Name("ImageReceived"),
             object: nil
         )
+    }
+}
+
+extension ProfileSettingSheetViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
     }
 }

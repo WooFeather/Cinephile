@@ -49,7 +49,6 @@ final class ImageSettingSheetView: BaseView {
             self.cameraImageView.layer.cornerRadius = self.cameraImageView.frame.width / 2
         }
         
-        imageCollectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.id)
         imageCollectionView.isScrollEnabled = false
         imageCollectionView.backgroundColor = .clear
     }

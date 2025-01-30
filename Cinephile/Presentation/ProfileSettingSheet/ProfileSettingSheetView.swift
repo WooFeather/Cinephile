@@ -13,13 +13,12 @@ final class ProfileSettingSheetView: BaseView {
     private let textFieldUnderline = UIView()
     private let cameraImageView = UIImageView()
     private let imageList = ProfileImage.allCases
-    let doneButton = PointButton(title: "완료")
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
+        [textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
             addSubview($0)
         }
     }
@@ -54,17 +53,9 @@ final class ProfileSettingSheetView: BaseView {
             make.leading.equalToSuperview().offset(20)
             make.height.equalTo(16)
         }
-        
-        doneButton.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.bottom).offset(28)
-            make.horizontalEdges.equalToSuperview().inset(12)
-            make.height.equalTo(44)
-        }
     }
     
     override func configureView() {
-        profileImageView.image = imageList.randomElement()?.image
-        
         // 이미지뷰 안의 이미지의 inset을 정할 수 있음
         cameraImageView.image = UIImage(systemName: "camera.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
         cameraImageView.contentMode = .center
@@ -82,7 +73,5 @@ final class ProfileSettingSheetView: BaseView {
         
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
-        
-        doneButton.isEnabled = false
     }
 }

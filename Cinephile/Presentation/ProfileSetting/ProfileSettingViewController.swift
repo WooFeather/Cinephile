@@ -14,10 +14,6 @@ final class ProfileSettingViewController: BaseViewController {
         view = profileSettingView
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
@@ -25,6 +21,7 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.profileImageView.isUserInteractionEnabled = true
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
+        profileSettingView.nicknameTextField.delegate = self
         receiveImage()
     }
     
@@ -39,7 +36,6 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func validateText() {
-        print(#function)
         guard let trimmingText = profileSettingView.nicknameTextField.text?.trimmingCharacters(in: .whitespaces) else { return }
         
         // 숫자가 포함되어있는지 확인하는법!
@@ -92,5 +88,11 @@ final class ProfileSettingViewController: BaseViewController {
             name: NSNotification.Name("ImageReceived"),
             object: nil
         )
+    }
+}
+
+extension ProfileSettingViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
     }
 }

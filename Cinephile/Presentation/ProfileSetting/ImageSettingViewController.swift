@@ -25,6 +25,7 @@ final class ImageSettingViewController: BaseViewController {
         navigationItem.title = "프로필 이미지 설정"
         imageSettingView.imageCollectionView.delegate = self
         imageSettingView.imageCollectionView.dataSource = self
+        imageSettingView.imageCollectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.id)
     }
     
     override func configureView() {

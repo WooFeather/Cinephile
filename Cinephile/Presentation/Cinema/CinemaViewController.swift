@@ -26,6 +26,12 @@ final class CinemaViewController: BaseViewController {
         searchList = UserDefaultsManager.shared.searchList
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+    
     override func configureEssential() {
         navigationItem.title = "CINEPHILE"
         navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(searchButtonTapped)), animated: true)
@@ -78,8 +84,16 @@ final class CinemaViewController: BaseViewController {
     @objc
     private func backgroundViewTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            print(#function)
-            // TODO: 프로필 닉네임 수정화면으로 sheet present
+            let vc = ProfileSettingSheetViewController()
+            
+            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
+               let image = UIImage(data: imageData) {
+                vc.imageContents = image
+            }
+            vc.nicknameContents = UserDefaultsManager.shared.nickname
+            
+            let nav = UINavigationController(rootViewController: vc)
+            present(nav, animated: true)
         }
     }
     
