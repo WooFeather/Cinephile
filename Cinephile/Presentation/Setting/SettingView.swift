@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ProfileView: BaseView {
+final class SettingView: BaseView {
 
     let tableView = UITableView()
 

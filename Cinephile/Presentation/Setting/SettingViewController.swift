@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class ProfileViewController: BaseViewController {
+final class SettingViewController: BaseViewController {
     
-    private var profileView = ProfileView()
+    private var profileView = SettingView()
     private let settingList = ["자주 묻는 질문", "1:1 문의", "알림 설정", "탈퇴하기"]
     
     override func loadView() {
@@ -33,7 +33,7 @@ final class ProfileViewController: BaseViewController {
     }
 }
 
-extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
+extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }

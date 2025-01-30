@@ -22,7 +22,7 @@ final class TabBarController: UITabBarController {
         
         let firstVC = CinemaViewController()
         let secondVC = UpcomingViewController()
-        let thirdVC = ProfileViewController()
+        let thirdVC = SettingViewController()
         
         firstVC.tabBarItem.image = UIImage(systemName: "popcorn")
         secondVC.tabBarItem.image = UIImage(systemName: "film.stack")
