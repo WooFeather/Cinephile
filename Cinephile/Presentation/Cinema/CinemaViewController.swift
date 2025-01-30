@@ -26,6 +26,7 @@ final class CinemaViewController: BaseViewController {
         searchList = UserDefaultsManager.shared.searchList
     }
     
+    // TODO: reload시점 수정(시트가 내려갈때?)
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         

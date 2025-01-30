@@ -19,6 +19,7 @@ final class ProfileSettingSheetViewController: BaseViewController {
     
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
+        sheetPresentationController?.prefersGrabberVisible = true
         navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
         navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
