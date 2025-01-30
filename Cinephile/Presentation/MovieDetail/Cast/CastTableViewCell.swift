@@ -13,11 +13,11 @@ final class CastTableViewCell: BaseTableViewCell {
     static let id = "CastTableViewCell"
 
     private let sectionLabel = UILabel()
-    lazy var castCollectionViewCell = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
+    lazy var castCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
     
     override func configureHierarchy() {
         contentView.addSubview(sectionLabel)
-        contentView.addSubview(castCollectionViewCell)
+        contentView.addSubview(castCollectionView)
     }
     
     override func configureLayout() {
@@ -26,7 +26,7 @@ final class CastTableViewCell: BaseTableViewCell {
             make.height.equalTo(20)
         }
         
-        castCollectionViewCell.snp.makeConstraints { make in
+        castCollectionView.snp.makeConstraints { make in
             make.top.equalTo(sectionLabel.snp.bottom).offset(8)
             make.horizontalEdges.equalTo(contentView)
             make.height.equalTo(130)
@@ -38,8 +38,8 @@ final class CastTableViewCell: BaseTableViewCell {
         sectionLabel.text = "Cast"
         sectionLabel.font = .boldSystemFont(ofSize: 16)
         
-        castCollectionViewCell.showsHorizontalScrollIndicator = false
-        castCollectionViewCell.backgroundColor = .clear
+        castCollectionView.showsHorizontalScrollIndicator = false
+        castCollectionView.backgroundColor = .clear
     }
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {

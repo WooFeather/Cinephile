@@ -48,6 +48,7 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         }
         imageView.clipsToBounds = true
         
+        // TODO: ConfigureData에서 실제 데이터로 교체 예정
         koreanNameLabel.text = "테스트"
         koreanNameLabel.font = .boldSystemFont(ofSize: 15)
         

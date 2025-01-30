@@ -18,6 +18,8 @@ final class MovieDetailViewController: BaseViewController {
     
     override func configureEssential() {
         navigationItem.title = titleContents
+        navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.isTranslucent = false
         // TODO: 좋아요 기능 구현
         navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(likeButtonTapped)), animated: true)
         movieDetailView.tableView.delegate = self
@@ -65,17 +67,20 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             // CastTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: CastTableViewCell.id, for: indexPath) as? CastTableViewCell else { return UITableViewCell() }
             
-            cell.castCollectionViewCell.tag = indexPath.row
-            cell.castCollectionViewCell.delegate = self
-            cell.castCollectionViewCell.dataSource = self
-            cell.castCollectionViewCell.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.id)
+            cell.castCollectionView.tag = indexPath.row
+            cell.castCollectionView.delegate = self
+            cell.castCollectionView.dataSource = self
+            cell.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.id)
             
             return cell
         } else {
             // PosterTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: PosterTableViewCell.id, for: indexPath) as? PosterTableViewCell else { return UITableViewCell() }
             
-            cell.backgroundColor = .green
+            cell.posterCollectionView.tag = indexPath.row
+            cell.posterCollectionView.delegate = self
+            cell.posterCollectionView.dataSource = self
+            cell.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.id)
             
             return cell
         }
@@ -90,6 +95,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             return 5
         } else if collectionView.tag == 2 {
             return 10
+        } else if collectionView.tag == 3 {
+            return 10
         } else {
             return 0
         }
@@ -103,6 +110,10 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             return cell
         } else if collectionView.tag == 2 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
+            
+            return cell
+        } else if collectionView.tag == 3 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.id, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
             
             return cell
         } else {
