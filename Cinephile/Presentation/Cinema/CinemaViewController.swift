@@ -128,6 +128,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             }
             cell.nicknameLabel.text = UserDefaultsManager.shared.nickname
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
+            // TODO: movieBoxButton에 좋아요 개수 반영
             
             return cell
         } else if indexPath.row == 1 {
@@ -212,7 +213,6 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             vc.callRequest(query: data)
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            // TODO: 셀 선택시 값 전달과 함께 영화 상세뷰로 push
             let data = movieList[indexPath.item]
             
             let vc = MovieDetailViewController()

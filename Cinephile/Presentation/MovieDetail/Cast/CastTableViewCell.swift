@@ -46,7 +46,7 @@ final class CastTableViewCell: BaseTableViewCell {
     private func createCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         
-        layout.itemSize = CGSize(width: 180, height: 60)
+        layout.itemSize = CGSize(width: 200, height: 60)
         layout.minimumLineSpacing = 30
         layout.minimumInteritemSpacing =  10
         layout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)

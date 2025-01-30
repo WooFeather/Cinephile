@@ -7,53 +7,66 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class CastCollectionViewCell: BaseCollectionViewCell {
     
     static let id = "CastCollectionViewCell"
     
-    let imageView = UIImageView()
-    let koreanNameLabel = UILabel()
-    let englishNameLabel = UILabel()
+    let profileImageView = UIImageView()
+    let nameLabel = UILabel()
+    let characterNameLabel = UILabel()
     
     override func configureHierarchy() {
-        [imageView, koreanNameLabel, englishNameLabel].forEach {
+        [profileImageView, nameLabel, characterNameLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
     override func configureLayout() {
-        imageView.snp.makeConstraints { make in
+        profileImageView.snp.makeConstraints { make in
             make.leading.verticalEdges.equalTo(contentView)
             make.width.equalTo(60)
         }
         
-        koreanNameLabel.snp.makeConstraints { make in
+        nameLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
-            make.leading.equalTo(imageView.snp.trailing).offset(4)
+            make.leading.equalTo(profileImageView.snp.trailing).offset(8)
+            make.trailing.equalTo(contentView)
             make.height.equalTo(20)
         }
         
-        englishNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(koreanNameLabel.snp.bottom)
-            make.leading.equalTo(imageView.snp.trailing).offset(4)
+        characterNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(2)
+            make.leading.equalTo(profileImageView.snp.trailing).offset(8)
+            make.trailing.equalTo(contentView)
             make.height.equalTo(16)
         }
     }
     
     override func configureView() {
-        imageView.backgroundColor = .brown
+        profileImageView.backgroundColor = .cineBackgroundGray
         DispatchQueue.main.async {
-            self.imageView.layer.cornerRadius = self.imageView.frame.width / 2
+            self.profileImageView.layer.cornerRadius = self.profileImageView.frame.width / 2
         }
-        imageView.clipsToBounds = true
+        profileImageView.clipsToBounds = true
+        profileImageView.contentMode = .scaleAspectFill
         
-        // TODO: ConfigureData에서 실제 데이터로 교체 예정
-        koreanNameLabel.text = "테스트"
-        koreanNameLabel.font = .boldSystemFont(ofSize: 15)
+        nameLabel.font = .boldSystemFont(ofSize: 15)
         
-        englishNameLabel.text = "This is Test-Name"
-        englishNameLabel.font = .systemFont(ofSize: 14)
-        englishNameLabel.textColor = .cinePrimaryGray
+        characterNameLabel.font = .systemFont(ofSize: 14)
+        characterNameLabel.textColor = .cinePrimaryGray
+    }
+    
+    func configureData(data: CastDetail) {
+        if let image = data.profileImage {
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(image)")
+            profileImageView.kf.setImage(with: url)
+        } else {
+            profileImageView.image = UIImage(systemName: "person.circle")
+            profileImageView.tintColor = .cineAccent
+        }
+        nameLabel.text = data.name
+        characterNameLabel.text = data.character
     }
 }

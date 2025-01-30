@@ -12,6 +12,7 @@ final class MovieDetailViewController: BaseViewController {
     private var movieDetailView = MovieDetailView()
     private var backdropList: [Backdrop] = []
     private var posterList: [Poster] = []
+    private var castList: [CastDetail] = []
     var idContents: Int?
     var titleContents: String?
     var synopsisContents: String?
@@ -49,8 +50,10 @@ final class MovieDetailViewController: BaseViewController {
     }
     
     private func callRequest() {
+        let group = DispatchGroup()
+        
+        group.enter()
         NetworkManager.shared.callTMDBAPI(api: .images(id: idContents ?? 0), type: Images.self) { value in
-            
             if value.backdrops.count >= 5 {
                 for item in 0..<5 {
                     self.backdropList.append(value.backdrops[item])
@@ -59,10 +62,24 @@ final class MovieDetailViewController: BaseViewController {
                 self.backdropList = value.backdrops
             }
             self.posterList = value.posters
-            
-            self.movieDetailView.tableView.reloadData()
+            group.leave()
         } failHandler: {
             print("네트워킹 실패")
+            group.leave()
+        }
+        
+        group.enter()
+        NetworkManager.shared.callTMDBAPI(api: .credit(id: idContents ?? 0), type: Credit.self) { value in
+            self.castList = value.cast
+            group.leave()
+        } failHandler: {
+            print("네트워킹 실패")
+            group.leave()
+        }
+
+        
+        group.notify(queue: .main) {
+            self.movieDetailView.tableView.reloadData()
         }
     }
     
@@ -145,7 +162,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         if collectionView.tag == 0 {
             return backdropList.count
         } else if collectionView.tag == 2 {
-            return 10
+            return castList.count
         } else if collectionView.tag == 3 {
             return posterList.count
         } else {
@@ -164,6 +181,9 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             return cell
         } else if collectionView.tag == 2 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
+            
+            let data = castList[indexPath.item]
+            cell.configureData(data: data)
             
             return cell
         } else if collectionView.tag == 3 {

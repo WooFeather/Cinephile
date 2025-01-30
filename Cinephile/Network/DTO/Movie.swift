@@ -7,7 +7,6 @@
 
 import Foundation
 
-// TODO: null값 대응
 struct Movie: Decodable {
     let results: [MovieDetail]
     let totalResults: Int
@@ -19,7 +18,7 @@ struct Movie: Decodable {
 }
 
 struct MovieDetail: Decodable {
-    let backdropImage: String? // backdropImage가 null인 경우 대응
+    let backdropImage: String?
     let id: Int
     let title: String
     let overview: String

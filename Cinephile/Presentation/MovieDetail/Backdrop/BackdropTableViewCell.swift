@@ -13,12 +13,12 @@ final class BackdropTableViewCell: BaseTableViewCell {
     static let id = "BackdropTableViewCell"
 
     lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
-    private let infoStackView = UIStackView()
-    let releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar")!)
-    let ratingButton = InfoButton(icon: UIImage(systemName: "star.fill")!)
-    let genreButton = InfoButton(icon: UIImage(systemName: "film.fill")!)
+    // private let infoStackView = UIStackView()
     private let firstDivider = UIView()
     private let secondDivider = UIView()
+    let releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar") ?? UIImage())
+    let ratingButton = InfoButton(icon: UIImage(systemName: "star.fill") ?? UIImage())
+    let genreButton = InfoButton(icon: UIImage(systemName: "film.fill") ?? UIImage())
     
     override func configureHierarchy() {
         contentView.addSubview(backdropCollectionView)
@@ -38,6 +38,7 @@ final class BackdropTableViewCell: BaseTableViewCell {
             make.height.equalTo(250)
         }
         
+        // TODO: Info 컴포넌트들 StackView로 적용
         // stackView로 했을때 각 컴포넌트의 width가 너무 넓게 잡혀서 일단 stackView 미사용
 //        infoStackView.snp.makeConstraints { make in
 //            make.top.equalTo(backdropCollectionView.snp.bottom).offset(8)
@@ -87,15 +88,7 @@ final class BackdropTableViewCell: BaseTableViewCell {
         
         // TODO: PageControl적용 후 활성화 예정
         // backdropCollectionView.showsHorizontalScrollIndicator = false
-        
-        infoStackView.spacing = 0
-        
-        // TODO: Info부분 문제해결
-//        infoStackView.backgroundColor = .gray
-//        releaseDateButton.backgroundColor = .red
-//        ratingButton.backgroundColor = .yellow
-//        genreButton.backgroundColor = .green
-        
+
         firstDivider.backgroundColor = .cineBackgroundGray
         secondDivider.backgroundColor = .cineBackgroundGray
     }
