@@ -10,22 +10,21 @@ import SnapKit
 
 final class ProfileView: BaseView {
 
-    let testButton = UIButton()
+    let tableView = UITableView()
 
     override func configureHierarchy() {
-        addSubview(testButton)
+        addSubview(tableView)
     }
     
     override func configureLayout() {
-        testButton.snp.makeConstraints { make in
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(100)
-            make.centerX.equalTo(self.snp.centerX)
-            make.height.equalTo(40)
+        tableView.snp.makeConstraints { make in
+            make.edges.equalTo(safeAreaLayoutGuide)
         }
     }
     
     override func configureView() {
-        testButton.setTitle("탈퇴하기", for: .normal)
-        testButton.setTitleColor(.cineAccent, for: .normal)
+        tableView.backgroundColor = .clear
+        tableView.isScrollEnabled = false
+        tableView.separatorStyle = .none
     }
 }
