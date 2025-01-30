@@ -70,7 +70,12 @@ final class MovieCollectionViewCell: BaseCollectionViewCell {
         posterImageView.kf.setImage(with: url)
         
         titleLabel.text = data.title
-        overviewLabel.text = data.overview
+        
+        if data.overview == "" {
+            overviewLabel.text = "줄거리 제공되지 않음"
+        } else {
+            overviewLabel.text = data.overview
+        }
         
         // TODO: 좋아요 기능 UI 구현
         // 조건이 data의 like가 아니라, 해당 영화의 id가 좋아요리스트에 등록되어있는가가 기준이 될듯

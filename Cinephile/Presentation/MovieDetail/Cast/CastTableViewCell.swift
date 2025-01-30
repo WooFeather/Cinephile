@@ -22,7 +22,8 @@ final class CastTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         sectionLabel.snp.makeConstraints { make in
-            make.top.leading.equalTo(contentView).offset(16)
+            make.top.equalTo(contentView).offset(16)
+            make.leading.equalTo(contentView).offset(12)
             make.height.equalTo(20)
         }
         

@@ -90,10 +90,28 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.backdropCollectionView.register(BackdropCollectionViewCell.self, forCellWithReuseIdentifier: BackdropCollectionViewCell.id)
             cell.backdropCollectionView.reloadData()
             
+            cell.releaseDateButton.setTitle(releaseDateContents, for: .normal)
+            cell.ratingButton.setTitle(String(format: "%.1f", ratingContents ?? 0.0), for: .normal)
+            if let firstGenreContents {
+                if let secondGenreContents {
+                    cell.genreButton.setTitle("\(firstGenreContents), \(secondGenreContents)", for: .normal)
+                } else {
+                    cell.genreButton.setTitle("\(firstGenreContents)", for: .normal)
+                }
+            } else {
+                cell.genreButton.setTitle("장르없음", for: .normal)
+            }
+            
             return cell
         } else if indexPath.row == 1 {
             // SynopsisTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SynopsisTableViewCell.id, for: indexPath) as? SynopsisTableViewCell else { return UITableViewCell() }
+            
+            if synopsisContents == "" {
+                cell.synopsisLabel.text = "줄거리 제공되지 않음"
+            } else {
+                cell.synopsisLabel.text = synopsisContents
+            }
             
             return cell
         } else if indexPath.row == 2 {

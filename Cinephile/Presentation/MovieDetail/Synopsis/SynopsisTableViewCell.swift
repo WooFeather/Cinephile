@@ -25,7 +25,8 @@ final class SynopsisTableViewCell: BaseTableViewCell {
     
     override func configureLayout() {
         sectionLabel.snp.makeConstraints { make in
-            make.top.leading.equalTo(contentView).offset(16)
+            make.top.equalTo(contentView).offset(16)
+            make.leading.equalTo(contentView).offset(12)
             make.height.equalTo(20)
         }
         
@@ -51,8 +52,6 @@ final class SynopsisTableViewCell: BaseTableViewCell {
         extensionButton.titleLabel?.font = .boldSystemFont(ofSize: 15)
         extensionButton.setTitleColor(.cineAccent, for: .normal)
         
-        // TODO: ConfigureData에서 실제 데이터로 교체예정
-        synopsisLabel.text = "안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이 안녕하세요 선생님 안녕 친구야 인사하는 어린이 착한 어린이"
         synopsisLabel.numberOfLines = 3
         synopsisLabel.font = .systemFont(ofSize: 15)
         synopsisLabel.textColor = .cineSecondaryGray

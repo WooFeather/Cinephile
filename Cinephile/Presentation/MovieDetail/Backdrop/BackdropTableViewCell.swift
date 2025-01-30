@@ -14,14 +14,14 @@ final class BackdropTableViewCell: BaseTableViewCell {
 
     lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
     private let infoStackView = UIStackView()
-    let releaseDateLabel = UILabel()
-    let ratingLabel = UILabel()
-    let genreLabel = UILabel()
+    lazy var releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar")!)
+    let ratingButton = InfoButton(icon: UIImage(systemName: "star.fill")!)
+    let genreButton = InfoButton(icon: UIImage(systemName: "film.fill")!)
     
     override func configureHierarchy() {
         contentView.addSubview(backdropCollectionView)
         contentView.addSubview(infoStackView)
-        [releaseDateLabel, ratingLabel, genreLabel].forEach {
+        [releaseDateButton, ratingButton, genreButton].forEach {
             infoStackView.addArrangedSubview($0)
         }
     }
@@ -35,7 +35,8 @@ final class BackdropTableViewCell: BaseTableViewCell {
         infoStackView.snp.makeConstraints { make in
             make.top.equalTo(backdropCollectionView.snp.bottom).offset(8)
             make.centerX.equalTo(contentView.snp.centerX)
-            make.height.equalTo(20)
+            make.horizontalEdges.equalTo(contentView)
+            make.height.equalTo(12)
             make.bottom.equalTo(contentView)
         }
     }
@@ -47,17 +48,13 @@ final class BackdropTableViewCell: BaseTableViewCell {
         // TODO: PageControl적용 후 활성화 예정
         // backdropCollectionView.showsHorizontalScrollIndicator = false
         
-        infoStackView.spacing = 10
+        infoStackView.spacing = 0
         
-        // TODO: 커스텀 버튼으로 이 세개의 컴포넌트 분리(디바이더도 고민)
-        releaseDateLabel.text = "8888-88-88"
-        releaseDateLabel.font = .systemFont(ofSize: 14)
-        
-        ratingLabel.text = "8.0"
-        ratingLabel.font = .systemFont(ofSize: 14)
-        
-        genreLabel.text = "테스트, 테스트, 테스트"
-        genreLabel.font = .systemFont(ofSize: 14)
+        // TODO: Info부분 문제해결
+//        infoStackView.backgroundColor = .gray
+//        releaseDateButton.backgroundColor = .red
+//        ratingButton.backgroundColor = .yellow
+//        genreButton.backgroundColor = .green
     }
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {
