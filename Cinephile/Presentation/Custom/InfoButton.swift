@@ -12,8 +12,13 @@ class InfoButton: UIButton {
     init(icon: UIImage) {
         super.init(frame: .zero)
         configuration = .infoButtonStyle(icon: icon)
+        // 이렇게 해야 폰트 사이즈가 적용이됨,,,,?
+        configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = UIFont.systemFont(ofSize: 12)
+            return outgoing
+        }
         tintColor = .cinePrimaryGray
-        titleLabel?.font = .systemFont(ofSize: 12)
         isUserInteractionEnabled = false
     }
     

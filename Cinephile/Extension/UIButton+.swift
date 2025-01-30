@@ -15,7 +15,7 @@ extension UIButton.Configuration {
         configuration.preferredSymbolConfigurationForImage = imageConfig
         configuration.imagePlacement = .leading
         configuration.baseForegroundColor = .cinePrimaryGray
-        configuration.imagePadding = 2.0
+        configuration.imagePadding = 3.0
         return configuration
     }
 }

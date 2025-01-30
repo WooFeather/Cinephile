@@ -14,15 +14,21 @@ final class BackdropTableViewCell: BaseTableViewCell {
 
     lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
     private let infoStackView = UIStackView()
-    lazy var releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar")!)
+    let releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar")!)
     let ratingButton = InfoButton(icon: UIImage(systemName: "star.fill")!)
     let genreButton = InfoButton(icon: UIImage(systemName: "film.fill")!)
+    private let firstDivider = UIView()
+    private let secondDivider = UIView()
     
     override func configureHierarchy() {
         contentView.addSubview(backdropCollectionView)
-        contentView.addSubview(infoStackView)
-        [releaseDateButton, ratingButton, genreButton].forEach {
-            infoStackView.addArrangedSubview($0)
+//        contentView.addSubview(infoStackView)
+//        [releaseDateButton, ratingButton, genreButton].forEach {
+//            infoStackView.addArrangedSubview($0)
+//        }
+        
+        [releaseDateButton, firstDivider, ratingButton, secondDivider, genreButton].forEach {
+            contentView.addSubview($0)
         }
     }
     
@@ -32,12 +38,46 @@ final class BackdropTableViewCell: BaseTableViewCell {
             make.height.equalTo(250)
         }
         
-        infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(backdropCollectionView.snp.bottom).offset(8)
+        // stackView로 했을때 각 컴포넌트의 width가 너무 넓게 잡혀서 일단 stackView 미사용
+//        infoStackView.snp.makeConstraints { make in
+//            make.top.equalTo(backdropCollectionView.snp.bottom).offset(8)
+//            make.centerX.equalTo(contentView.snp.centerX)
+//            make.horizontalEdges.equalTo(contentView)
+//            make.height.equalTo(12)
+//            make.bottom.equalTo(contentView)
+//        }
+        
+        ratingButton.snp.makeConstraints { make in
             make.centerX.equalTo(contentView.snp.centerX)
-            make.horizontalEdges.equalTo(contentView)
-            make.height.equalTo(12)
+            make.top.equalTo(backdropCollectionView.snp.bottom).offset(12)
+            make.height.equalTo(20)
             make.bottom.equalTo(contentView)
+        }
+        
+        firstDivider.snp.makeConstraints { make in
+            make.centerY.equalTo(ratingButton.snp.centerY)
+            make.trailing.equalTo(ratingButton.snp.leading).offset(-2)
+            make.width.equalTo(1)
+            make.height.equalTo(16)
+        }
+        
+        secondDivider.snp.makeConstraints { make in
+            make.centerY.equalTo(ratingButton.snp.centerY)
+            make.leading.equalTo(ratingButton.snp.trailing).offset(2)
+            make.width.equalTo(1)
+            make.height.equalTo(16)
+        }
+        
+        releaseDateButton.snp.makeConstraints { make in
+            make.centerY.equalTo(ratingButton.snp.centerY)
+            make.trailing.equalTo(firstDivider.snp.leading).offset(-2)
+            make.height.equalTo(20)
+        }
+        
+        genreButton.snp.makeConstraints { make in
+            make.centerY.equalTo(ratingButton.snp.centerY)
+            make.leading.equalTo(secondDivider.snp.trailing).offset(2)
+            make.height.equalTo(20)
         }
     }
     
@@ -55,6 +95,9 @@ final class BackdropTableViewCell: BaseTableViewCell {
 //        releaseDateButton.backgroundColor = .red
 //        ratingButton.backgroundColor = .yellow
 //        genreButton.backgroundColor = .green
+        
+        firstDivider.backgroundColor = .cineBackgroundGray
+        secondDivider.backgroundColor = .cineBackgroundGray
     }
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {
