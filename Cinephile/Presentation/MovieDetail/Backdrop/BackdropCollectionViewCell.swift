@@ -32,7 +32,12 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(data: Backdrop) {
         // original로 하면 불러오는데 너무 오래걸려서 이미지 크기를 일단 w500으로 조정
-        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.image)")
-        backdropImageView.kf.setImage(with: url)
+        if let image = data.image {
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(image)")
+            backdropImageView.kf.setImage(with: url)
+        } else {
+            backdropImageView.image = UIImage(systemName: "questionmark")
+            backdropImageView.tintColor = .cineAccent
+        }
     }
 }

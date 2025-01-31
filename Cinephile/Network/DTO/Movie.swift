@@ -22,7 +22,7 @@ struct MovieDetail: Decodable {
     let id: Int
     let title: String
     let overview: String
-    let posterImage: String
+    let posterImage: String?
     let genreList: [Int]
     let releaseDate: String
     let rating: Double

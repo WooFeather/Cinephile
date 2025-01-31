@@ -32,7 +32,12 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
     }
     
     func configureData(data: Poster) {
-        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.image)")
-        posterImageView.kf.setImage(with: url)
+        if let image = data.image {
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(image)")
+            posterImageView.kf.setImage(with: url)
+        } else {
+            posterImageView.image = UIImage(systemName: "questionmark")
+            posterImageView.tintColor = .cineAccent
+        }
     }
 }

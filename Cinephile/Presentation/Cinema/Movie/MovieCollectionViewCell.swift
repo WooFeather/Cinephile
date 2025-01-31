@@ -66,8 +66,13 @@ final class MovieCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(data: MovieDetail) {
         // TMDB 이미지를 불러올때는 앞에 추가 url이 필요함
-        let url = URL(string: "https://image.tmdb.org/t/p/original\(data.posterImage)")
-        posterImageView.kf.setImage(with: url)
+        if let image = data.posterImage {
+            let url = URL(string: "https://image.tmdb.org/t/p/original\(image)")
+            posterImageView.kf.setImage(with: url)
+        } else {
+            posterImageView.image = UIImage(systemName: "questionmark")
+            posterImageView.tintColor = .cineAccent
+        }
         
         titleLabel.text = data.title
         

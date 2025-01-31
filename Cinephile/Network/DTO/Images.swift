@@ -13,7 +13,7 @@ struct Images: Decodable {
 }
 
 struct Backdrop: Decodable {
-    let image: String
+    let image: String?
     
     enum CodingKeys: String, CodingKey {
         case image = "file_path"
@@ -21,7 +21,7 @@ struct Backdrop: Decodable {
 }
 
 struct Poster: Decodable {
-    let image: String
+    let image: String?
     
     enum CodingKeys: String, CodingKey {
         case image = "file_path"

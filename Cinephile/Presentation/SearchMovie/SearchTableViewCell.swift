@@ -97,8 +97,13 @@ final class SearchTableViewCell: BaseTableViewCell {
     }
     
     func configureData(data: MovieDetail) {
-        let url = URL(string: "https://image.tmdb.org/t/p/w500\(data.posterImage)")
-        posterImageView.kf.setImage(with: url)
+        if let image = data.posterImage {
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(image)")
+            posterImageView.kf.setImage(with: url)
+        } else {
+            posterImageView.image = UIImage(systemName: "questionmark")
+            posterImageView.tintColor = .cineAccent
+        }
         titleLabel.text = data.title
         releaseDateLabel.text = data.releaseDate.toDate()?.toReleaseString()
         
