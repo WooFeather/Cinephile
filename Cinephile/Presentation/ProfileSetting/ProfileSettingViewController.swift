@@ -64,7 +64,7 @@ final class ProfileSettingViewController: BaseViewController {
         let vc = TabBarController()
         UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
         UserDefaultsManager.shared.joinDate = Date().toJoinString()
-        setImage(UIImage: profileSettingView.profileImageView.image ?? UIImage(), "profileImage")
+        UserDefaultsManager.shared.saveImage(UIImage: profileSettingView.profileImageView.image ?? UIImage(), "profileImage")
         changeRootViewController(vc: vc, isSigned: true)
     }
     
@@ -73,12 +73,6 @@ final class ProfileSettingViewController: BaseViewController {
         if let image = value.userInfo!["image"] as? UIImage {
             profileSettingView.profileImageView.image = image
         }
-    }
-    
-    // 이미지를 UserDefaults에 저장하기
-    private func setImage(UIImage value: UIImage, _ key: String) {
-        let imageData = value.pngData()
-        UserDefaults.standard.set(imageData, forKey: key)
     }
     
     private func receiveImage() {

@@ -49,6 +49,11 @@ final class UserDefaultsManager {
         }
     }
     
+    func saveImage(UIImage value: UIImage, _ key: String) {
+        let imageData = value.pngData()
+        UserDefaults.standard.set(imageData, forKey: key)
+    }
+    
 //    var likeCount: Int {
 //        get {
 //            UserDefaults.standard.integer(forKey: "likeCount")
@@ -67,6 +72,4 @@ final class UserDefaultsManager {
 //            UserDefaults.standard.set(newValue, forKey: "likeMovieId")
 //        }
 //    }
-    
-    // TODO: 최근검색어내역 저장
 }
