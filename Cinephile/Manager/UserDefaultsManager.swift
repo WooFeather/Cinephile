@@ -49,9 +49,13 @@ final class UserDefaultsManager {
         }
     }
     
-    func saveImage(UIImage value: UIImage, _ key: String) {
-        let imageData = value.pngData()
-        UserDefaults.standard.set(imageData, forKey: key)
+    var profileImage: Data {
+        get {
+            UserDefaults.standard.data(forKey: "profileImage") ?? Data()
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "profileImage")
+        }
     }
     
 //    var likeCount: Int {

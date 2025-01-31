@@ -67,9 +67,8 @@ final class CinemaViewController: BaseViewController {
     
     private func saveUserDefaultsValue() {
         // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
-        if let imageData = UserDefaults.standard.data(forKey: "profileImage") {
-            imageContents = UIImage(data: imageData)
-        }
+        let imageData = UserDefaultsManager.shared.profileImage
+        imageContents = UIImage(data: imageData)
         nicknameContents = UserDefaultsManager.shared.nickname
         
         self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
@@ -98,8 +97,9 @@ final class CinemaViewController: BaseViewController {
             let vc = ProfileSettingSheetViewController()
             
             // 기존의 이미지, 닉네임을 sheet로 전달
-            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
-               let image = UIImage(data: imageData) {
+            let imageData = UserDefaultsManager.shared.profileImage
+
+            if let image = UIImage(data: imageData) {
                 vc.imageContents = image
             }
             vc.nicknameContents = UserDefaultsManager.shared.nickname
@@ -109,7 +109,9 @@ final class CinemaViewController: BaseViewController {
             // sheet에서 다시 저장한 닉네임 데이터 받기
             group.enter()
             vc.reSaveImage = { value in
-                UserDefaultsManager.shared.saveImage(UIImage: value, "profileImage")
+                if let imageData = value.pngData() {
+                    UserDefaultsManager.shared.profileImage = imageData
+                }
                 self.imageContents = value
                 group.leave()
             }

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ImageCollectionViewSheetCell: BaseCollectionViewCell {
+final class ImageCollectionViewSheetCell: BaseCollectionViewCell {
     static let id = "ImageCollectionViewSheetCell"
     
     var imageSelection = UIImageView()
