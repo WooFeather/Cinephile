@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Kingfisher
 
 final class CinemaViewController: BaseViewController {
 
@@ -26,15 +25,13 @@ final class CinemaViewController: BaseViewController {
         callRequest()
         receiveSearchText()
         searchList = UserDefaultsManager.shared.searchList
-        saveUserDefaultsValue()
     }
     
-    // TODO: reload시점 수정(시트가 내려갈때?)
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//        cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        saveUserDefaultsValue()
+    }
     
     override func configureEssential() {
         navigationItem.title = "CINEPHILE"
@@ -74,6 +71,8 @@ final class CinemaViewController: BaseViewController {
             imageContents = UIImage(data: imageData)
         }
         nicknameContents = UserDefaultsManager.shared.nickname
+        
+        self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     @objc

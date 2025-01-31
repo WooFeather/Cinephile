@@ -11,16 +11,17 @@ final class SettingViewController: BaseViewController {
     
     private var settingView = SettingView()
     private let settingList = ["자주 묻는 질문", "1:1 문의", "알림 설정", "탈퇴하기"]
+    private var imageContents: UIImage?
+    private var nicknameContents: String?
     
     override func loadView() {
         view = settingView
     }
     
-    // TODO: reload시점 수정(시트가 내려갈때?)
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        saveUserDefaultsValue()
     }
     
     override func configureEssential() {
@@ -31,21 +32,53 @@ final class SettingViewController: BaseViewController {
         settingView.tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.id)
     }
     
+    private func saveUserDefaultsValue() {
+        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
+        if let imageData = UserDefaults.standard.data(forKey: "profileImage") {
+            imageContents = UIImage(data: imageData)
+        }
+        nicknameContents = UserDefaultsManager.shared.nickname
+        
+        self.settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+    
     @objc
     private func backgroundViewTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            if sender.state == .ended {
-                let vc = ProfileSettingSheetViewController()
-                
-                if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
-                   let image = UIImage(data: imageData) {
-                    vc.imageContents = image
-                }
-                vc.nicknameContents = UserDefaultsManager.shared.nickname
-                
-                let nav = UINavigationController(rootViewController: vc)
-                present(nav, animated: true)
+            let vc = ProfileSettingSheetViewController()
+            
+            // 기존의 이미지, 닉네임을 sheet로 전달
+            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
+               let image = UIImage(data: imageData) {
+                vc.imageContents = image
             }
+            vc.nicknameContents = UserDefaultsManager.shared.nickname
+            
+            let group = DispatchGroup()
+            
+            // sheet에서 다시 저장한 닉네임 데이터 받기
+            group.enter()
+            vc.reSaveImage = { value in
+                UserDefaultsManager.shared.saveImage(UIImage: value, "profileImage")
+                self.imageContents = value
+                group.leave()
+            }
+            
+            // sheet에서 다시 저장한 이미지 데이터 받기
+            group.enter()
+            vc.reSaveNickname = { value in
+                UserDefaultsManager.shared.nickname = value
+                self.nicknameContents = value
+                group.leave()
+            }
+            
+            // 한번에 UI업데이트를 위해 DispatchGroup 사용
+            group.notify(queue: .main) {
+                self.settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+            }
+            
+            let nav = UINavigationController(rootViewController: vc)
+            present(nav, animated: true)
         }
     }
 }
@@ -63,12 +96,8 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
-            // UserDefaults에 저장된 프로필 이미지 적용
-            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
-               let image = UIImage(data: imageData) {
-                cell.profileImageView.image = image
-            }
-            cell.nicknameLabel.text = UserDefaultsManager.shared.nickname
+            cell.profileImageView.image = imageContents
+            cell.nicknameLabel.text = nicknameContents
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
             // TODO: movieBoxButton에 좋아요 개수 반영
             
