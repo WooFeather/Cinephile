@@ -35,8 +35,9 @@ final class MovieDetailViewController: BaseViewController {
         navigationItem.title = titleContents
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isTranslucent = false
-        // TODO: 좋아요 기능 구현
-        navigationItem.setRightBarButton(UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(likeButtonTapped)), animated: true)
+        if let idContents {
+            setNavigationBarButton(id: idContents)
+        }
         movieDetailView.tableView.delegate = self
         movieDetailView.tableView.dataSource = self
         movieDetailView.tableView.register(BackdropTableViewCell.self, forCellReuseIdentifier: BackdropTableViewCell.id)
@@ -83,10 +84,33 @@ final class MovieDetailViewController: BaseViewController {
         }
     }
     
+    private func setNavigationBarButton(id: Int) {
+        let name = LikeMovie.likeMovieIdList.contains(id) ? "heart.fill" : "heart"
+        let image = UIImage(systemName: name)
+        navigationItem.setRightBarButton(UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(likeButtonTapped)), animated: true)
+    }
+    
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
         // TODO: 좋아요버튼 기능구현
-        print(#function)
+        guard let idContents else { return }
+        if LikeMovie.likeMovieIdList.contains(idContents) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: idContents) {
+                LikeMovie.likeMovieIdList.remove(at: index)
+                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+            }
+        } else {
+            LikeMovie.likeMovieIdList.append(idContents)
+            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+        }
+        
+        print(LikeMovie.likeMovieIdList)
+        print(LikeMovie.likeMovieIdList.count)
+        
+        // tableView.reloadData() 하듯이 navigationBarButton도 refrash하고 싶은데 딱히 방법이 없어서 다시 세팅하는 방식을 택함
+        setNavigationBarButton(id: idContents)
     }
 }
 

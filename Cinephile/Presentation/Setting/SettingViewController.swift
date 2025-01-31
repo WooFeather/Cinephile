@@ -101,7 +101,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             cell.profileImageView.image = imageContents
             cell.nicknameLabel.text = nicknameContents
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
-            // TODO: movieBoxButton에 좋아요 개수 반영
+            cell.movieBoxButton.setTitle("\(UserDefaultsManager.shared.likeMovieIdList.count)개의 무비박스 보관중", for: .normal)
             
             return cell
         } else {

@@ -32,6 +32,7 @@ final class CinemaViewController: BaseViewController {
         super.viewWillAppear(animated)
         
         saveUserDefaultsValue()
+        cinemaView.tableView.reloadData()
     }
     
     override func configureEssential() {
