@@ -117,11 +117,9 @@ final class SearchTableViewCell: BaseTableViewCell {
             genreStackView.addArrangedSubview(secondGenreLabel)
         }
         
-        // TODO: 좋아요기능 UI 구현
-        // 조건이 data의 like가 아니라, 해당 영화의 id가 좋아요리스트에 등록되어있는가가 기준이 될듯
-//        let name = item.like ? "heart.fill" : "heart"
-//        let btn = UIImage(systemName: name)
-        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        let name = LikeMovie.likeMovieIdList.contains(data.id) ? "heart.fill" : "heart"
+        let image = UIImage(systemName: name)
+        likeButton.setImage(image, for: .normal)
         likeButton.tintColor = .cineAccent
     }
 }

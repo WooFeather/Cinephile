@@ -20,6 +20,12 @@ final class SearchMovieViewController: BaseViewController {
         view = searchMovieView
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        searchMovieView.searchTableView.reloadData()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -72,11 +78,23 @@ final class SearchMovieViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        // TODO: 좋아요버튼 기능구현
-        // movieList[sender.tag].like.toggle()
-        // movieList의 sender의 tag의 id를 가져와서 해당 id를 좋아요리스트에 등록
-        print(sender.tag)
-        searchMovieView.searchTableView.reloadData()
+        let item = searchList[sender.tag]
+        if LikeMovie.likeMovieIdList.contains(item.id) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
+                LikeMovie.likeMovieIdList.remove(at: index)
+                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+            }
+        } else {
+            LikeMovie.likeMovieIdList.append(item.id)
+            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+        }
+        
+        print(LikeMovie.likeMovieIdList)
+        print(LikeMovie.likeMovieIdList.count)
+        
+        searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: sender.tag, section: 0)], with: .none)
     }
 }
 

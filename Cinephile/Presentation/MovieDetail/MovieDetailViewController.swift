@@ -92,7 +92,6 @@ final class MovieDetailViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        // TODO: 좋아요버튼 기능구현
         guard let idContents else { return }
         if LikeMovie.likeMovieIdList.contains(idContents) {
             if let index = LikeMovie.likeMovieIdList.firstIndex(of: idContents) {
