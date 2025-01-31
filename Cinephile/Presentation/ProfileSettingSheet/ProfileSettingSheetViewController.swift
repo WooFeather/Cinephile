@@ -12,6 +12,8 @@ final class ProfileSettingSheetViewController: BaseViewController {
     private var profileSettingSheetView = ProfileSettingSheetView()
     var imageContents: UIImage?
     var nicknameContents: String?
+    var reSaveNickname: ((String) -> Void)?
+    var reSaveImage: ((UIImage) -> Void)?
     
     override func loadView() {
         view = profileSettingSheetView
@@ -71,8 +73,8 @@ final class ProfileSettingSheetViewController: BaseViewController {
     
     @objc
     private func doneButtonTapped() {
-        UserDefaultsManager.shared.nickname = profileSettingSheetView.nicknameTextField.text ?? ""
-        UserDefaultsManager.shared.saveImage(UIImage: profileSettingSheetView.profileImageView.image ?? UIImage(), "profileImage")
+        reSaveImage?(profileSettingSheetView.profileImageView.image ?? UIImage())
+        reSaveNickname?(profileSettingSheetView.nicknameTextField.text ?? "")
         dismiss(animated: true)
     }
     

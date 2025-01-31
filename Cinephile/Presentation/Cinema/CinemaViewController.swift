@@ -13,6 +13,8 @@ final class CinemaViewController: BaseViewController {
     private var cinemaView = CinemaView()
     private var searchList: [String] = []
     private var movieList: [MovieDetail] = []
+    private var imageContents: UIImage?
+    private var nicknameContents: String?
     
     override func loadView() {
         view = cinemaView
@@ -24,14 +26,15 @@ final class CinemaViewController: BaseViewController {
         callRequest()
         receiveSearchText()
         searchList = UserDefaultsManager.shared.searchList
+        saveUserDefaultsValue()
     }
     
     // TODO: reload시점 수정(시트가 내려갈때?)
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+//    }
     
     override func configureEssential() {
         navigationItem.title = "CINEPHILE"
@@ -65,6 +68,14 @@ final class CinemaViewController: BaseViewController {
         )
     }
     
+    private func saveUserDefaultsValue() {
+        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
+        if let imageData = UserDefaults.standard.data(forKey: "profileImage") {
+            imageContents = UIImage(data: imageData)
+        }
+        nicknameContents = UserDefaultsManager.shared.nickname
+    }
+    
     @objc
     private func searchTextReceivedNotification(value: NSNotification) {
         if let searchText = value.userInfo!["searchText"] as? String {
@@ -87,11 +98,35 @@ final class CinemaViewController: BaseViewController {
         if sender.state == .ended {
             let vc = ProfileSettingSheetViewController()
             
+            // 기존의 이미지, 닉네임을 sheet로 전달
             if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
                let image = UIImage(data: imageData) {
                 vc.imageContents = image
             }
             vc.nicknameContents = UserDefaultsManager.shared.nickname
+            
+            let group = DispatchGroup()
+            
+            // sheet에서 다시 저장한 닉네임 데이터 받기
+            group.enter()
+            vc.reSaveImage = { value in
+                UserDefaultsManager.shared.saveImage(UIImage: value, "profileImage")
+                self.imageContents = value
+                group.leave()
+            }
+            
+            // sheet에서 다시 저장한 이미지 데이터 받기
+            group.enter()
+            vc.reSaveNickname = { value in
+                UserDefaultsManager.shared.nickname = value
+                self.nicknameContents = value
+                group.leave()
+            }
+            
+            // 한번에 UI업데이트를 위해 DispatchGroup 사용
+            group.notify(queue: .main) {
+                self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+            }
             
             let nav = UINavigationController(rootViewController: vc)
             present(nav, animated: true)
@@ -136,12 +171,8 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
-            // UserDefaults에 저장된 프로필 이미지 적용
-            if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
-               let image = UIImage(data: imageData) {
-                cell.profileImageView.image = image
-            }
-            cell.nicknameLabel.text = UserDefaultsManager.shared.nickname
+            cell.profileImageView.image = imageContents
+            cell.nicknameLabel.text = nicknameContents
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
             // TODO: movieBoxButton에 좋아요 개수 반영
             
