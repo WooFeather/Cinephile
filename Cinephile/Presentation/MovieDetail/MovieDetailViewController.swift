@@ -142,6 +142,9 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
                 cell.genreButton.setTitle("장르없음", for: .normal)
             }
             
+            BackdropTableViewCell.pageControl.currentPage = 0
+            BackdropTableViewCell.pageControl.numberOfPages = backdropList.count
+            
             return cell
         } else if indexPath.row == 1 {
             // SynopsisTableViewCell
@@ -176,6 +179,14 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.posterCollectionView.reloadData()
             
             return cell
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.tag == 0 {
+            let width = scrollView.frame.width
+            let currentPage = Int((scrollView.contentOffset.x + width / 2) / width)
+            BackdropTableViewCell.pageControl.currentPage = currentPage
         }
     }
 }

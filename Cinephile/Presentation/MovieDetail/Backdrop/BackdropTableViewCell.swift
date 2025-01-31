@@ -11,9 +11,10 @@ import SnapKit
 final class BackdropTableViewCell: BaseTableViewCell {
 
     static let id = "BackdropTableViewCell"
+    // MovieDetailVC에서 currentPage값을 바꿔주기 위해 static으로 선언
+    static let pageControl = UIPageControl()
 
     lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
-    // private let infoStackView = UIStackView()
     private let firstDivider = UIView()
     private let secondDivider = UIView()
     let releaseDateButton = InfoButton(icon: UIImage(systemName: "calendar") ?? UIImage())
@@ -22,10 +23,7 @@ final class BackdropTableViewCell: BaseTableViewCell {
     
     override func configureHierarchy() {
         contentView.addSubview(backdropCollectionView)
-//        contentView.addSubview(infoStackView)
-//        [releaseDateButton, ratingButton, genreButton].forEach {
-//            infoStackView.addArrangedSubview($0)
-//        }
+        contentView.addSubview(BackdropTableViewCell.pageControl)
         
         [releaseDateButton, firstDivider, ratingButton, secondDivider, genreButton].forEach {
             contentView.addSubview($0)
@@ -38,16 +36,12 @@ final class BackdropTableViewCell: BaseTableViewCell {
             make.height.equalTo(250)
         }
         
-        // TODO: Info 컴포넌트들 StackView로 적용
-        // stackView로 했을때 각 컴포넌트의 width가 너무 넓게 잡혀서 일단 stackView 미사용
-//        infoStackView.snp.makeConstraints { make in
-//            make.top.equalTo(backdropCollectionView.snp.bottom).offset(8)
-//            make.centerX.equalTo(contentView.snp.centerX)
-//            make.horizontalEdges.equalTo(contentView)
-//            make.height.equalTo(12)
-//            make.bottom.equalTo(contentView)
-//        }
+        BackdropTableViewCell.pageControl.snp.makeConstraints { make in
+            make.bottom.equalTo(backdropCollectionView.snp.bottom).offset(-12)
+            make.centerX.equalTo(backdropCollectionView.snp.centerX)
+        }
         
+        // stackView로 했을때 각 컴포넌트의 width가 너무 넓게 잡혀서 일단 stackView 미사용
         ratingButton.snp.makeConstraints { make in
             make.centerX.equalTo(contentView.snp.centerX)
             make.top.equalTo(backdropCollectionView.snp.bottom).offset(12)
@@ -86,11 +80,13 @@ final class BackdropTableViewCell: BaseTableViewCell {
         backdropCollectionView.isPagingEnabled = true
         backdropCollectionView.backgroundColor = .clear
         
-        // TODO: PageControl적용 후 활성화 예정
-        // backdropCollectionView.showsHorizontalScrollIndicator = false
+        backdropCollectionView.showsHorizontalScrollIndicator = false
 
         firstDivider.backgroundColor = .cineBackgroundGray
         secondDivider.backgroundColor = .cineBackgroundGray
+        
+        BackdropTableViewCell.pageControl.backgroundStyle = .prominent
+        BackdropTableViewCell.pageControl.hidesForSinglePage = true
     }
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {
