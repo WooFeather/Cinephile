@@ -25,6 +25,7 @@ final class CinemaViewController: BaseViewController {
         callRequest()
         receiveSearchText()
         searchList = UserDefaultsManager.shared.searchList
+        LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -150,10 +151,24 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        // TODO: 좋아요버튼 기능구현
-        // movieList[sender.tag].like.toggle()
-        // movieList의 sender의 tag의 id를 가져와서 해당 id를 좋아요리스트에 등록
-        print(sender.tag)
+        // likeMovieIdList라는 배열에 선택한 영화의 id가 있으면 삭제하고, 없으면 등록하는 toggle형식의 동작
+        // 동시에 LikeCount도 반영
+        let item = movieList[sender.tag]
+        if LikeMovie.likeMovieIdList.contains(item.id) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
+                LikeMovie.likeMovieIdList.remove(at: index)
+                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+            }
+        } else {
+            LikeMovie.likeMovieIdList.append(item.id)
+            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+        }
+        
+        print(LikeMovie.likeMovieIdList)
+        print(LikeMovie.likeMovieIdList.count)
+        
         cinemaView.tableView.reloadData()
     }
 }
@@ -175,7 +190,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.profileImageView.image = imageContents
             cell.nicknameLabel.text = nicknameContents
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
-            // TODO: movieBoxButton에 좋아요 개수 반영
+            cell.movieBoxButton.setTitle("\(UserDefaultsManager.shared.likeMovieIdList.count)개의 무비박스 보관중", for: .normal)
             
             return cell
         } else if indexPath.row == 1 {

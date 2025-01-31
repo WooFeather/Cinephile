@@ -17,7 +17,7 @@ final class ProfileTableViewCell: BaseTableViewCell {
     let profileImageView = ProfileImageView()
     let dateLabel = UILabel()
     let nicknameLabel = UILabel()
-    let movieBoxButton = MovieBoxButton(like: 0)
+    let movieBoxButton = MovieBoxButton()
 
     override func configureHierarchy() {
         contentView.addSubview(roundBackgroundView)

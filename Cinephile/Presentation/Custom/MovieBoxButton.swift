@@ -8,10 +8,9 @@
 import UIKit
 
 final class MovieBoxButton: UIButton {
-    init(like: Int) {
+    init() {
         super.init(frame: .zero)
         
-        setTitle("\(like)개의 무비박스 보관중", for: .normal)
         titleLabel?.font = .boldSystemFont(ofSize: 16)
         backgroundColor = .cineMovieBtn
         DispatchQueue.main.async {

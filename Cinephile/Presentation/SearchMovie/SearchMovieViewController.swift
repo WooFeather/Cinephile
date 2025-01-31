@@ -148,8 +148,6 @@ extension SearchMovieViewController: UISearchBarDelegate {
         page = 1
         callRequest(query: queryText)
         
-        dump(searchList)
-        
         NotificationCenter.default.post(
             name: NSNotification.Name("SearchTextReceived"),
             object: nil,

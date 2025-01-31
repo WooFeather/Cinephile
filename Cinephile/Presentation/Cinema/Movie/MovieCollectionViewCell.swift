@@ -32,6 +32,7 @@ final class MovieCollectionViewCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(posterImageView.snp.bottom).offset(8)
             make.leading.equalTo(contentView)
+            make.width.equalTo(180)
             make.height.equalTo(20)
         }
         
@@ -84,8 +85,11 @@ final class MovieCollectionViewCell: BaseCollectionViewCell {
         
         // TODO: 좋아요 기능 UI 구현
         // 조건이 data의 like가 아니라, 해당 영화의 id가 좋아요리스트에 등록되어있는가가 기준이 될듯
-//        let name = item.like ? "heart.fill" : "heart"
-//        let btn = UIImage(systemName: name)
-        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        
+        if LikeMovie.likeMovieIdList.contains(data.id) {
+            likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        }
     }
 }

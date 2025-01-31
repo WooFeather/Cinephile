@@ -58,22 +58,21 @@ final class UserDefaultsManager {
         }
     }
     
-//    var likeCount: Int {
-//        get {
-//            UserDefaults.standard.integer(forKey: "likeCount")
-//        }
-//        set {
-//            UserDefaults.standard.set(newValue, forKey: "likeCount")
-//        }
-//    }
+    var likeMovieIdList: [Int] {
+        get {
+            UserDefaults.standard.array(forKey: "likeMovieId") as? [Int] ?? []
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "likeMovieId")
+        }
+    }
     
-    // 좋아요한 영화 관리를 어떻게하지
-//    var likeMovieId: String {
-//        get {
-//            UserDefaults.standard.string(forKey: "likeMovieId") ?? ""
-//        }
-//        set {
-//            UserDefaults.standard.set(newValue, forKey: "likeMovieId")
-//        }
-//    }
+    var likeCount: Int {
+        get {
+            UserDefaults.standard.integer(forKey: "likeCount")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "likeCount")
+        }
+    }
 }
