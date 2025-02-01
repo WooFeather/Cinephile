@@ -16,9 +16,7 @@ final class PointButton: UIButton {
         setTitleColor(.cinePrimaryGray, for: .disabled)
         titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         backgroundColor = .clear
-        DispatchQueue.main.async {
-            self.layer.cornerRadius = self.frame.width / 18
-        }
+        layer.cornerRadius = 22
         layer.borderWidth = 1.5
         layer.borderColor = UIColor.cineAccent.cgColor
     }

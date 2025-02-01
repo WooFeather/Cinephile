@@ -108,13 +108,22 @@ final class SearchTableViewCell: BaseTableViewCell {
         releaseDateLabel.text = data.releaseDate.toDate()?.toReleaseString()
         
         if data.genreList.count == 1 {
+            firstGenreLabel.removeFromSuperview()
+            secondGenreLabel.removeFromSuperview()
+            
             firstGenreLabel.text = SearchTableViewCell.genre[data.genreList[0]]
             genreStackView.addArrangedSubview(firstGenreLabel)
         } else if data.genreList.count >= 2 {
+            firstGenreLabel.removeFromSuperview()
+            secondGenreLabel.removeFromSuperview()
+            
             firstGenreLabel.text = SearchTableViewCell.genre[data.genreList[0]]
             secondGenreLabel.text = SearchTableViewCell.genre[data.genreList[1]]
             genreStackView.addArrangedSubview(firstGenreLabel)
             genreStackView.addArrangedSubview(secondGenreLabel)
+        } else {
+            firstGenreLabel.removeFromSuperview()
+            secondGenreLabel.removeFromSuperview()
         }
         
         let name = LikeMovie.likeMovieIdList.contains(data.id) ? "heart.fill" : "heart"

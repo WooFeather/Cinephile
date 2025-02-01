@@ -35,9 +35,7 @@ final class GenreLabel: UILabel {
         backgroundColor = .cineBackgroundGray
         font = .systemFont(ofSize: 14)
         textColor = .cineSecondaryGray
-        DispatchQueue.main.async {
-            self.layer.cornerRadius = self.frame.height / 6
-        }
+        layer.cornerRadius = 8
         clipsToBounds = true
     }
     
