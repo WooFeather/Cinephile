@@ -44,7 +44,7 @@ final class SettingViewController: BaseViewController {
     @objc
     private func backgroundViewTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            let vc = ProfileSettingSheetViewController()
+            let vc = ProfileSettingViewController()
             
             // 기존의 이미지, 닉네임을 sheet로 전달
             let imageData = UserDefaultsManager.shared.profileImage

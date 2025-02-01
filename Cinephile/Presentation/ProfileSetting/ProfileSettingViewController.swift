@@ -8,7 +8,12 @@
 import UIKit
 
 final class ProfileSettingViewController: BaseViewController {
+    
     private var profileSettingView = ProfileSettingView()
+    var imageContents: UIImage?
+    var nicknameContents: String?
+    var reSaveNickname: ((String) -> Void)?
+    var reSaveImage: ((UIImage) -> Void)?
     
     override func loadView() {
         view = profileSettingView
@@ -16,6 +21,11 @@ final class ProfileSettingViewController: BaseViewController {
     
     override func configureEssential() {
         navigationItem.title = "프로필 설정"
+        if UserDefaultsManager.shared.isSigned {
+            sheetPresentationController?.prefersGrabberVisible = true
+            navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
+            navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
+        }
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
         profileSettingView.profileImageView.addGestureRecognizer(tapGesture)
         profileSettingView.profileImageView.isUserInteractionEnabled = true
@@ -23,6 +33,13 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
         profileSettingView.nicknameTextField.delegate = self
         receiveImage()
+    }
+    
+    override func configureView() {
+        if UserDefaultsManager.shared.isSigned {
+            profileSettingView.profileImageView.image = imageContents
+            profileSettingView.nicknameTextField.text = nicknameContents
+        }
     }
     
     @objc
@@ -38,10 +55,10 @@ final class ProfileSettingViewController: BaseViewController {
     private func validateText() {
         guard let trimmingText = profileSettingView.nicknameTextField.text?.trimmingCharacters(in: .whitespaces) else { return }
         
-        // 숫자가 포함되어있는지 확인하는법!
+        // 숫자가 포함되어있는지 확인하는법
         let decimalCharacters = CharacterSet.decimalDigits
         let decimalRange = trimmingText.rangeOfCharacter(from: decimalCharacters)
-        // 위의 코드에 영감을 받아 특수문자도 적용해봤습니당
+        // 위의 코드를 참고해 특수문자도 적용
         let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
         
         if trimmingText.count < 2 || trimmingText.count > 10 {
@@ -61,13 +78,26 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func doneButtonTapped() {
-        let vc = TabBarController()
-        UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
-        UserDefaultsManager.shared.joinDate = Date().toJoinString()
-        if let imageData = profileSettingView.profileImageView.image?.pngData() {
-            UserDefaultsManager.shared.profileImage = imageData
+        if UserDefaultsManager.shared.isSigned {
+            reSaveImage?(profileSettingView.profileImageView.image ?? UIImage())
+            reSaveNickname?(profileSettingView.nicknameTextField.text ?? "")
+            dismiss(animated: true)
+        } else {
+            let vc = TabBarController()
+            UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
+            UserDefaultsManager.shared.joinDate = Date().toJoinString()
+            if let imageData = profileSettingView.profileImageView.image?.pngData() {
+                UserDefaultsManager.shared.profileImage = imageData
+            }
+            changeRootViewController(vc: vc, isSigned: true)
         }
-        changeRootViewController(vc: vc, isSigned: true)
+    }
+    
+    @objc
+    private func closeButtonTapped() {
+        if UserDefaultsManager.shared.isSigned {
+            dismiss(animated: true)
+        }
     }
     
     @objc

@@ -8,6 +8,7 @@
 import UIKit
 
 final class ImageSettingViewController: BaseViewController {
+    
     private var imageSettingView = ImageSettingView()
     var imageContents: UIImage?
     let imageList = ProfileImage.allCases

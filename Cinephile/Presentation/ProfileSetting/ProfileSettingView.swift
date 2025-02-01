@@ -55,10 +55,12 @@ final class ProfileSettingView: BaseView {
             make.height.equalTo(16)
         }
         
-        doneButton.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.bottom).offset(28)
-            make.horizontalEdges.equalToSuperview().inset(12)
-            make.height.equalTo(44)
+        if !UserDefaultsManager.shared.isSigned {
+            doneButton.snp.makeConstraints { make in
+                make.top.equalTo(statusLabel.snp.bottom).offset(28)
+                make.horizontalEdges.equalToSuperview().inset(12)
+                make.height.equalTo(44)
+            }
         }
     }
     
@@ -83,6 +85,8 @@ final class ProfileSettingView: BaseView {
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
         
-        doneButton.isEnabled = false
+        if !UserDefaultsManager.shared.isSigned {
+            doneButton.isEnabled = false
+        }
     }
 }
