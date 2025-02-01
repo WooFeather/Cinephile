@@ -15,11 +15,11 @@ final class OnboardingViewController: BaseViewController {
     }
     
     override func configureEssential() {
-        onboardingView.startButton.addTarget(self, action: #selector(starButtonTapped), for: .touchUpInside)
+        onboardingView.startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
     @objc
-    private func starButtonTapped() {
+    private func startButtonTapped() {
         print(#function)
         let vc = ProfileSettingViewController()
         navigationController?.pushViewController(vc, animated: true)
