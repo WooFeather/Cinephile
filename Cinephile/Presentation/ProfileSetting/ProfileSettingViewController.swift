@@ -64,15 +64,27 @@ final class ProfileSettingViewController: BaseViewController {
         if trimmingText.count < 2 || trimmingText.count > 10 {
             profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
             profileSettingView.doneButton.isEnabled = false
+            if UserDefaultsManager.shared.isSigned {
+                navigationItem.rightBarButtonItem?.isEnabled = false
+            }
         } else if spacialRange != nil {
             profileSettingView.statusLabel.text = "닉네임에 @, #, $, % 는 포함될 수 없어요"
             profileSettingView.doneButton.isEnabled = false
+            if UserDefaultsManager.shared.isSigned {
+                navigationItem.rightBarButtonItem?.isEnabled = false
+            }
         } else if decimalRange != nil {
             profileSettingView.statusLabel.text = "닉네임에 숫자는 포함할 수 없어요"
             profileSettingView.doneButton.isEnabled = false
+            if UserDefaultsManager.shared.isSigned {
+                navigationItem.rightBarButtonItem?.isEnabled = false
+            }
         } else {
             profileSettingView.statusLabel.text = "사용할 수 있는 닉네임이에요"
             profileSettingView.doneButton.isEnabled = true
+            if UserDefaultsManager.shared.isSigned {
+                navigationItem.rightBarButtonItem?.isEnabled = true
+            }
         }
     }
     
