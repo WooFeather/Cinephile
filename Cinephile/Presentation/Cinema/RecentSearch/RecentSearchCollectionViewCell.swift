@@ -23,7 +23,7 @@ final class RecentSearchCollectionViewCell: BaseCollectionViewCell {
         searchTextLabel.snp.makeConstraints { make in
             make.leading.equalTo(contentView).offset(8)
             make.centerY.equalTo(contentView.snp.centerY)
-            make.width.equalTo(60)
+            make.trailing.equalTo(removeButton.snp.leading)
         }
         
         removeButton.snp.makeConstraints { make in
@@ -49,5 +49,15 @@ final class RecentSearchCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(data: String) {
         searchTextLabel.text = data
+    }
+    
+    // 셀의 사이즈를 동적으로 설정하기 위한 메서드
+    static func fittingSize(availableHeight: CGFloat, text: String) -> CGSize {
+        let cell = RecentSearchCollectionViewCell()
+        cell.configureData(data: text)
+        
+        let targetSize = CGSize(width: UIView.layoutFittingCompressedSize.width, height: availableHeight)
+        
+        return cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .fittingSizeLevel, verticalFittingPriority: .required)
     }
 }

@@ -296,3 +296,17 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
     }
 }
+
+extension CinemaViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView.tag == 1 {
+            let data = searchList[indexPath.item]
+            
+           let size = RecentSearchCollectionViewCell.fittingSize(availableHeight: 32, text: data)
+            
+            return size
+        } else {
+            return CGSize(width: 200, height: 380)
+        }
+    }
+}
