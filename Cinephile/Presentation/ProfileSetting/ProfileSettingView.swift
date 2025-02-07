@@ -17,10 +17,13 @@ final class ProfileSettingView: BaseView {
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
+    
     let sampleButton = MBTIButton(title: "E")
+    let sampleButton2 = MBTIButton(title: "I")
+    var sampleButtonArray: [UIButton] = []
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton, sampleButton2].forEach {
             addSubview($0)
         }
     }
@@ -62,6 +65,12 @@ final class ProfileSettingView: BaseView {
             make.size.equalTo(50)
         }
         
+        sampleButton2.snp.makeConstraints { make in
+            make.top.equalTo(sampleButton.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(50)
+        }
+        
         if !UserDefaultsManager.shared.isSigned {
             doneButton.snp.makeConstraints { make in
                 make.top.equalTo(statusLabel.snp.bottom).offset(28)
@@ -72,6 +81,8 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
+        sampleButtonArray = [sampleButton, sampleButton2]
+        
         profileImageView.image = imageList.randomElement()?.image
         
         // 이미지뷰 안의 이미지의 inset을 정할 수 있음

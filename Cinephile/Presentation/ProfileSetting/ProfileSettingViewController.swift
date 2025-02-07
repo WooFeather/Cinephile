@@ -32,9 +32,10 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
         profileSettingView.nicknameTextField.delegate = self
+        receiveImage()
         
         profileSettingView.sampleButton.addTarget(self, action: #selector(sampleButtonTapped), for: .touchUpInside)
-        receiveImage()
+        profileSettingView.sampleButton2.addTarget(self, action: #selector(sampleButtonTapped), for: .touchUpInside)
     }
     
     override func configureView() {
@@ -122,8 +123,26 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     @objc
-    private func sampleButtonTapped() {
-        profileSettingView.sampleButton.isSelected.toggle()
+    private func sampleButtonTapped(_ sender: UIButton) {
+        // profileSettingView.sampleButton.isSelected.toggle()
+        toggleButton(sender)
+    }
+    
+    private func toggleButton(_ sender: UIButton) {
+        for i in profileSettingView.sampleButtonArray {
+            
+            // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
+            // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
+            if i == sender {
+                if !i.isSelected {
+                    i.isSelected = true
+                } else {
+                    i.isSelected = false
+                }
+            } else {
+                i.isSelected = false
+            }
+        }
     }
     
     private func receiveImage() {
