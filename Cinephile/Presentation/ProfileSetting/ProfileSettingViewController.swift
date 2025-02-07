@@ -32,6 +32,8 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
         profileSettingView.nicknameTextField.delegate = self
+        
+        profileSettingView.sampleButton.addTarget(self, action: #selector(sampleButtonTapped), for: .touchUpInside)
         receiveImage()
     }
     
@@ -117,6 +119,11 @@ final class ProfileSettingViewController: BaseViewController {
         if let image = value.userInfo!["image"] as? UIImage {
             profileSettingView.profileImageView.image = image
         }
+    }
+    
+    @objc
+    private func sampleButtonTapped() {
+        profileSettingView.sampleButton.isSelected.toggle()
     }
     
     private func receiveImage() {

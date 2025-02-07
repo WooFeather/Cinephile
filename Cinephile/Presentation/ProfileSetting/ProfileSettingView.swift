@@ -17,9 +17,10 @@ final class ProfileSettingView: BaseView {
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
+    let sampleButton = MBTIButton(title: "E")
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton].forEach {
             addSubview($0)
         }
     }
@@ -53,6 +54,12 @@ final class ProfileSettingView: BaseView {
             make.top.equalTo(textFieldUnderline.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
             make.height.equalTo(16)
+        }
+        
+        sampleButton.snp.makeConstraints { make in
+            make.top.equalTo(statusLabel.snp.bottom).offset(100)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(50)
         }
         
         if !UserDefaultsManager.shared.isSigned {
