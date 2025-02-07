@@ -51,7 +51,7 @@ final class OnboardingView: BaseView {
         mainImageView.image = .onboarding
         mainImageView.contentMode = .scaleAspectFill
         
-        titleLabel.text = "Onboarding"
+        titleLabel.text = "Cinephile"
         titleLabel.font = .systemFont(ofSize: 32, weight: .bold)
         
         descriptionLabel.text = "당신만의 영화 세상,\nCinephile을 시작해보세요."

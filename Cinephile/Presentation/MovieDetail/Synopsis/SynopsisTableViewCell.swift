@@ -60,7 +60,7 @@ final class SynopsisTableViewCell: BaseTableViewCell {
     @objc
     private func extensionButtonTapped() {
         isExtended.toggle()
-        extensionButton.setTitle(isExtended ? "Hied" : "More", for: .normal)
+        extensionButton.setTitle(isExtended ? "Hide" : "More", for: .normal)
         synopsisLabel.numberOfLines = isExtended ? 0 : 3
         
         invalidateIntrinsicContentSize()
