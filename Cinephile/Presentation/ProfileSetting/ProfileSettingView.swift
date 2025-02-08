@@ -140,6 +140,8 @@ final class ProfileSettingView: BaseView {
         mbtiESTJStackView.spacing = 10
         mbtiINFPStackView.spacing = 10
         
+        // TODO: MBTI버튼의 isSelected상태를 UserDefaults에 저장해서 UserDefaultsManager.shared.isSigned일때 뷰에 선택된 상태 표시하기
+        
         if !UserDefaultsManager.shared.isSigned {
             doneButton.isEnabled = false
         }

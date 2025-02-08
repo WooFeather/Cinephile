@@ -10,6 +10,8 @@ import UIKit
 final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
+    private var isNicknameValidate = false
+    private var isButtonValidate = false
     private lazy var mbtiEIButtonArray: [UIButton] = [profileSettingView.mbtiEButton, profileSettingView.mbtiIButton]
     private lazy var mbtiSNButtonArray: [UIButton] = [profileSettingView.mbtiSButton, profileSettingView.mbtiNButton]
     private lazy var mbtiTFButtonArray: [UIButton] = [profileSettingView.mbtiTButton, profileSettingView.mbtiFButton]
@@ -78,27 +80,35 @@ final class ProfileSettingViewController: BaseViewController {
         // TODO: 모든 MBTI버튼을 선택하지 않았을 때도 조건처리
         if trimmingText.count < 2 || trimmingText.count > 10 {
             profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
-            profileSettingView.doneButton.isEnabled = false
+            profileSettingView.statusLabel.textColor = .cineConditionRed
+            isNicknameValidate = false
+            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
             if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = false
+                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
             }
         } else if spacialRange != nil {
             profileSettingView.statusLabel.text = "닉네임에 @, #, $, % 는 포함될 수 없어요"
-            profileSettingView.doneButton.isEnabled = false
+            profileSettingView.statusLabel.textColor = .cineConditionRed
+            isNicknameValidate = false
+            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
             if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = false
+                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
             }
         } else if decimalRange != nil {
             profileSettingView.statusLabel.text = "닉네임에 숫자는 포함할 수 없어요"
-            profileSettingView.doneButton.isEnabled = false
+            profileSettingView.statusLabel.textColor = .cineConditionRed
+            isNicknameValidate = false
+            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
             if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = false
+                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
             }
         } else {
             profileSettingView.statusLabel.text = "사용할 수 있는 닉네임이에요"
-            profileSettingView.doneButton.isEnabled = true
+            profileSettingView.statusLabel.textColor = .cineConditionBlue
+            isNicknameValidate = true
+            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
             if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = true
+                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
             }
         }
     }
@@ -137,21 +147,29 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func mbtiEIButtonTapped(_ sender: UIButton) {
         toggleButton(sender, array: mbtiEIButtonArray)
+        validateButton()
+        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
     }
     
     @objc
     private func mbtiSNButtonTapped(_ sender: UIButton) {
         toggleButton(sender, array: mbtiSNButtonArray)
+        validateButton()
+        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
     }
     
     @objc
     private func mbtiTFButtonTapped(_ sender: UIButton) {
         toggleButton(sender, array: mbtiTFButtonArray)
+        validateButton()
+        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
     }
     
     @objc
     private func mbtiJPButtonTapped(_ sender: UIButton) {
         toggleButton(sender, array: mbtiJPButtonArray)
+        validateButton()
+        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
     }
     
     private func toggleButton(_ sender: UIButton, array: [UIButton]) {
@@ -167,6 +185,25 @@ final class ProfileSettingViewController: BaseViewController {
             } else {
                 i.isSelected = false
             }
+        }
+    }
+    
+    private func validateButton() {
+        if (profileSettingView.mbtiEButton.isSelected || profileSettingView.mbtiIButton.isSelected) &&
+            (profileSettingView.mbtiSButton.isSelected || profileSettingView.mbtiNButton.isSelected) &&
+            (profileSettingView.mbtiTButton.isSelected || profileSettingView.mbtiFButton.isSelected) &&
+            (profileSettingView.mbtiJButton.isSelected || profileSettingView.mbtiPButton.isSelected) {
+            isButtonValidate = true
+        } else {
+            isButtonValidate = false
+        }
+    }
+    
+    private func isDoneButtonEnabled() -> Bool {
+        if isNicknameValidate && isButtonValidate {
+            return true
+        } else {
+            return false
         }
     }
     
