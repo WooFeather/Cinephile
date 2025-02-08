@@ -13,17 +13,19 @@ final class ProfileSettingView: BaseView {
     private let textFieldUnderline = UIView()
     private let cameraImageView = UIImageView()
     private let imageList = ProfileImage.allCases
-    let doneButton = PointButton(title: "완료")
+    private let mbtiLabel = UILabel()
+    let doneButton = ActionButton(title: "완료")
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
+    // TODO: sampleButton이 아닌 실제 MBTI버튼으로 교체
     let sampleButton = MBTIButton(title: "E")
     let sampleButton2 = MBTIButton(title: "I")
-    var sampleButtonArray: [UIButton] = []
+    lazy var sampleButtonArray: [UIButton] = [sampleButton, sampleButton2]
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton, sampleButton2].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton, sampleButton2, mbtiLabel].forEach {
             addSubview($0)
         }
     }
@@ -59,21 +61,27 @@ final class ProfileSettingView: BaseView {
             make.height.equalTo(16)
         }
         
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalTo(statusLabel.snp.top).offset(48)
+            make.leading.equalToSuperview().offset(20)
+            make.height.equalTo(20)
+        }
+        
         sampleButton.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.bottom).offset(100)
-            make.centerX.equalToSuperview()
+            make.top.equalTo(statusLabel.snp.top).offset(48)
+            make.leading.equalTo(mbtiLabel.snp.trailing).offset(68)
             make.size.equalTo(50)
         }
         
         sampleButton2.snp.makeConstraints { make in
-            make.top.equalTo(sampleButton.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
+            make.top.equalTo(sampleButton.snp.bottom).offset(16)
+            make.centerX.equalTo(sampleButton.snp.centerX)
             make.size.equalTo(50)
         }
         
         if !UserDefaultsManager.shared.isSigned {
             doneButton.snp.makeConstraints { make in
-                make.top.equalTo(statusLabel.snp.bottom).offset(28)
+                make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
                 make.horizontalEdges.equalToSuperview().inset(12)
                 make.height.equalTo(44)
             }
@@ -81,8 +89,6 @@ final class ProfileSettingView: BaseView {
     }
     
     override func configureView() {
-        sampleButtonArray = [sampleButton, sampleButton2]
-        
         profileImageView.image = imageList.randomElement()?.image
         
         // 이미지뷰 안의 이미지의 inset을 정할 수 있음
@@ -102,6 +108,9 @@ final class ProfileSettingView: BaseView {
         
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
+        
+        mbtiLabel.text = "MBTI"
+        mbtiLabel.font = .boldSystemFont(ofSize: 16)
         
         if !UserDefaultsManager.shared.isSigned {
             doneButton.isEnabled = false

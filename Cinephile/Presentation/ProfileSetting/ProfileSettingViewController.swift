@@ -34,8 +34,8 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.nicknameTextField.delegate = self
         receiveImage()
         
-        profileSettingView.sampleButton.addTarget(self, action: #selector(sampleButtonTapped), for: .touchUpInside)
-        profileSettingView.sampleButton2.addTarget(self, action: #selector(sampleButtonTapped), for: .touchUpInside)
+        profileSettingView.sampleButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
+        profileSettingView.sampleButton2.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
     }
     
     override func configureView() {
@@ -64,6 +64,8 @@ final class ProfileSettingViewController: BaseViewController {
         // 위의 코드를 참고해 특수문자도 적용
         let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
         
+        // TODO: statusLabel TextColor도 조건처리
+        // TODO: 모든 MBTI버튼을 선택하지 않았을 때도 조건처리
         if trimmingText.count < 2 || trimmingText.count > 10 {
             profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
             profileSettingView.doneButton.isEnabled = false
@@ -123,14 +125,8 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     @objc
-    private func sampleButtonTapped(_ sender: UIButton) {
-        // profileSettingView.sampleButton.isSelected.toggle()
-        toggleButton(sender)
-    }
-    
     private func toggleButton(_ sender: UIButton) {
         for i in profileSettingView.sampleButtonArray {
-            
             // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
             // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
             if i == sender {

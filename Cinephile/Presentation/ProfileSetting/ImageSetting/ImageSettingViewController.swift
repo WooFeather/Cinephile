@@ -45,6 +45,7 @@ final class ImageSettingViewController: BaseViewController {
     }
 }
 
+// TODO: 이 뷰에 들어왔을 때 내 이미지 셀이 선택된 상태여야 함
 extension ImageSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageList.count
