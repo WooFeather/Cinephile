@@ -76,8 +76,6 @@ final class ProfileSettingViewController: BaseViewController {
         // 위의 코드를 참고해 특수문자도 적용
         let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
         
-        // TODO: statusLabel TextColor도 조건처리
-        // TODO: 모든 MBTI버튼을 선택하지 않았을 때도 조건처리
         if trimmingText.count < 2 || trimmingText.count > 10 {
             profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
             profileSettingView.statusLabel.textColor = .cineConditionRed
@@ -149,6 +147,9 @@ final class ProfileSettingViewController: BaseViewController {
         toggleButton(sender, array: mbtiEIButtonArray)
         validateButton()
         profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
+        if UserDefaultsManager.shared.isSigned {
+            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
+        }
     }
     
     @objc
@@ -156,6 +157,9 @@ final class ProfileSettingViewController: BaseViewController {
         toggleButton(sender, array: mbtiSNButtonArray)
         validateButton()
         profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
+        if UserDefaultsManager.shared.isSigned {
+            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
+        }
     }
     
     @objc
@@ -163,6 +167,9 @@ final class ProfileSettingViewController: BaseViewController {
         toggleButton(sender, array: mbtiTFButtonArray)
         validateButton()
         profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
+        if UserDefaultsManager.shared.isSigned {
+            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
+        }
     }
     
     @objc
@@ -170,6 +177,9 @@ final class ProfileSettingViewController: BaseViewController {
         toggleButton(sender, array: mbtiJPButtonArray)
         validateButton()
         profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
+        if UserDefaultsManager.shared.isSigned {
+            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
+        }
     }
     
     private func toggleButton(_ sender: UIButton, array: [UIButton]) {

@@ -45,7 +45,6 @@ final class ImageSettingViewController: BaseViewController {
     }
 }
 
-// TODO: 이 뷰에 들어왔을 때 내 이미지 셀이 선택된 상태여야 함
 extension ImageSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageList.count
@@ -57,6 +56,19 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
         let data = imageList[indexPath.item]
         
         cell.imageSelection.image = data.image
+        
+        // TODO: 이 뷰에 들어왔을 때 profileSettingView의 이미지 셀이 선택된 상태로 표시
+//        print("1️⃣", imageContents ?? "")
+//        print("2️⃣", cell.imageSelection.image ?? "")
+//        print("3️⃣", imageContents == cell.imageSelection.image)
+//        
+//        if imageContents == cell.imageSelection.image {
+//            print("4️⃣", indexPath.item)
+//            cell.isSelected = true
+//            print("5️⃣", cell.isSelected)
+//        } else {
+//            cell.isSelected = false
+//        }
         
         return cell
     }

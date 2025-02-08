@@ -21,7 +21,6 @@ final class ProfileSettingView: BaseView {
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
-    // TODO: sampleButton이 아닌 실제 MBTI버튼으로 교체
     let mbtiEButton = MBTIButton(title: "E")
     let mbtiIButton = MBTIButton(title: "I")
     
