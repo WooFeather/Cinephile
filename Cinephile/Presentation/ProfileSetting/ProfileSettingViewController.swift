@@ -10,6 +10,10 @@ import UIKit
 final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
+    private lazy var mbtiEIButtonArray: [UIButton] = [profileSettingView.mbtiEButton, profileSettingView.mbtiIButton]
+    private lazy var mbtiSNButtonArray: [UIButton] = [profileSettingView.mbtiSButton, profileSettingView.mbtiNButton]
+    private lazy var mbtiTFButtonArray: [UIButton] = [profileSettingView.mbtiTButton, profileSettingView.mbtiFButton]
+    private lazy var mbtiJPButtonArray: [UIButton] = [profileSettingView.mbtiJButton, profileSettingView.mbtiPButton]
     var imageContents: UIImage?
     var nicknameContents: String?
     var reSaveNickname: ((String) -> Void)?
@@ -34,8 +38,14 @@ final class ProfileSettingViewController: BaseViewController {
         profileSettingView.nicknameTextField.delegate = self
         receiveImage()
         
-        profileSettingView.sampleButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
-        profileSettingView.sampleButton2.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
+        profileSettingView.mbtiEButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiIButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiSButton.addTarget(self, action: #selector(mbtiSNButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiNButton.addTarget(self, action: #selector(mbtiSNButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiTButton.addTarget(self, action: #selector(mbtiTFButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiFButton.addTarget(self, action: #selector(mbtiTFButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiJButton.addTarget(self, action: #selector(mbtiJPButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiPButton.addTarget(self, action: #selector(mbtiJPButtonTapped), for: .touchUpInside)
     }
     
     override func configureView() {
@@ -125,8 +135,27 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     @objc
-    private func toggleButton(_ sender: UIButton) {
-        for i in profileSettingView.sampleButtonArray {
+    private func mbtiEIButtonTapped(_ sender: UIButton) {
+        toggleButton(sender, array: mbtiEIButtonArray)
+    }
+    
+    @objc
+    private func mbtiSNButtonTapped(_ sender: UIButton) {
+        toggleButton(sender, array: mbtiSNButtonArray)
+    }
+    
+    @objc
+    private func mbtiTFButtonTapped(_ sender: UIButton) {
+        toggleButton(sender, array: mbtiTFButtonArray)
+    }
+    
+    @objc
+    private func mbtiJPButtonTapped(_ sender: UIButton) {
+        toggleButton(sender, array: mbtiJPButtonArray)
+    }
+    
+    private func toggleButton(_ sender: UIButton, array: [UIButton]) {
+        for i in array {
             // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
             // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
             if i == sender {

@@ -14,19 +14,37 @@ final class ProfileSettingView: BaseView {
     private let cameraImageView = UIImageView()
     private let imageList = ProfileImage.allCases
     private let mbtiLabel = UILabel()
+    private let mbtiESTJStackView = UIStackView()
+    private let mbtiINFPStackView = UIStackView()
     let doneButton = ActionButton(title: "완료")
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
     // TODO: sampleButton이 아닌 실제 MBTI버튼으로 교체
-    let sampleButton = MBTIButton(title: "E")
-    let sampleButton2 = MBTIButton(title: "I")
-    lazy var sampleButtonArray: [UIButton] = [sampleButton, sampleButton2]
+    let mbtiEButton = MBTIButton(title: "E")
+    let mbtiIButton = MBTIButton(title: "I")
+    
+    let mbtiSButton = MBTIButton(title: "S")
+    let mbtiNButton = MBTIButton(title: "N")
+    
+    let mbtiTButton = MBTIButton(title: "T")
+    let mbtiFButton = MBTIButton(title: "F")
+    
+    let mbtiJButton = MBTIButton(title: "J")
+    let mbtiPButton = MBTIButton(title: "P")
     
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, sampleButton, sampleButton2, mbtiLabel].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, mbtiLabel, mbtiESTJStackView, mbtiINFPStackView].forEach {
             addSubview($0)
+        }
+        
+        [mbtiEButton, mbtiSButton, mbtiTButton, mbtiJButton].forEach {
+            mbtiESTJStackView.addArrangedSubview($0)
+        }
+        
+        [mbtiIButton, mbtiNButton, mbtiFButton, mbtiPButton].forEach {
+            mbtiINFPStackView.addArrangedSubview($0)
         }
     }
     
@@ -62,21 +80,27 @@ final class ProfileSettingView: BaseView {
         }
         
         mbtiLabel.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.top).offset(48)
+            make.top.equalTo(statusLabel.snp.bottom).offset(36)
             make.leading.equalToSuperview().offset(20)
             make.height.equalTo(20)
         }
         
-        sampleButton.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.top).offset(48)
-            make.leading.equalTo(mbtiLabel.snp.trailing).offset(68)
-            make.size.equalTo(50)
+        mbtiESTJStackView.snp.makeConstraints { make in
+            make.top.equalTo(statusLabel.snp.bottom).offset(36)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(50)
         }
         
-        sampleButton2.snp.makeConstraints { make in
-            make.top.equalTo(sampleButton.snp.bottom).offset(16)
-            make.centerX.equalTo(sampleButton.snp.centerX)
-            make.size.equalTo(50)
+        mbtiINFPStackView.snp.makeConstraints { make in
+            make.top.equalTo(mbtiESTJStackView.snp.bottom).offset(10)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(50)
+        }
+        
+        [mbtiEButton, mbtiIButton, mbtiSButton, mbtiNButton, mbtiTButton, mbtiFButton, mbtiJButton, mbtiPButton].forEach {
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(50)
+            }
         }
         
         if !UserDefaultsManager.shared.isSigned {
@@ -100,6 +124,7 @@ final class ProfileSettingView: BaseView {
             self.cameraImageView.layer.cornerRadius = self.cameraImageView.frame.width / 2
         }
         
+        nicknameTextField.attributedPlaceholder = NSAttributedString(string: "닉네임을 입력해주세요 :)", attributes: [NSAttributedString.Key.foregroundColor : UIColor.cinePrimaryGray])
         nicknameTextField.borderStyle = .none
         nicknameTextField.textColor = .cineSecondaryGray
         nicknameTextField.tintColor = .cineSecondaryGray
@@ -111,6 +136,9 @@ final class ProfileSettingView: BaseView {
         
         mbtiLabel.text = "MBTI"
         mbtiLabel.font = .boldSystemFont(ofSize: 16)
+        
+        mbtiESTJStackView.spacing = 10
+        mbtiINFPStackView.spacing = 10
         
         if !UserDefaultsManager.shared.isSigned {
             doneButton.isEnabled = false
