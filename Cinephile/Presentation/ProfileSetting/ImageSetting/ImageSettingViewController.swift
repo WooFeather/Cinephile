@@ -26,10 +26,13 @@ final class ImageSettingViewController: BaseViewController {
     }
     
     override func configureEssential() {
-        navigationItem.title = "프로필 이미지 설정"
         imageSettingView.imageCollectionView.delegate = self
         imageSettingView.imageCollectionView.dataSource = self
         imageSettingView.imageCollectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: ImageCollectionViewCell.id)
+    }
+    
+    override func configureView() {
+        navigationItem.title = "프로필 이미지 설정"
     }
     
     override func bindData() {

@@ -5,18 +5,14 @@
 //  Created by 조우현 on 1/24/25.
 //
 
+// MARK: - MBTI 버튼을 두번씩 눌러야되는 문제 발생........
+
 import UIKit
 
 final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
     private let viewModel = ProfileSettingViewModel()
-    private var isNicknameValidate = false
-    private var isButtonValidate = false
-    private lazy var mbtiEIButtonArray: [UIButton] = [profileSettingView.mbtiEButton, profileSettingView.mbtiIButton]
-    private lazy var mbtiSNButtonArray: [UIButton] = [profileSettingView.mbtiSButton, profileSettingView.mbtiNButton]
-    private lazy var mbtiTFButtonArray: [UIButton] = [profileSettingView.mbtiTButton, profileSettingView.mbtiFButton]
-    private lazy var mbtiJPButtonArray: [UIButton] = [profileSettingView.mbtiJButton, profileSettingView.mbtiPButton]
     var imageContents: UIImage?
     var nicknameContents: String?
     var reSaveNickname: ((String) -> Void)?
@@ -38,14 +34,14 @@ final class ProfileSettingViewController: BaseViewController {
         
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(nicknameTextFieldEditingChanged), for: .editingChanged)
-        profileSettingView.mbtiEButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiIButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiSButton.addTarget(self, action: #selector(mbtiSNButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiNButton.addTarget(self, action: #selector(mbtiSNButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiTButton.addTarget(self, action: #selector(mbtiTFButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiFButton.addTarget(self, action: #selector(mbtiTFButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiJButton.addTarget(self, action: #selector(mbtiJPButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiPButton.addTarget(self, action: #selector(mbtiJPButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiEButton.addTarget(self, action: #selector(mbtiEButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiIButton.addTarget(self, action: #selector(mbtiIButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiSButton.addTarget(self, action: #selector(mbtiSButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiNButton.addTarget(self, action: #selector(mbtiNButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiTButton.addTarget(self, action: #selector(mbtiTButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiFButton.addTarget(self, action: #selector(mbtiFButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiJButton.addTarget(self, action: #selector(mbtiJButtonTapped), for: .touchUpInside)
+        profileSettingView.mbtiPButton.addTarget(self, action: #selector(mbtiPButtonTapped), for: .touchUpInside)
     }
     
     override func configureView() {
@@ -82,50 +78,15 @@ final class ProfileSettingViewController: BaseViewController {
             self.profileSettingView.statusLabel.text = text
         }
         
-        // 상태레이블 색상 및 isNicknameValidate
-        viewModel.outputNicknameValidate.lazyBind { status in
+        // 상태레이블 색상
+        viewModel.outputStatusLabelTextColor.lazyBind { status in
             self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
-            self.isNicknameValidate = status
         }
         
-        // TODO: 이 안의 로직도 VM으로 빼기
-        viewModel.outputMbtiEIButtonTapped.lazyBind { sender in
-            print("outputMbtiEIButtonTapped bind")
-            self.toggleButton(sender ?? UIButton(), array: self.mbtiEIButtonArray)
-            self.validateButton()
-            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
+        viewModel.outputDoneButtonEnabled.lazyBind { status in
+            self.profileSettingView.doneButton.isEnabled = status
             if UserDefaultsManager.shared.isSigned {
-                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
-            }
-        }
-        
-        viewModel.outputMbtiSNButtonTapped.lazyBind { sender in
-            print("outputMbtiSNButtonTapped bind")
-            self.toggleButton(sender ?? UIButton(), array: self.mbtiSNButtonArray)
-            self.validateButton()
-            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
-            }
-        }
-        
-        viewModel.outputMbtiTFButtonTapped.lazyBind { sender in
-            print("outputMbtiTFButtonTapped bind")
-            self.toggleButton(sender ?? UIButton(), array: self.mbtiTFButtonArray)
-            self.validateButton()
-            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
-            }
-        }
-        
-        viewModel.outputMbtiJPButtonTapped.lazyBind { sender in
-            print("outputMbtiJPButtonTapped bind")
-            self.toggleButton(sender ?? UIButton(), array: self.mbtiJPButtonArray)
-            self.validateButton()
-            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
+                self.navigationItem.rightBarButtonItem?.isEnabled = status
             }
         }
         
@@ -140,41 +101,6 @@ final class ProfileSettingViewController: BaseViewController {
         
         viewModel.outputCloseButtonTapped.lazyBind { _ in
             self.dismiss(animated: true)
-        }
-    }
-    
-    private func toggleButton(_ sender: UIButton, array: [UIButton]) {
-        for i in array {
-            // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
-            // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
-            if i == sender {
-                if !i.isSelected {
-                    i.isSelected = true
-                } else {
-                    i.isSelected = false
-                }
-            } else {
-                i.isSelected = false
-            }
-        }
-    }
-    
-    private func validateButton() {
-        if (profileSettingView.mbtiEButton.isSelected || profileSettingView.mbtiIButton.isSelected) &&
-            (profileSettingView.mbtiSButton.isSelected || profileSettingView.mbtiNButton.isSelected) &&
-            (profileSettingView.mbtiTButton.isSelected || profileSettingView.mbtiFButton.isSelected) &&
-            (profileSettingView.mbtiJButton.isSelected || profileSettingView.mbtiPButton.isSelected) {
-            isButtonValidate = true
-        } else {
-            isButtonValidate = false
-        }
-    }
-    
-    private func isDoneButtonEnabled() -> Bool {
-        if isNicknameValidate && isButtonValidate {
-            return true
-        } else {
-            return false
         }
     }
     
@@ -202,23 +128,51 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     @objc
-    private func mbtiEIButtonTapped(_ sender: UIButton) {
+    private func mbtiEButtonTapped(_ sender: UIButton) {
         viewModel.inputMbtiEIButtonTapped.value = sender
+        viewModel.inputEButton.value = sender
     }
     
     @objc
-    private func mbtiSNButtonTapped(_ sender: UIButton) {
+    private func mbtiIButtonTapped(_ sender: UIButton) {
+        viewModel.inputMbtiEIButtonTapped.value = sender
+        viewModel.inputIButton.value = sender
+    }
+    
+    @objc
+    private func mbtiSButtonTapped(_ sender: UIButton) {
         viewModel.inputMbtiSNButtonTapped.value = sender
+        viewModel.inputSButton.value = sender
     }
     
     @objc
-    private func mbtiTFButtonTapped(_ sender: UIButton) {
+    private func mbtiNButtonTapped(_ sender: UIButton) {
+        viewModel.inputMbtiSNButtonTapped.value = sender
+        viewModel.inputNButton.value = sender
+    }
+    
+    @objc
+    private func mbtiTButtonTapped(_ sender: UIButton) {
         viewModel.inputMbtiTFButtonTapped.value = sender
+        viewModel.inputTButton.value = sender
     }
     
     @objc
-    private func mbtiJPButtonTapped(_ sender: UIButton) {
+    private func mbtiFButtonTapped(_ sender: UIButton) {
+        viewModel.inputMbtiTFButtonTapped.value = sender
+        viewModel.inputFButton.value = sender
+    }
+    
+    @objc
+    private func mbtiJButtonTapped(_ sender: UIButton) {
         viewModel.inputMbtiJPButtonTapped.value = sender
+        viewModel.inputJButton.value = sender
+    }
+    
+    @objc
+    private func mbtiPButtonTapped(_ sender: UIButton) {
+        viewModel.inputMbtiJPButtonTapped.value = sender
+        viewModel.inputPButton.value = sender
     }
 }
 
