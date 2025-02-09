@@ -22,7 +22,6 @@ final class ProfileSettingViewModel {
     let inputProfileImage: Observable<UIImage?> = Observable(nil)
     let inputCloseButtonTapped: Observable<Void?> = Observable(nil)
     
-    // 전체가 선택되었는지 확인을 위한 버튼 input
     let inputEButton: Observable<UIButton> = Observable(UIButton())
     let inputIButton: Observable<UIButton> = Observable(UIButton())
     let inputSButton: Observable<UIButton> = Observable(UIButton())
@@ -31,12 +30,6 @@ final class ProfileSettingViewModel {
     let inputFButton: Observable<UIButton> = Observable(UIButton())
     let inputJButton: Observable<UIButton> = Observable(UIButton())
     let inputPButton: Observable<UIButton> = Observable(UIButton())
-    
-    // 토글기능을 위한 버튼 input
-    let inputMbtiEIButtonTapped: Observable<UIButton> = Observable(UIButton())
-    let inputMbtiSNButtonTapped: Observable<UIButton> = Observable(UIButton())
-    let inputMbtiTFButtonTapped: Observable<UIButton> = Observable(UIButton())
-    let inputMbtiJPButtonTapped: Observable<UIButton> = Observable(UIButton())
     
     let outputProfileImage: Observable<UIImage?> = Observable(nil)
     let outputImageViewTapped: Observable<Void?> = Observable(nil)
@@ -64,36 +57,44 @@ final class ProfileSettingViewModel {
             self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
         }
         
-        inputMbtiEIButtonTapped.bind { button in
-            print("inputMbtiEIButtonTapped bind")
-            self.mbtiMbtiButtonArray = [self.inputEButton.value, self.inputIButton.value]
-            self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-            self.validateButton()
-            self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+        [inputEButton, inputIButton].forEach {
+            $0.bind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.inputEButton.value, self.inputIButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
         }
         
-        inputMbtiSNButtonTapped.bind { button in
-            print("inputMbtiSNButtonTapped bind")
-            self.mbtiMbtiButtonArray = [self.inputNButton.value, self.inputSButton.value]
-            self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-            self.validateButton()
-            self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+        [inputSButton, inputNButton].forEach {
+            $0.bind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.inputSButton.value, self.inputNButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
         }
         
-        inputMbtiTFButtonTapped.bind { button in
-            print("inputMbtiSNButtonTapped bind")
-            self.mbtiMbtiButtonArray = [self.inputTButton.value, self.inputFButton.value]
-            self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-            self.validateButton()
-            self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+        [inputTButton, inputFButton].forEach {
+            $0.bind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.inputTButton.value, self.inputFButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
         }
         
-        inputMbtiJPButtonTapped.bind { button in
-            print("inputMbtiSNButtonTapped bind")
-            self.mbtiMbtiButtonArray = [self.inputJButton.value, self.inputPButton.value]
-            self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-            self.validateButton()
-            self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+        [inputJButton, inputPButton].forEach {
+            $0.bind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.inputJButton.value, self.inputPButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
         }
         
         inputDoneButtonTapped.lazyBind { _ in

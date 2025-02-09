@@ -5,8 +5,6 @@
 //  Created by 조우현 on 1/24/25.
 //
 
-// MARK: - MBTI 버튼을 두번씩 눌러야되는 문제 발생........
-
 import UIKit
 
 final class ProfileSettingViewController: BaseViewController {
@@ -129,49 +127,41 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func mbtiEButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiEIButtonTapped.value = sender
         viewModel.inputEButton.value = sender
     }
     
     @objc
     private func mbtiIButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiEIButtonTapped.value = sender
         viewModel.inputIButton.value = sender
     }
     
     @objc
     private func mbtiSButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiSNButtonTapped.value = sender
         viewModel.inputSButton.value = sender
     }
     
     @objc
     private func mbtiNButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiSNButtonTapped.value = sender
         viewModel.inputNButton.value = sender
     }
     
     @objc
     private func mbtiTButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiTFButtonTapped.value = sender
         viewModel.inputTButton.value = sender
     }
     
     @objc
     private func mbtiFButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiTFButtonTapped.value = sender
         viewModel.inputFButton.value = sender
     }
     
     @objc
     private func mbtiJButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiJPButtonTapped.value = sender
         viewModel.inputJButton.value = sender
     }
     
     @objc
     private func mbtiPButtonTapped(_ sender: UIButton) {
-        viewModel.inputMbtiJPButtonTapped.value = sender
         viewModel.inputPButton.value = sender
     }
 }
