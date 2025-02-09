@@ -8,6 +8,8 @@
 import UIKit
 
 final class ProfileSettingViewModel {
+    private var reSaveNickname: ((String) -> Void)?
+    private var reSaveImage: ((UIImage) -> Void)?
     
     let inputImageViewTapped: Observable<Void?> = Observable(nil)
     let inputNicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
@@ -15,6 +17,9 @@ final class ProfileSettingViewModel {
     let inputMbtiSNButtonTapped: Observable<UIButton?> = Observable(nil)
     let inputMbtiTFButtonTapped: Observable<UIButton?> = Observable(nil)
     let inputMbtiJPButtonTapped: Observable<UIButton?> = Observable(nil)
+    let inputDoneButtonTapped: Observable<Void?> = Observable(nil)
+    let inputNicknameTextFieldText: Observable<String?> = Observable(nil)
+    let inputProfileImage: Observable<UIImage?> = Observable(nil)
     
     let outputImageViewTapped: Observable<Void?> = Observable(nil)
     let outputStatusLabelText: Observable<String> = Observable("") // 상태레이블에 표시될 텍스트
@@ -25,6 +30,7 @@ final class ProfileSettingViewModel {
     let outputMbtiJPButtonTapped: Observable<UIButton?> = Observable(nil)
     // let outputButtonValidate: Observable<Bool> = Observable(false) // isButtonValidate 변수에 들어갈 값(mbti button이 전부 선택되었는지 확인)
     // let outputDoneButtonEnabled: Observable<Bool> = Observable(false) // isNicknameValidate, isButtonValidate 두 조건이 모두 만족됐을때의 값
+    let outputDoneButtonTapped: Observable<Void?> = Observable(nil)
     
     // MARK: - Initializer
     init() {
@@ -57,6 +63,11 @@ final class ProfileSettingViewModel {
         inputMbtiJPButtonTapped.lazyBind { button in
             print("inputMbtiJPButtonTapped bind")
             self.outputMbtiJPButtonTapped.value = button
+        }
+        
+        inputDoneButtonTapped.lazyBind { _ in
+            self.saveData()
+            self.outputDoneButtonTapped.value = ()
         }
     }
     
@@ -105,6 +116,14 @@ final class ProfileSettingViewModel {
 //            if UserDefaultsManager.shared.isSigned {
 //                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
 //            }
+        }
+    }
+    
+    private func saveData() {
+        UserDefaultsManager.shared.nickname = inputNicknameTextFieldText.value ?? ""
+        UserDefaultsManager.shared.joinDate = Date().toJoinString()
+        if let imageData = inputProfileImage.value?.pngData() {
+            UserDefaultsManager.shared.profileImage = imageData
         }
     }
 }

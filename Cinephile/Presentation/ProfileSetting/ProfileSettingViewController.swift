@@ -123,6 +123,11 @@ final class ProfileSettingViewController: BaseViewController {
                 self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
             }
         }
+        
+        viewModel.outputDoneButtonTapped.lazyBind { _ in
+            let vc = TabBarController()
+            self.changeRootViewController(vc: vc, isSigned: true)
+        }
     }
     
     private func toggleButton(_ sender: UIButton, array: [UIButton]) {
@@ -183,18 +188,29 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func doneButtonTapped() {
         if UserDefaultsManager.shared.isSigned {
+            // TODO: isSigned됐을때도 분리 => settingView부분까지 수정해야해서 일단 보류
             reSaveImage?(profileSettingView.profileImageView.image ?? UIImage())
             reSaveNickname?(profileSettingView.nicknameTextField.text ?? "")
             dismiss(animated: true)
         } else {
-            let vc = TabBarController()
-            UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
-            UserDefaultsManager.shared.joinDate = Date().toJoinString()
-            if let imageData = profileSettingView.profileImageView.image?.pngData() {
-                UserDefaultsManager.shared.profileImage = imageData
-            }
-            changeRootViewController(vc: vc, isSigned: true)
+            viewModel.inputNicknameTextFieldText.value = profileSettingView.nicknameTextField.text
+            viewModel.inputProfileImage.value = profileSettingView.profileImageView.image
+            viewModel.inputDoneButtonTapped.value = ()
         }
+        
+//        if UserDefaultsManager.shared.isSigned {
+//            reSaveImage?(profileSettingView.profileImageView.image ?? UIImage())
+//            reSaveNickname?(profileSettingView.nicknameTextField.text ?? "")
+//            dismiss(animated: true)
+//        } else {
+//            let vc = TabBarController()
+//            UserDefaultsManager.shared.nickname = profileSettingView.nicknameTextField.text ?? ""
+//            UserDefaultsManager.shared.joinDate = Date().toJoinString()
+//            if let imageData = profileSettingView.profileImageView.image?.pngData() {
+//                UserDefaultsManager.shared.profileImage = imageData
+//            }
+//            changeRootViewController(vc: vc, isSigned: true)
+//        }
     }
     
     @objc
