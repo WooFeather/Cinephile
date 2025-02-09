@@ -73,7 +73,7 @@ final class ProfileSettingViewController: BaseViewController {
         viewModel.outputImageViewTapped.lazyBind { _ in
             print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
-            vc.imageContents = self.profileSettingView.profileImageView.image
+            vc.viewModel.outputProfileImage.value = self.profileSettingView.profileImageView.image
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
