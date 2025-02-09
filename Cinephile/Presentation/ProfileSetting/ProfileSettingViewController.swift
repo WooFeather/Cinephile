@@ -82,6 +82,47 @@ final class ProfileSettingViewController: BaseViewController {
             self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
             self.isNicknameValidate = status
         }
+        
+        // TODO: 이 안의 로직도 VM으로 빼기
+        viewModel.outputMbtiEIButtonTapped.lazyBind { sender in
+            print("outputMbtiEIButtonTapped bind")
+            self.toggleButton(sender ?? UIButton(), array: self.mbtiEIButtonArray)
+            self.validateButton()
+            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
+            if UserDefaultsManager.shared.isSigned {
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
+            }
+        }
+        
+        viewModel.outputMbtiSNButtonTapped.lazyBind { sender in
+            print("outputMbtiSNButtonTapped bind")
+            self.toggleButton(sender ?? UIButton(), array: self.mbtiSNButtonArray)
+            self.validateButton()
+            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
+            if UserDefaultsManager.shared.isSigned {
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
+            }
+        }
+        
+        viewModel.outputMbtiTFButtonTapped.lazyBind { sender in
+            print("outputMbtiTFButtonTapped bind")
+            self.toggleButton(sender ?? UIButton(), array: self.mbtiTFButtonArray)
+            self.validateButton()
+            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
+            if UserDefaultsManager.shared.isSigned {
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
+            }
+        }
+        
+        viewModel.outputMbtiJPButtonTapped.lazyBind { sender in
+            print("outputMbtiJPButtonTapped bind")
+            self.toggleButton(sender ?? UIButton(), array: self.mbtiJPButtonArray)
+            self.validateButton()
+            self.profileSettingView.doneButton.isEnabled = self.isDoneButtonEnabled()
+            if UserDefaultsManager.shared.isSigned {
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.isDoneButtonEnabled()
+            }
+        }
     }
     
     private func toggleButton(_ sender: UIButton, array: [UIButton]) {
@@ -172,42 +213,22 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func mbtiEIButtonTapped(_ sender: UIButton) {
-        toggleButton(sender, array: mbtiEIButtonArray)
-        validateButton()
-        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-        if UserDefaultsManager.shared.isSigned {
-            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-        }
+        viewModel.inputMbtiEIButtonTapped.value = sender
     }
     
     @objc
     private func mbtiSNButtonTapped(_ sender: UIButton) {
-        toggleButton(sender, array: mbtiSNButtonArray)
-        validateButton()
-        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-        if UserDefaultsManager.shared.isSigned {
-            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-        }
+        viewModel.inputMbtiSNButtonTapped.value = sender
     }
     
     @objc
     private func mbtiTFButtonTapped(_ sender: UIButton) {
-        toggleButton(sender, array: mbtiTFButtonArray)
-        validateButton()
-        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-        if UserDefaultsManager.shared.isSigned {
-            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-        }
+        viewModel.inputMbtiTFButtonTapped.value = sender
     }
     
     @objc
     private func mbtiJPButtonTapped(_ sender: UIButton) {
-        toggleButton(sender, array: mbtiJPButtonArray)
-        validateButton()
-        profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-        if UserDefaultsManager.shared.isSigned {
-            navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-        }
+        viewModel.inputMbtiJPButtonTapped.value = sender
     }
 }
 
