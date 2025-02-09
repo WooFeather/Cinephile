@@ -8,9 +8,10 @@
 import UIKit
 
 final class ProfileSettingViewModel {
-    private var reSaveNickname: ((String) -> Void)?
-    private var reSaveImage: ((UIImage) -> Void)?
+    var reSaveNickname: ((String) -> Void)?
+    var reSaveImage: ((UIImage) -> Void)?
     
+    let inputViewDidLoadTrigger: Observable<Void?> = Observable(nil)
     let inputImageViewTapped: Observable<Void?> = Observable(nil)
     let inputNicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
     let inputMbtiEIButtonTapped: Observable<UIButton?> = Observable(nil)
@@ -22,6 +23,7 @@ final class ProfileSettingViewModel {
     let inputProfileImage: Observable<UIImage?> = Observable(nil)
     let inputCloseButtonTapped: Observable<Void?> = Observable(nil)
     
+    let outputProfileImage: Observable<UIImage?> = Observable(nil)
     let outputImageViewTapped: Observable<Void?> = Observable(nil)
     let outputStatusLabelText: Observable<String> = Observable("") // 상태레이블에 표시될 텍스트
     let outputNicknameValidate: Observable<Bool> = Observable(false) // 상태레이블 텍스트컬러와 isNicknameValidate 변수에 들어갈 값
@@ -37,6 +39,10 @@ final class ProfileSettingViewModel {
     // MARK: - Initializer
     init() {
         print("ProfileSettingViewModel Init")
+        
+        inputViewDidLoadTrigger.lazyBind { _ in
+            self.receiveImage()
+        }
         
         inputImageViewTapped.lazyBind { _ in
             print("inputImageViewTapped bind")
@@ -84,6 +90,22 @@ final class ProfileSettingViewModel {
     }
     
     // MARK: - Functions
+    
+    private func receiveImage() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(imageReceivedNotification),
+            name: NSNotification.Name("ImageReceived"),
+            object: nil
+        )
+    }
+    
+    @objc
+    private func imageReceivedNotification(value: NSNotification) {
+        if let image = value.userInfo!["image"] as? UIImage {
+            outputProfileImage.value = image
+        }
+    }
     
     private func validateText() {
         guard let text = inputNicknameTextFieldEditingChanged.value else { return }

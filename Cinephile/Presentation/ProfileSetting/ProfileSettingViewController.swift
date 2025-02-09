@@ -29,7 +29,6 @@ final class ProfileSettingViewController: BaseViewController {
     
     override func configureEssential() {
         profileSettingView.nicknameTextField.delegate = self
-        receiveImage()
     }
     
     override func configureAction() {
@@ -65,6 +64,12 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     override func bindData() {
+        viewModel.inputViewDidLoadTrigger.value = ()
+        
+        viewModel.outputProfileImage.lazyBind { image in
+            self.profileSettingView.profileImageView.image = image
+        }
+        
         viewModel.outputImageViewTapped.lazyBind { _ in
             print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
@@ -173,15 +178,6 @@ final class ProfileSettingViewController: BaseViewController {
         }
     }
     
-    private func receiveImage() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(imageReceivedNotification),
-            name: NSNotification.Name("ImageReceived"),
-            object: nil
-        )
-    }
-    
     // MARK: - Actions
     @objc
     private func profileImageTapped(sender: UITapGestureRecognizer) {
@@ -203,13 +199,6 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func closeButtonTapped() {
         viewModel.inputCloseButtonTapped.value = ()
-    }
-    
-    @objc
-    private func imageReceivedNotification(value: NSNotification) {
-        if let image = value.userInfo!["image"] as? UIImage {
-            profileSettingView.profileImageView.image = image
-        }
     }
     
     @objc
