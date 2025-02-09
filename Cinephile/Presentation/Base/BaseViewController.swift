@@ -15,6 +15,8 @@ class BaseViewController: UIViewController {
         
         configureView()
         configureEssential()
+        configureAction()
+        bindData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -26,4 +28,8 @@ class BaseViewController: UIViewController {
     func configureView() { }
     
     func configureEssential() { }
+    
+    func configureAction() { }
+    
+    func bindData() { }
 }

@@ -10,6 +10,7 @@ import UIKit
 final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
+    private let viewModel = ProfileSettingViewModel()
     private var isNicknameValidate = false
     private var isButtonValidate = false
     private lazy var mbtiEIButtonArray: [UIButton] = [profileSettingView.mbtiEButton, profileSettingView.mbtiIButton]
@@ -21,25 +22,23 @@ final class ProfileSettingViewController: BaseViewController {
     var reSaveNickname: ((String) -> Void)?
     var reSaveImage: ((UIImage) -> Void)?
     
+    // MARK: - Functions
     override func loadView() {
         view = profileSettingView
     }
     
     override func configureEssential() {
-        navigationItem.title = "프로필 설정"
-        if UserDefaultsManager.shared.isSigned {
-            sheetPresentationController?.prefersGrabberVisible = true
-            navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
-            navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
-        }
+        profileSettingView.nicknameTextField.delegate = self
+        receiveImage()
+    }
+    
+    override func configureAction() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
         profileSettingView.profileImageView.addGestureRecognizer(tapGesture)
         profileSettingView.profileImageView.isUserInteractionEnabled = true
-        profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
-        profileSettingView.nicknameTextField.addTarget(self, action: #selector(validateText), for: .editingChanged)
-        profileSettingView.nicknameTextField.delegate = self
-        receiveImage()
         
+        profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        profileSettingView.nicknameTextField.addTarget(self, action: #selector(nicknameTextFieldEditingChanged), for: .editingChanged)
         profileSettingView.mbtiEButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
         profileSettingView.mbtiIButton.addTarget(self, action: #selector(mbtiEIButtonTapped), for: .touchUpInside)
         profileSettingView.mbtiSButton.addTarget(self, action: #selector(mbtiSNButtonTapped), for: .touchUpInside)
@@ -51,64 +50,93 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     override func configureView() {
+        navigationItem.title = "프로필 설정"
+        
+        if UserDefaultsManager.shared.isSigned {
+            sheetPresentationController?.prefersGrabberVisible = true
+            navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
+            navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
+        }
+        
         if UserDefaultsManager.shared.isSigned {
             profileSettingView.profileImageView.image = imageContents
             profileSettingView.nicknameTextField.text = nicknameContents
         }
     }
     
-    @objc
-    private func profileImageTapped(sender: UITapGestureRecognizer) {
-        if sender.state == .ended {
+    override func bindData() {
+        viewModel.outputImageViewTapped.lazyBind { _ in
+            print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
-            vc.imageContents = profileSettingView.profileImageView.image
-            navigationController?.pushViewController(vc, animated: true)
+            vc.imageContents = self.profileSettingView.profileImageView.image
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        // 상태레이블 텍스트
+        viewModel.outputStatusLabelText.lazyBind { text in
+            self.profileSettingView.statusLabel.text = text
+        }
+        
+        // 상태레이블 색상 및 isNicknameValidate
+        viewModel.outputNicknameValidate.lazyBind { status in
+            self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
+            self.isNicknameValidate = status
         }
     }
     
-    @objc
-    private func validateText() {
-        guard let trimmingText = profileSettingView.nicknameTextField.text?.trimmingCharacters(in: .whitespaces) else { return }
-        
-        // 숫자가 포함되어있는지 확인하는법
-        let decimalCharacters = CharacterSet.decimalDigits
-        let decimalRange = trimmingText.rangeOfCharacter(from: decimalCharacters)
-        // 위의 코드를 참고해 특수문자도 적용
-        let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
-        
-        if trimmingText.count < 2 || trimmingText.count > 10 {
-            profileSettingView.statusLabel.text = "2글자 이상 10글자 미만으로 설정해주세요"
-            profileSettingView.statusLabel.textColor = .cineConditionRed
-            isNicknameValidate = false
-            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-            }
-        } else if spacialRange != nil {
-            profileSettingView.statusLabel.text = "닉네임에 @, #, $, % 는 포함될 수 없어요"
-            profileSettingView.statusLabel.textColor = .cineConditionRed
-            isNicknameValidate = false
-            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-            }
-        } else if decimalRange != nil {
-            profileSettingView.statusLabel.text = "닉네임에 숫자는 포함할 수 없어요"
-            profileSettingView.statusLabel.textColor = .cineConditionRed
-            isNicknameValidate = false
-            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
-            }
-        } else {
-            profileSettingView.statusLabel.text = "사용할 수 있는 닉네임이에요"
-            profileSettingView.statusLabel.textColor = .cineConditionBlue
-            isNicknameValidate = true
-            profileSettingView.doneButton.isEnabled = isDoneButtonEnabled()
-            if UserDefaultsManager.shared.isSigned {
-                navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
+    private func toggleButton(_ sender: UIButton, array: [UIButton]) {
+        for i in array {
+            // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
+            // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
+            if i == sender {
+                if !i.isSelected {
+                    i.isSelected = true
+                } else {
+                    i.isSelected = false
+                }
+            } else {
+                i.isSelected = false
             }
         }
+    }
+    
+    private func validateButton() {
+        if (profileSettingView.mbtiEButton.isSelected || profileSettingView.mbtiIButton.isSelected) &&
+            (profileSettingView.mbtiSButton.isSelected || profileSettingView.mbtiNButton.isSelected) &&
+            (profileSettingView.mbtiTButton.isSelected || profileSettingView.mbtiFButton.isSelected) &&
+            (profileSettingView.mbtiJButton.isSelected || profileSettingView.mbtiPButton.isSelected) {
+            isButtonValidate = true
+        } else {
+            isButtonValidate = false
+        }
+    }
+    
+    private func isDoneButtonEnabled() -> Bool {
+        if isNicknameValidate && isButtonValidate {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func receiveImage() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(imageReceivedNotification),
+            name: NSNotification.Name("ImageReceived"),
+            object: nil
+        )
+    }
+    
+    // MARK: - Actions
+    @objc
+    private func profileImageTapped(sender: UITapGestureRecognizer) {
+        viewModel.inputImageViewTapped.value = ()
+    }
+    
+    @objc
+    private func nicknameTextFieldEditingChanged() {
+        viewModel.inputNicknameTextFieldEditingChanged.value = profileSettingView.nicknameTextField.text
     }
     
     @objc
@@ -181,52 +209,9 @@ final class ProfileSettingViewController: BaseViewController {
             navigationItem.rightBarButtonItem?.isEnabled = isDoneButtonEnabled()
         }
     }
-    
-    private func toggleButton(_ sender: UIButton, array: [UIButton]) {
-        for i in array {
-            // 조건1: 하나의 버튼이 true이면 다른 버튼은 false여야 함
-            // 조건2: 이미 true인 버튼을 탭하면 false로 바뀌어야 함
-            if i == sender {
-                if !i.isSelected {
-                    i.isSelected = true
-                } else {
-                    i.isSelected = false
-                }
-            } else {
-                i.isSelected = false
-            }
-        }
-    }
-    
-    private func validateButton() {
-        if (profileSettingView.mbtiEButton.isSelected || profileSettingView.mbtiIButton.isSelected) &&
-            (profileSettingView.mbtiSButton.isSelected || profileSettingView.mbtiNButton.isSelected) &&
-            (profileSettingView.mbtiTButton.isSelected || profileSettingView.mbtiFButton.isSelected) &&
-            (profileSettingView.mbtiJButton.isSelected || profileSettingView.mbtiPButton.isSelected) {
-            isButtonValidate = true
-        } else {
-            isButtonValidate = false
-        }
-    }
-    
-    private func isDoneButtonEnabled() -> Bool {
-        if isNicknameValidate && isButtonValidate {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    private func receiveImage() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(imageReceivedNotification),
-            name: NSNotification.Name("ImageReceived"),
-            object: nil
-        )
-    }
 }
 
+// MARK: - Extension
 extension ProfileSettingViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
