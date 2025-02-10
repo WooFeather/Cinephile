@@ -17,7 +17,7 @@ final class ImageSettingViewController: BaseViewController {
     // MARK: - LifeCycle
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.inputProfileImage.value = imageSettingView.previewImage.image
+        viewModel.input.profileImage.value = imageSettingView.previewImage.image
     }
     
     // MARK: - Functions
@@ -36,11 +36,11 @@ final class ImageSettingViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.outputProfileImage.bind { image in
+        viewModel.output.profileImage.bind { image in
             self.imageSettingView.previewImage.image = image
         }
         
-        viewModel.outputCellSelected.lazyBind { data in
+        viewModel.output.cellSelected.lazyBind { data in
             self.imageSettingView.previewImage.image = data?.image
         }
     }
@@ -77,6 +77,6 @@ extension ImageSettingViewController: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let data = imageList[indexPath.item]
-        viewModel.inputCellSelected.value = data
+        viewModel.input.cellSelected.value = data
     }
 }

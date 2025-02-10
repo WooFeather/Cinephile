@@ -58,37 +58,37 @@ final class ProfileSettingViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.inputViewDidLoadTrigger.value = ()
+        viewModel.input.viewDidLoadTrigger.value = ()
         
-        viewModel.outputProfileImage.lazyBind { image in
+        viewModel.output.profileImage.lazyBind { image in
             self.profileSettingView.profileImageView.image = image
         }
         
-        viewModel.outputImageViewTapped.lazyBind { _ in
+        viewModel.output.imageViewTapped.lazyBind { _ in
             print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
-            vc.viewModel.outputProfileImage.value = self.profileSettingView.profileImageView.image
+            vc.viewModel.output.profileImage.value = self.profileSettingView.profileImageView.image
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
         // 상태레이블 텍스트
-        viewModel.outputStatusLabelText.lazyBind { text in
+        viewModel.output.statusLabelText.lazyBind { text in
             self.profileSettingView.statusLabel.text = text
         }
         
         // 상태레이블 색상
-        viewModel.outputStatusLabelTextColor.lazyBind { status in
+        viewModel.output.statusLabelTextColor.lazyBind { status in
             self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
         }
         
-        viewModel.outputDoneButtonEnabled.lazyBind { status in
+        viewModel.output.doneButtonEnabled.lazyBind { status in
             self.profileSettingView.doneButton.isEnabled = status
             if UserDefaultsManager.shared.isSigned {
                 self.navigationItem.rightBarButtonItem?.isEnabled = status
             }
         }
         
-        viewModel.outputDoneButtonTapped.lazyBind { _ in
+        viewModel.output.doneButtonTapped.lazyBind { _ in
             if UserDefaultsManager.shared.isSigned {
                 self.dismiss(animated: true)
             } else {
@@ -97,7 +97,7 @@ final class ProfileSettingViewController: BaseViewController {
             }
         }
         
-        viewModel.outputCloseButtonTapped.lazyBind { _ in
+        viewModel.output.closeButtonTapped.lazyBind { _ in
             self.dismiss(animated: true)
         }
     }
@@ -105,64 +105,64 @@ final class ProfileSettingViewController: BaseViewController {
     // MARK: - Actions
     @objc
     private func profileImageTapped(sender: UITapGestureRecognizer) {
-        viewModel.inputImageViewTapped.value = ()
+        viewModel.input.imageViewTapped.value = ()
     }
     
     @objc
     private func nicknameTextFieldEditingChanged() {
-        viewModel.inputNicknameTextFieldEditingChanged.value = profileSettingView.nicknameTextField.text
+        viewModel.input.nicknameTextFieldEditingChanged.value = profileSettingView.nicknameTextField.text
     }
     
     @objc
     private func doneButtonTapped() {
-        viewModel.inputNicknameTextFieldText.value = profileSettingView.nicknameTextField.text
-        viewModel.inputProfileImage.value = profileSettingView.profileImageView.image
-        viewModel.inputDoneButtonTapped.value = ()
+        viewModel.input.nicknameTextFieldText.value = profileSettingView.nicknameTextField.text
+        viewModel.input.profileImage.value = profileSettingView.profileImageView.image
+        viewModel.input.doneButtonTapped.value = ()
     }
     
     @objc
     private func closeButtonTapped() {
-        viewModel.inputCloseButtonTapped.value = ()
+        viewModel.input.closeButtonTapped.value = ()
     }
     
     @objc
     private func mbtiEButtonTapped(_ sender: UIButton) {
-        viewModel.inputEButton.value = sender
+        viewModel.input.eButton.value = sender
     }
     
     @objc
     private func mbtiIButtonTapped(_ sender: UIButton) {
-        viewModel.inputIButton.value = sender
+        viewModel.input.iButton.value = sender
     }
     
     @objc
     private func mbtiSButtonTapped(_ sender: UIButton) {
-        viewModel.inputSButton.value = sender
+        viewModel.input.sButton.value = sender
     }
     
     @objc
     private func mbtiNButtonTapped(_ sender: UIButton) {
-        viewModel.inputNButton.value = sender
+        viewModel.input.nButton.value = sender
     }
     
     @objc
     private func mbtiTButtonTapped(_ sender: UIButton) {
-        viewModel.inputTButton.value = sender
+        viewModel.input.tButton.value = sender
     }
     
     @objc
     private func mbtiFButtonTapped(_ sender: UIButton) {
-        viewModel.inputFButton.value = sender
+        viewModel.input.fButton.value = sender
     }
     
     @objc
     private func mbtiJButtonTapped(_ sender: UIButton) {
-        viewModel.inputJButton.value = sender
+        viewModel.input.jButton.value = sender
     }
     
     @objc
     private func mbtiPButtonTapped(_ sender: UIButton) {
-        viewModel.inputPButton.value = sender
+        viewModel.input.pButton.value = sender
     }
 }
 

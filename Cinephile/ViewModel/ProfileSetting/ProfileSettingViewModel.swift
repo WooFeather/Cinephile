@@ -7,106 +7,50 @@
 
 import UIKit
 
-final class ProfileSettingViewModel {
+final class ProfileSettingViewModel: BaseViewModel {
+    private(set) var input: Input
+    private(set) var output: Output
     private var isNicknameValidate = false
     private var isButtonValidate = false
     private var mbtiMbtiButtonArray: [UIButton] = []
     var reSaveNickname: ((String) -> Void)?
     var reSaveImage: ((UIImage) -> Void)?
     
-    let inputViewDidLoadTrigger: Observable<Void?> = Observable(nil)
-    let inputImageViewTapped: Observable<Void?> = Observable(nil)
-    let inputNicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
-    let inputDoneButtonTapped: Observable<Void?> = Observable(nil)
-    let inputNicknameTextFieldText: Observable<String?> = Observable(nil)
-    let inputProfileImage: Observable<UIImage?> = Observable(nil)
-    let inputCloseButtonTapped: Observable<Void?> = Observable(nil)
+    struct Input {
+        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let imageViewTapped: Observable<Void?> = Observable(nil)
+        let nicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
+        let doneButtonTapped: Observable<Void?> = Observable(nil)
+        let nicknameTextFieldText: Observable<String?> = Observable(nil)
+        let profileImage: Observable<UIImage?> = Observable(nil)
+        let closeButtonTapped: Observable<Void?> = Observable(nil)
+        
+        let eButton: Observable<UIButton> = Observable(UIButton())
+        let iButton: Observable<UIButton> = Observable(UIButton())
+        let sButton: Observable<UIButton> = Observable(UIButton())
+        let nButton: Observable<UIButton> = Observable(UIButton())
+        let tButton: Observable<UIButton> = Observable(UIButton())
+        let fButton: Observable<UIButton> = Observable(UIButton())
+        let jButton: Observable<UIButton> = Observable(UIButton())
+        let pButton: Observable<UIButton> = Observable(UIButton())
+    }
     
-    let inputEButton: Observable<UIButton> = Observable(UIButton())
-    let inputIButton: Observable<UIButton> = Observable(UIButton())
-    let inputSButton: Observable<UIButton> = Observable(UIButton())
-    let inputNButton: Observable<UIButton> = Observable(UIButton())
-    let inputTButton: Observable<UIButton> = Observable(UIButton())
-    let inputFButton: Observable<UIButton> = Observable(UIButton())
-    let inputJButton: Observable<UIButton> = Observable(UIButton())
-    let inputPButton: Observable<UIButton> = Observable(UIButton())
-    
-    let outputProfileImage: Observable<UIImage?> = Observable(nil)
-    let outputImageViewTapped: Observable<Void?> = Observable(nil)
-    let outputStatusLabelText: Observable<String> = Observable("") // 상태레이블에 표시될 텍스트
-    let outputStatusLabelTextColor: Observable<Bool> = Observable(false) // 상태레이블 텍스트컬러
-    let outputDoneButtonEnabled: Observable<Bool> = Observable(false) // isNicknameValidate, isButtonValidate 두 조건이 모두 만족됐을때의 값
-    let outputDoneButtonTapped: Observable<Void?> = Observable(nil)
-    let outputCloseButtonTapped: Observable<Void?> = Observable(nil)
+    struct Output {
+        let profileImage: Observable<UIImage?> = Observable(nil)
+        let imageViewTapped: Observable<Void?> = Observable(nil)
+        let statusLabelText: Observable<String> = Observable("") // 상태레이블에 표시될 텍스트
+        let statusLabelTextColor: Observable<Bool> = Observable(false) // 상태레이블 텍스트컬러
+        let doneButtonEnabled: Observable<Bool> = Observable(false) // isNicknameValidate, isButtonValidate 두 조건이 모두 만족됐을때의 값
+        let doneButtonTapped: Observable<Void?> = Observable(nil)
+        let closeButtonTapped: Observable<Void?> = Observable(nil)
+    }
     
     // MARK: - Initializer
     init() {
         print("ProfileSettingViewModel Init")
-        
-        inputViewDidLoadTrigger.lazyBind { _ in
-            self.receiveImage()
-        }
-        
-        inputImageViewTapped.lazyBind { _ in
-            print("inputImageViewTapped bind")
-            self.outputImageViewTapped.value = ()
-        }
-        
-        inputNicknameTextFieldEditingChanged.lazyBind { _ in
-            self.validateText()
-            self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
-        }
-        
-        [inputEButton, inputIButton].forEach {
-            $0.lazyBind { button in
-                print("inputMbtiEIButtonTapped bind")
-                self.mbtiMbtiButtonArray = [self.inputEButton.value, self.inputIButton.value]
-                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-                self.validateButton()
-                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
-            }
-        }
-        
-        [inputSButton, inputNButton].forEach {
-            $0.lazyBind { button in
-                print("inputMbtiEIButtonTapped bind")
-                self.mbtiMbtiButtonArray = [self.inputSButton.value, self.inputNButton.value]
-                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-                self.validateButton()
-                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
-            }
-        }
-        
-        [inputTButton, inputFButton].forEach {
-            $0.lazyBind { button in
-                print("inputMbtiEIButtonTapped bind")
-                self.mbtiMbtiButtonArray = [self.inputTButton.value, self.inputFButton.value]
-                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-                self.validateButton()
-                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
-            }
-        }
-        
-        [inputJButton, inputPButton].forEach {
-            $0.lazyBind { button in
-                print("inputMbtiEIButtonTapped bind")
-                self.mbtiMbtiButtonArray = [self.inputJButton.value, self.inputPButton.value]
-                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
-                self.validateButton()
-                self.outputDoneButtonEnabled.value = self.isDoneButtonEnabled()
-            }
-        }
-        
-        inputDoneButtonTapped.lazyBind { _ in
-            self.saveData()
-            self.outputDoneButtonTapped.value = ()
-        }
-        
-        inputCloseButtonTapped.lazyBind { _ in
-            if UserDefaultsManager.shared.isSigned {
-                self.outputCloseButtonTapped.value = ()
-            }
-        }
+        input = Input()
+        output = Output()
+        transform()
     }
     
     deinit {
@@ -114,6 +58,72 @@ final class ProfileSettingViewModel {
     }
     
     // MARK: - Functions
+    func transform() {
+        input.viewDidLoadTrigger.lazyBind { _ in
+            self.receiveImage()
+        }
+        
+        input.imageViewTapped.lazyBind { _ in
+            print("inputImageViewTapped bind")
+            self.output.imageViewTapped.value = ()
+        }
+        
+        input.nicknameTextFieldEditingChanged.lazyBind { _ in
+            self.validateText()
+            self.output.doneButtonEnabled.value = self.isDoneButtonEnabled()
+        }
+        
+        [input.eButton, input.iButton].forEach {
+            $0.lazyBind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.input.eButton.value, self.input.iButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.output.doneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
+        }
+        
+        [input.sButton, input.nButton].forEach {
+            $0.lazyBind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.input.sButton.value, self.input.nButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.output.doneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
+        }
+        
+        [input.tButton, input.fButton].forEach {
+            $0.lazyBind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.input.tButton.value, self.input.fButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.output.doneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
+        }
+        
+        [input.jButton, input.pButton].forEach {
+            $0.lazyBind { button in
+                print("inputMbtiEIButtonTapped bind")
+                self.mbtiMbtiButtonArray = [self.input.jButton.value, self.input.pButton.value]
+                self.toggleButton(button, array: self.mbtiMbtiButtonArray)
+                self.validateButton()
+                self.output.doneButtonEnabled.value = self.isDoneButtonEnabled()
+            }
+        }
+        
+        input.doneButtonTapped.lazyBind { _ in
+            self.saveData()
+            self.output.doneButtonTapped.value = ()
+        }
+        
+        input.closeButtonTapped.lazyBind { _ in
+            if UserDefaultsManager.shared.isSigned {
+                self.output.closeButtonTapped.value = ()
+            }
+        }
+    }
     
     private func receiveImage() {
         NotificationCenter.default.addObserver(
@@ -127,12 +137,12 @@ final class ProfileSettingViewModel {
     @objc
     private func imageReceivedNotification(value: NSNotification) {
         if let image = value.userInfo!["image"] as? UIImage {
-            outputProfileImage.value = image
+            output.profileImage.value = image
         }
     }
     
     private func validateText() {
-        guard let text = inputNicknameTextFieldEditingChanged.value else { return }
+        guard let text = input.nicknameTextFieldEditingChanged.value else { return }
         let trimmingText = text.trimmingCharacters(in: .whitespaces)
         
         // 숫자가 포함되어있는지 확인하는법
@@ -142,20 +152,20 @@ final class ProfileSettingViewModel {
         let spacialRange = trimmingText.rangeOfCharacter(from: ["@", "#", "$", "%"])
         
         if trimmingText.count < 2 || trimmingText.count > 10 {
-            self.outputStatusLabelText.value = "2글자 이상 10글자 미만으로 설정해주세요"
-            self.outputStatusLabelTextColor.value = false
+            self.output.statusLabelText.value = "2글자 이상 10글자 미만으로 설정해주세요"
+            self.output.statusLabelTextColor.value = false
             self.isNicknameValidate = false
         } else if spacialRange != nil {
-            self.outputStatusLabelText.value = "닉네임에 @, #, $, % 는 포함될 수 없어요"
-            self.outputStatusLabelTextColor.value = false
+            self.output.statusLabelText.value = "닉네임에 @, #, $, % 는 포함될 수 없어요"
+            self.output.statusLabelTextColor.value = false
             self.isNicknameValidate = false
         } else if decimalRange != nil {
-            self.outputStatusLabelText.value = "닉네임에 숫자는 포함할 수 없어요"
-            self.outputStatusLabelTextColor.value = false
+            self.output.statusLabelText.value = "닉네임에 숫자는 포함할 수 없어요"
+            self.output.statusLabelTextColor.value = false
             self.isNicknameValidate = false
         } else {
-            self.outputStatusLabelText.value = "사용할 수 있는 닉네임이에요"
-            self.outputStatusLabelTextColor.value = true
+            self.output.statusLabelText.value = "사용할 수 있는 닉네임이에요"
+            self.output.statusLabelTextColor.value = true
             self.isNicknameValidate = true
         }
     }
@@ -181,10 +191,10 @@ final class ProfileSettingViewModel {
     // 이 조건이 아니었다면 toggle 확인을 위한 TFButtonTapped 등의 버튼 두 개 묶음의 input을 받았을듯
     private func validateButton() {
         print(#function)
-        if (inputEButton.value.isSelected || inputIButton.value.isSelected) &&
-            (inputSButton.value.isSelected || inputNButton.value.isSelected) &&
-            (inputTButton.value.isSelected || inputFButton.value.isSelected) &&
-            (inputJButton.value.isSelected || inputPButton.value.isSelected) {
+        if (input.eButton.value.isSelected || input.iButton.value.isSelected) &&
+            (input.sButton.value.isSelected || input.nButton.value.isSelected) &&
+            (input.tButton.value.isSelected || input.fButton.value.isSelected) &&
+            (input.jButton.value.isSelected || input.pButton.value.isSelected) {
             isButtonValidate = true
         } else {
             isButtonValidate = false
@@ -202,12 +212,12 @@ final class ProfileSettingViewModel {
     private func saveData() {
         if UserDefaultsManager.shared.isSigned {
             // TODO: isSigned됐을때도 분리 => settingView부분까지 수정해야해서 일단 보류
-            reSaveImage?(inputProfileImage.value ?? UIImage())
-            reSaveNickname?(inputNicknameTextFieldText.value ?? "")
+            reSaveImage?(input.profileImage.value ?? UIImage())
+            reSaveNickname?(input.nicknameTextFieldText.value ?? "")
         } else {
-            UserDefaultsManager.shared.nickname = inputNicknameTextFieldText.value ?? ""
+            UserDefaultsManager.shared.nickname = input.nicknameTextFieldText.value ?? ""
             UserDefaultsManager.shared.joinDate = Date().toJoinString()
-            if let imageData = inputProfileImage.value?.pngData() {
+            if let imageData = input.profileImage.value?.pngData() {
                 UserDefaultsManager.shared.profileImage = imageData
             }
         }

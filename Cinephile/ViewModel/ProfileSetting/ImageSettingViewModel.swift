@@ -7,27 +7,28 @@
 
 import UIKit
 
-final class ImageSettingViewModel {
+final class ImageSettingViewModel: BaseViewModel {
+    private(set) var input: Input
+    private(set) var output: Output
     
-    let inputViewDidLoadTrigger: Observable<Void?> = Observable(nil)
-    let inputViewWillDisappearTrigger: Observable<Void?> = Observable(nil)
-    let inputProfileImage: Observable<UIImage?> = Observable(nil)
-    let inputCellSelected: Observable<ProfileImage?> = Observable(nil)
+    struct Input {
+        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let viewWillDisappearTrigger: Observable<Void?> = Observable(nil)
+        let profileImage: Observable<UIImage?> = Observable(nil)
+        let cellSelected: Observable<ProfileImage?> = Observable(nil)
+    }
     
-    let outputProfileImage: Observable<UIImage?> = Observable(nil)
-    let outputCellSelected: Observable<ProfileImage?> = Observable(nil)
+    struct Output {
+        let profileImage: Observable<UIImage?> = Observable(nil)
+        let cellSelected: Observable<ProfileImage?> = Observable(nil)
+    }
     
     // MARK: - Initializer
     init() {
         print("ProfileSettingViewModel Init")
-        
-        inputProfileImage.lazyBind { image in
-            self.saveImage()
-        }
-        
-        inputCellSelected.lazyBind { _ in
-            self.outputCellSelected.value = self.inputCellSelected.value
-        }
+        input = Input()
+        output = Output()
+        transform()
     }
     
     deinit {
@@ -35,8 +36,18 @@ final class ImageSettingViewModel {
     }
     
     // MARK: - Functions
+    func transform() {
+        input.profileImage.lazyBind { image in
+            self.saveImage()
+        }
+        
+        input.cellSelected.lazyBind { _ in
+            self.output.cellSelected.value = self.input.cellSelected.value
+        }
+    }
+    
     private func saveImage() {
-        guard let imageValue = inputProfileImage.value else { return }
+        guard let imageValue = input.profileImage.value else { return }
         NotificationCenter.default.post(
             name: NSNotification.Name("ImageReceived"),
             object: nil,
