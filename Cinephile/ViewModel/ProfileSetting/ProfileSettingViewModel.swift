@@ -58,7 +58,7 @@ final class ProfileSettingViewModel {
         }
         
         [inputEButton, inputIButton].forEach {
-            $0.bind { button in
+            $0.lazyBind { button in
                 print("inputMbtiEIButtonTapped bind")
                 self.mbtiMbtiButtonArray = [self.inputEButton.value, self.inputIButton.value]
                 self.toggleButton(button, array: self.mbtiMbtiButtonArray)
@@ -68,7 +68,7 @@ final class ProfileSettingViewModel {
         }
         
         [inputSButton, inputNButton].forEach {
-            $0.bind { button in
+            $0.lazyBind { button in
                 print("inputMbtiEIButtonTapped bind")
                 self.mbtiMbtiButtonArray = [self.inputSButton.value, self.inputNButton.value]
                 self.toggleButton(button, array: self.mbtiMbtiButtonArray)
@@ -78,7 +78,7 @@ final class ProfileSettingViewModel {
         }
         
         [inputTButton, inputFButton].forEach {
-            $0.bind { button in
+            $0.lazyBind { button in
                 print("inputMbtiEIButtonTapped bind")
                 self.mbtiMbtiButtonArray = [self.inputTButton.value, self.inputFButton.value]
                 self.toggleButton(button, array: self.mbtiMbtiButtonArray)
@@ -88,7 +88,7 @@ final class ProfileSettingViewModel {
         }
         
         [inputJButton, inputPButton].forEach {
-            $0.bind { button in
+            $0.lazyBind { button in
                 print("inputMbtiEIButtonTapped bind")
                 self.mbtiMbtiButtonArray = [self.inputJButton.value, self.inputPButton.value]
                 self.toggleButton(button, array: self.mbtiMbtiButtonArray)
