@@ -11,8 +11,6 @@ final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
     private let viewModel = CinemaViewModel()
-    private var imageContents: UIImage?
-//    private var nicknameContents: String?
     
     override func loadView() {
         view = cinemaView
@@ -36,10 +34,7 @@ final class CinemaViewController: BaseViewController {
         }
         
         viewModel.output.imageDataContents.bind { data in
-            guard let data = data else { return }
-            self.imageContents = UIImage(data: data)
             self.cinemaView.tableView.reloadData()
-            
         }
         
         viewModel.output.nicknameContents.bind { nickname in
@@ -60,15 +55,6 @@ final class CinemaViewController: BaseViewController {
     override func configureView() {
         cinemaView.tableView.separatorStyle = .none
     }
-    
-//    private func saveUserDefaultsValue() {
-//        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
-//        let imageData = UserDefaultsManager.shared.profileImage
-//        imageContents = UIImage(data: imageData)
-//        viewModel.output.nicknameContents.value = UserDefaultsManager.shared.nickname
-//        
-//        self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-//    }
     
     @objc
     private func searchButtonTapped() {
@@ -93,10 +79,8 @@ final class CinemaViewController: BaseViewController {
         // sheet에서 다시 저장한 이미지 데이터 받기
         group.enter()
         vc.viewModel.reSaveImage = { value in
-            if let imageData = value.pngData() {
-                UserDefaultsManager.shared.profileImage = imageData
-            }
-            self.imageContents = value
+            UserDefaultsManager.shared.profileImage = value
+            self.viewModel.output.imageDataContents.value = value
             group.leave()
         }
         
@@ -169,7 +153,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.addGestureRecognizer(tapGesture)
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
-            cell.profileImageView.image = imageContents
+            cell.profileImageView.image = UIImage(data: viewModel.output.imageDataContents.value)
             cell.nicknameLabel.text = viewModel.output.nicknameContents.value
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
             cell.movieBoxButton.setTitle("\(UserDefaultsManager.shared.likeMovieIdList.count)개의 무비박스 보관중", for: .normal)

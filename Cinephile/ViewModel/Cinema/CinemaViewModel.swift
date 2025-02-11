@@ -19,7 +19,7 @@ final class CinemaViewModel: BaseViewModel {
     struct Output {
         let movieList: Observable<[MovieDetail]> = Observable([])
         let searchList: Observable<[String]> = Observable([])
-        let imageDataContents: Observable<Data?> = Observable(nil)
+        let imageDataContents: Observable<Data> = Observable(Data())
         let nicknameContents: Observable<String?> = Observable(nil)
     }
     

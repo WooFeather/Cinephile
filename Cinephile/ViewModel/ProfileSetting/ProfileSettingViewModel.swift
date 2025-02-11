@@ -16,7 +16,7 @@ final class ProfileSettingViewModel: BaseViewModel {
     private var isButtonValidate = false
     private var mbtiMbtiButtonArray: [UIButton] = []
     var reSaveNickname: ((String) -> Void)?
-    var reSaveImage: ((UIImage) -> Void)?
+    var reSaveImage: ((Data) -> Void)?
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
@@ -24,7 +24,7 @@ final class ProfileSettingViewModel: BaseViewModel {
         let nicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
         let doneButtonTapped: Observable<Void?> = Observable(nil)
         let nicknameTextFieldText: Observable<String?> = Observable(nil)
-        let profileImage: Observable<UIImage?> = Observable(nil)
+        let profileImage: Observable<Data?> = Observable(nil)
         let closeButtonTapped: Observable<Void?> = Observable(nil)
         
         let eButton: Observable<UIButton> = Observable(UIButton())
@@ -214,12 +214,12 @@ final class ProfileSettingViewModel: BaseViewModel {
     private func saveData() {
         if UserDefaultsManager.shared.isSigned {
             // TODO: isSigned됐을때도 분리 => settingView부분까지 수정해야해서 일단 보류
-            reSaveImage?(input.profileImage.value ?? UIImage())
+            reSaveImage?(input.profileImage.value ?? Data())
             reSaveNickname?(input.nicknameTextFieldText.value ?? "")
         } else {
             UserDefaultsManager.shared.nickname = input.nicknameTextFieldText.value ?? ""
             UserDefaultsManager.shared.joinDate = Date().toJoinString()
-            if let imageData = input.profileImage.value?.pngData() {
+            if let imageData = input.profileImage.value {
                 UserDefaultsManager.shared.profileImage = imageData
             }
         }

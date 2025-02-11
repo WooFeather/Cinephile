@@ -59,10 +59,8 @@ final class SettingViewController: BaseViewController {
             // sheet에서 다시 저장한 닉네임 데이터 받기
             group.enter()
             vc.viewModel.reSaveImage = { value in
-                if let imageData = value.pngData() {
-                    UserDefaultsManager.shared.profileImage = imageData
-                }
-                self.imageContents = value
+                UserDefaultsManager.shared.profileImage = value
+                self.imageContents = UIImage(data: value)
                 group.leave()
             }
             

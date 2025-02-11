@@ -114,7 +114,7 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func doneButtonTapped() {
         viewModel.input.nicknameTextFieldText.value = profileSettingView.nicknameTextField.text
-        viewModel.input.profileImage.value = profileSettingView.profileImageView.image
+        viewModel.input.profileImage.value = profileSettingView.profileImageView.image?.pngData()
         viewModel.input.doneButtonTapped.value = ()
     }
     
