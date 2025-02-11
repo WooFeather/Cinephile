@@ -65,6 +65,10 @@ final class CinemaViewController: BaseViewController {
             let nav = UINavigationController(rootViewController: vc)
             self.present(nav, animated: true)
         }
+        
+        viewModel.output.likeButtonTapped.bind { _ in
+            self.cinemaView.tableView.reloadData()
+        }
     }
     
     override func configureEssential() {
@@ -93,39 +97,17 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func removeButtonTapped(sender: UIButton) {
-        viewModel.output.searchList.value.remove(at: sender.tag)
-        UserDefaultsManager.shared.searchList = viewModel.output.searchList.value
-        cinemaView.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        viewModel.input.removeButtonTapped.value = sender.tag
     }
     
     @objc
     private func clearButtonTapped(sender: UIButton) {
-        viewModel.output.searchList.value.removeAll()
-        UserDefaultsManager.shared.searchList = viewModel.output.searchList.value
-        cinemaView.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        viewModel.input.clearButtonTapped.value = ()
     }
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        // likeMovieIdList라는 배열에 선택한 영화의 id가 있으면 삭제하고, 없으면 등록하는 toggle형식의 동작
-        // 동시에 LikeCount도 반영
-        let item = viewModel.output.movieList.value[sender.tag]
-        if LikeMovie.likeMovieIdList.contains(item.id) {
-            if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
-                LikeMovie.likeMovieIdList.remove(at: index)
-                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-            }
-        } else {
-            LikeMovie.likeMovieIdList.append(item.id)
-            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-        }
-        
-        print(LikeMovie.likeMovieIdList)
-        print(LikeMovie.likeMovieIdList.count)
-        
-        cinemaView.tableView.reloadData()
+        viewModel.input.likeButtonTapped.value = sender.tag
     }
 }
 
