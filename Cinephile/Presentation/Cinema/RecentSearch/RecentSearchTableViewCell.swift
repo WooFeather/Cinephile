@@ -64,7 +64,7 @@ final class RecentSearchTableViewCell: BaseTableViewCell {
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 0
+        layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing =  10
         layout.sectionInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         layout.scrollDirection = .horizontal

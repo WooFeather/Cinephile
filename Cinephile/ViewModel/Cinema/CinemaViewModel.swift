@@ -17,6 +17,7 @@ final class CinemaViewModel: BaseViewModel {
     
     struct Output {
         let movieList: Observable<[MovieDetail]> = Observable([])
+        let searchList: Observable<[String]> = Observable([])
     }
     
     // MARK: - Initializer
@@ -31,6 +32,7 @@ final class CinemaViewModel: BaseViewModel {
     func transform() {
         input.viewDidLoadTrigger.lazyBind { _ in
             self.callRequest()
+            self.receiveSearchText()
         }
     }
     
@@ -39,6 +41,25 @@ final class CinemaViewModel: BaseViewModel {
             self.output.movieList.value = value.results
         } failHandler: {
             print("네트워킹 실패")
+        }
+    }
+    
+    private func receiveSearchText() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(searchTextReceivedNotification),
+            name: NSNotification.Name("SearchTextReceived"),
+            object: nil
+        )
+    }
+    
+    @objc
+    private func searchTextReceivedNotification(value: NSNotification) {
+        if let searchText = value.userInfo!["searchText"] as? String {
+            output.searchList.value.insert(searchText, at: 0)
+            UserDefaultsManager.shared.searchList = output.searchList.value
+        } else {
+            return
         }
     }
 }

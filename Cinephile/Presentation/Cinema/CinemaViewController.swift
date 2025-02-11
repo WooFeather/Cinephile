@@ -11,7 +11,6 @@ final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
     private let viewModel = CinemaViewModel()
-    private var searchList: [String] = []
     private var imageContents: UIImage?
     private var nicknameContents: String?
     
@@ -22,8 +21,7 @@ final class CinemaViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        receiveSearchText()
-        searchList = UserDefaultsManager.shared.searchList
+        viewModel.output.searchList.value = UserDefaultsManager.shared.searchList
         LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
     }
     
@@ -38,6 +36,10 @@ final class CinemaViewController: BaseViewController {
         viewModel.input.viewDidLoadTrigger.value = ()
         
         viewModel.output.movieList.bind { _ in
+            self.cinemaView.tableView.reloadData()
+        }
+        
+        viewModel.output.searchList.bind { _ in
             self.cinemaView.tableView.reloadData()
         }
     }
@@ -56,15 +58,6 @@ final class CinemaViewController: BaseViewController {
         cinemaView.tableView.separatorStyle = .none
     }
     
-    private func receiveSearchText() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(searchTextReceivedNotification),
-            name: NSNotification.Name("SearchTextReceived"),
-            object: nil
-        )
-    }
-    
     private func saveUserDefaultsValue() {
         // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
         let imageData = UserDefaultsManager.shared.profileImage
@@ -72,17 +65,6 @@ final class CinemaViewController: BaseViewController {
         nicknameContents = UserDefaultsManager.shared.nickname
         
         self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-    }
-    
-    @objc
-    private func searchTextReceivedNotification(value: NSNotification) {
-        if let searchText = value.userInfo!["searchText"] as? String {
-            searchList.insert(searchText, at: 0)
-            UserDefaultsManager.shared.searchList = searchList
-            cinemaView.tableView.reloadData()
-        } else {
-            return
-        }
     }
     
     @objc
@@ -134,16 +116,16 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func removeButtonTapped(sender: UIButton) {
-        searchList.remove(at: sender.tag)
-        UserDefaultsManager.shared.searchList = searchList
-        cinemaView.tableView.reloadData()
+        viewModel.output.searchList.value.remove(at: sender.tag)
+        UserDefaultsManager.shared.searchList = viewModel.output.searchList.value
+        cinemaView.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
     }
     
     @objc
     private func clearButtonTapped(sender: UIButton) {
-        searchList.removeAll()
-        UserDefaultsManager.shared.searchList = searchList
-        cinemaView.tableView.reloadData()
+        viewModel.output.searchList.value.removeAll()
+        UserDefaultsManager.shared.searchList = viewModel.output.searchList.value
+        cinemaView.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
     }
     
     @objc
@@ -202,7 +184,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
 
             cell.clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
             
-            if searchList.isEmpty {
+            if viewModel.output.searchList.value.isEmpty {
                 cell.emptyLabel.isHidden = false
                 cell.recentSearchCollectionView.isHidden = true
                 cell.clearButton.isHidden = true
@@ -232,7 +214,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if collectionView.tag == 1 {
-            return searchList.count
+            return viewModel.output.searchList.value.count
         } else {
             return viewModel.output.movieList.value.count
         }
@@ -242,7 +224,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         if collectionView.tag == 1 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentSearchCollectionViewCell.id, for: indexPath) as? RecentSearchCollectionViewCell else { return UICollectionViewCell() }
-            let data = searchList[indexPath.item]
+            let data = viewModel.output.searchList.value[indexPath.item]
             
             cell.configureData(data: data)
             
@@ -265,7 +247,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 {
-            let data = searchList[indexPath.item]
+            let data = viewModel.output.searchList.value[indexPath.item]
             
             let vc = SearchMovieViewController()
             vc.searchTextContents = data
@@ -296,7 +278,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension CinemaViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.tag == 1 {
-            let data = searchList[indexPath.item]
+            let data = viewModel.output.searchList.value[indexPath.item]
             
            let size = RecentSearchCollectionViewCell.fittingSize(availableHeight: 32, text: data)
             
