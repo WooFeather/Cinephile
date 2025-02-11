@@ -13,11 +13,14 @@ final class CinemaViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let viewWillAppearTrigger: Observable<Void?> = Observable(nil)
     }
     
     struct Output {
         let movieList: Observable<[MovieDetail]> = Observable([])
         let searchList: Observable<[String]> = Observable([])
+        let imageDataContents: Observable<Data?> = Observable(nil)
+        let nicknameContents: Observable<String?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -33,6 +36,12 @@ final class CinemaViewModel: BaseViewModel {
         input.viewDidLoadTrigger.lazyBind { _ in
             self.callRequest()
             self.receiveSearchText()
+            self.output.searchList.value = UserDefaultsManager.shared.searchList
+            LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
+        }
+        
+        input.viewWillAppearTrigger.lazyBind { _ in
+            self.saveUserDefaultsValue()
         }
     }
     
@@ -61,5 +70,11 @@ final class CinemaViewModel: BaseViewModel {
         } else {
             return
         }
+    }
+    
+    private func saveUserDefaultsValue() {
+        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
+        output.imageDataContents.value = UserDefaultsManager.shared.profileImage
+        output.nicknameContents.value = UserDefaultsManager.shared.nickname
     }
 }

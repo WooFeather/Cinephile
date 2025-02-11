@@ -12,24 +12,16 @@ final class CinemaViewController: BaseViewController {
     private var cinemaView = CinemaView()
     private let viewModel = CinemaViewModel()
     private var imageContents: UIImage?
-    private var nicknameContents: String?
+//    private var nicknameContents: String?
     
     override func loadView() {
         view = cinemaView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        viewModel.output.searchList.value = UserDefaultsManager.shared.searchList
-        LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        saveUserDefaultsValue()
-        cinemaView.tableView.reloadData()
+        viewModel.input.viewWillAppearTrigger.value = ()
     }
     
     override func bindData() {
@@ -40,6 +32,17 @@ final class CinemaViewController: BaseViewController {
         }
         
         viewModel.output.searchList.bind { _ in
+            self.cinemaView.tableView.reloadData()
+        }
+        
+        viewModel.output.imageDataContents.bind { data in
+            guard let data = data else { return }
+            self.imageContents = UIImage(data: data)
+            self.cinemaView.tableView.reloadData()
+            
+        }
+        
+        viewModel.output.nicknameContents.bind { nickname in
             self.cinemaView.tableView.reloadData()
         }
     }
@@ -58,14 +61,14 @@ final class CinemaViewController: BaseViewController {
         cinemaView.tableView.separatorStyle = .none
     }
     
-    private func saveUserDefaultsValue() {
-        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
-        let imageData = UserDefaultsManager.shared.profileImage
-        imageContents = UIImage(data: imageData)
-        nicknameContents = UserDefaultsManager.shared.nickname
-        
-        self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-    }
+//    private func saveUserDefaultsValue() {
+//        // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
+//        let imageData = UserDefaultsManager.shared.profileImage
+//        imageContents = UIImage(data: imageData)
+//        viewModel.output.nicknameContents.value = UserDefaultsManager.shared.nickname
+//        
+//        self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+//    }
     
     @objc
     private func searchButtonTapped() {
@@ -87,9 +90,9 @@ final class CinemaViewController: BaseViewController {
         
         let group = DispatchGroup()
         
-        // sheet에서 다시 저장한 닉네임 데이터 받기
+        // sheet에서 다시 저장한 이미지 데이터 받기
         group.enter()
-        vc.reSaveImage = { value in
+        vc.viewModel.reSaveImage = { value in
             if let imageData = value.pngData() {
                 UserDefaultsManager.shared.profileImage = imageData
             }
@@ -97,11 +100,11 @@ final class CinemaViewController: BaseViewController {
             group.leave()
         }
         
-        // sheet에서 다시 저장한 이미지 데이터 받기
+        // sheet에서 다시 저장한 닉네임 데이터 받기
         group.enter()
-        vc.reSaveNickname = { value in
+        vc.viewModel.reSaveNickname = { value in
             UserDefaultsManager.shared.nickname = value
-            self.nicknameContents = value
+            self.viewModel.output.nicknameContents.value = value
             group.leave()
         }
         
@@ -167,7 +170,7 @@ extension CinemaViewController: UITableViewDelegate, UITableViewDataSource {
             cell.roundBackgroundView.isUserInteractionEnabled = true
             
             cell.profileImageView.image = imageContents
-            cell.nicknameLabel.text = nicknameContents
+            cell.nicknameLabel.text = viewModel.output.nicknameContents.value
             cell.dateLabel.text = UserDefaultsManager.shared.joinDate
             cell.movieBoxButton.setTitle("\(UserDefaultsManager.shared.likeMovieIdList.count)개의 무비박스 보관중", for: .normal)
             

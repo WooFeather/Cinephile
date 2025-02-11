@@ -10,11 +10,9 @@ import UIKit
 final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
-    private let viewModel = ProfileSettingViewModel()
+    let viewModel = ProfileSettingViewModel()
     var imageContents: UIImage?
     var nicknameContents: String?
-    var reSaveNickname: ((String) -> Void)?
-    var reSaveImage: ((UIImage) -> Void)?
     
     // MARK: - Functions
     override func loadView() {
