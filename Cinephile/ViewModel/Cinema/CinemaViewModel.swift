@@ -39,7 +39,6 @@ final class CinemaViewModel: BaseViewModel {
     init() {
         input = Input()
         output = Output()
-        
         transform()
     }
     

@@ -10,11 +10,12 @@ import UIKit
 final class SearchMovieViewController: BaseViewController {
 
     private var searchMovieView = SearchMovieView()
-    private var searchList: [MovieDetail] = []
-    private var page = 1
-    private var maxNum = 0
-    private lazy var queryText = searchMovieView.movieSearchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
-    var searchTextContents: String?
+    let viewModel = SearchMovieViewModel()
+//    private var searchList: [MovieDetail] = []
+//    private var page = 1
+//    private var maxNum = 0
+//    private lazy var queryText = searchMovieView.movieSearchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
+//    var searchTextContents: String?
     
     override func loadView() {
         view = searchMovieView
@@ -23,13 +24,38 @@ final class SearchMovieViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        searchMovieView.searchTableView.reloadData()
+        viewModel.input.viewWillAppearTrigger.value = ()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        searchMovieView.movieSearchBar.becomeFirstResponder()
+        viewModel.input.viewDidAppearTrigger.value = ()
+    }
+    
+    override func bindData() {
+        viewModel.output.searchText.bind { text in
+            self.searchMovieView.movieSearchBar.text = text
+        }
+        
+        viewModel.output.viewWillAppearTrigger.bind { _ in
+            self.searchMovieView.searchTableView.reloadData()
+        }
+        
+        viewModel.output.viewDidAppearTrigger.lazyBind { _ in
+            self.searchMovieView.movieSearchBar.becomeFirstResponder()
+        }
+        
+        viewModel.output.searchButtonTapped.lazyBind { _ in
+            print("====2====", self.viewModel.output.searchList.value)
+            self.searchMovieView.searchTableView.reloadData()
+            if self.viewModel.output.page.value == 1 && self.viewModel.output.searchList.value.count != 0 {
+                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            }
+            self.searchMovieView.searchTableView.isHidden = self.viewModel.output.tableViewHidden.value
+            self.searchMovieView.emptyLabel.isHidden = self.viewModel.output.emptyLabelHidden.value
+            self.searchMovieView.movieSearchBar.resignFirstResponder()
+        }
     }
     
     override func configureEssential() {
@@ -45,40 +71,38 @@ final class SearchMovieViewController: BaseViewController {
     override func configureView() {
         searchMovieView.searchTableView.isHidden = true
         searchMovieView.emptyLabel.isHidden = true
-        searchMovieView.movieSearchBar.text = searchTextContents
     }
     
-    func callRequest(query: String) {
-        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: page), type: Movie.self) { value in
-            if self.page == 1 {
-                self.searchList = value.results
-            } else {
-                self.searchList.append(contentsOf: value.results)
-            }
-            
-            if self.searchList.isEmpty {
-                self.searchMovieView.searchTableView.isHidden = true
-                self.searchMovieView.emptyLabel.isHidden = false
-            } else {
-                self.searchMovieView.searchTableView.isHidden = false
-                self.searchMovieView.emptyLabel.isHidden = true
-            }
-            
-            self.maxNum = value.totalResults
-            self.searchMovieView.searchTableView.reloadData()
-            
-            if self.page == 1 && self.searchList.count != 0 {
-                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            }
-        } failHandler: {
-            print("❌ 네트워킹 실패")
-        }
-
-    }
+//    func callRequest(query: String) {
+//        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: page), type: Movie.self) { value in
+//            if self.page == 1 {
+//                self.searchList = value.results
+//            } else {
+//                self.searchList.append(contentsOf: value.results)
+//            }
+//            
+//            if self.searchList.isEmpty {
+//                self.searchMovieView.searchTableView.isHidden = true
+//                self.searchMovieView.emptyLabel.isHidden = false
+//            } else {
+//                self.searchMovieView.searchTableView.isHidden = false
+//                self.searchMovieView.emptyLabel.isHidden = true
+//            }
+//            
+//            self.maxNum = value.totalResults
+//            self.searchMovieView.searchTableView.reloadData()
+//            
+//            if self.page == 1 && self.searchList.count != 0 {
+//                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+//            }
+//        } failHandler: {
+//            print("❌ 네트워킹 실패")
+//        }
+//    }
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        let item = searchList[sender.tag]
+        let item = viewModel.output.searchList.value[sender.tag]
         if LikeMovie.likeMovieIdList.contains(item.id) {
             if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
                 LikeMovie.likeMovieIdList.remove(at: index)
@@ -100,13 +124,13 @@ final class SearchMovieViewController: BaseViewController {
 
 extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchList.count
+        return viewModel.output.searchList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.id, for: indexPath) as? SearchTableViewCell else { return UITableViewCell() }
         
-        let data = searchList[indexPath.row]
+        let data = viewModel.output.searchList.value[indexPath.row]
         
         cell.configureData(data: data)
         
@@ -117,7 +141,7 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let data = searchList[indexPath.row]
+        let data = viewModel.output.searchList.value[indexPath.row]
         
         let vc = MovieDetailViewController()
         vc.idContents = data.id
@@ -145,10 +169,10 @@ extension SearchMovieViewController: UITableViewDataSourcePrefetching {
         print("🔗indexPath \(indexPaths)")
         
         for row in indexPaths {
-            if searchList.count - 3 == row.row {
-                if searchList.count < maxNum {
-                    page += 1
-                    callRequest(query: queryText)
+            if viewModel.output.searchList.value.count - 3 == row.row {
+                if viewModel.output.searchList.value.count < viewModel.output.maxNum.value {
+                    viewModel.output.page.value += 1
+                    viewModel.input.searchButtonTapped.value = viewModel.output.queryText.value
                 } else {
                     print("❗️마지막 페이지")
                 }
@@ -159,21 +183,23 @@ extension SearchMovieViewController: UITableViewDataSourcePrefetching {
 
 extension SearchMovieViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let searchText = searchBar.text else { return }
+        viewModel.input.searchButtonTapped.value = searchBar.text
         
-        queryText = searchText.trimmingCharacters(in: .whitespaces)
+//        guard let searchText = searchBar.text else { return }
+//        
+//        queryText = searchText.trimmingCharacters(in: .whitespaces)
         
-        page = 1
-        callRequest(query: queryText)
+        //viewModel.output.page.value = 1
+//        callRequest(query: queryText)
         
-        NotificationCenter.default.post(
-            name: NSNotification.Name("SearchTextReceived"),
-            object: nil,
-            userInfo: [
-                "searchText": queryText
-            ]
-        )
+//        NotificationCenter.default.post(
+//            name: NSNotification.Name("SearchTextReceived"),
+//            object: nil,
+//            userInfo: [
+//                "searchText": queryText
+//            ]
+//        )
         
-        searchBar.resignFirstResponder()
+//        searchBar.resignFirstResponder()
     }
 }
