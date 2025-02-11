@@ -5,6 +5,8 @@
 //  Created by 조우현 on 2/9/25.
 //
 
+// MARK: - UIKit을 import하지 않고 분리하는 시도를 MVVMPractice라는 프로젝트에서 했는데 결국 실패 => MBTI 버튼의 액션을 어떻게 분리해야 할지 모르겠다
+
 import UIKit
 
 final class ProfileSettingViewModel: BaseViewModel {
