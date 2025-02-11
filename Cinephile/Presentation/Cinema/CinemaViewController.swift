@@ -69,6 +69,13 @@ final class CinemaViewController: BaseViewController {
         viewModel.output.likeButtonTapped.bind { _ in
             self.cinemaView.tableView.reloadData()
         }
+        
+        viewModel.output.searchText.lazyBind { text in
+            let vc = SearchMovieViewController()
+            vc.searchTextContents = text
+            vc.callRequest(query: text)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     override func configureEssential() {
@@ -206,12 +213,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 {
-            let data = viewModel.output.searchList.value[indexPath.item]
-            
-            let vc = SearchMovieViewController()
-            vc.searchTextContents = data
-            vc.callRequest(query: data)
-            navigationController?.pushViewController(vc, animated: true)
+            viewModel.input.searchTextTapped.value = indexPath.item
         } else {
             let data = viewModel.output.movieList.value[indexPath.item]
             

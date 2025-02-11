@@ -19,6 +19,7 @@ final class CinemaViewModel: BaseViewModel {
         let removeButtonTapped: Observable<Int> = Observable(-1)
         let clearButtonTapped: Observable<Void?> = Observable(nil)
         let likeButtonTapped: Observable<Int> = Observable(-1)
+        let searchTextTapped: Observable<Int> = Observable(-1)
     }
     
     struct Output {
@@ -29,6 +30,7 @@ final class CinemaViewModel: BaseViewModel {
         let searchButtonTapped: Observable<Void?> = Observable(nil)
         let backgroundViewTapped: Observable<Void?> = Observable(nil)
         let likeButtonTapped: Observable<Void?> = Observable(nil)
+        let searchText: Observable<String> = Observable("")
     }
     
     // MARK: - Initializer
@@ -70,6 +72,10 @@ final class CinemaViewModel: BaseViewModel {
         
         input.likeButtonTapped.lazyBind { tag in
             self.likeMovie(tag: tag)
+        }
+        
+        input.searchTextTapped.lazyBind { item in
+            self.textTransfer(item: item)
         }
     }
     
@@ -142,5 +148,9 @@ final class CinemaViewModel: BaseViewModel {
         print(LikeMovie.likeMovieIdList.count)
         
         output.likeButtonTapped.value = ()
+    }
+    
+    private func textTransfer(item: Int) {
+        output.searchText.value = output.searchList.value[item]
     }
 }
