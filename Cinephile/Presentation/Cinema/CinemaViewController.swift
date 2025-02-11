@@ -76,6 +76,26 @@ final class CinemaViewController: BaseViewController {
             vc.callRequest(query: text)
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        
+        viewModel.output.movieData.lazyBind { data in
+            guard let data = data else { return }
+            let vc = MovieDetailViewController()
+            // TODO: 추후 DetailView 리팩토링시 VM로 바로 전달
+            vc.idContents = data.id
+            vc.titleContents = data.title
+            vc.synopsisContents = data.overview
+            vc.releaseDateContents = data.releaseDate
+            vc.ratingContents = data.rating
+            
+            if data.genreList.count == 1 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+            } else if data.genreList.count >= 2 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+                vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
+            }
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     override func configureEssential() {
@@ -215,23 +235,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView.tag == 1 {
             viewModel.input.searchTextTapped.value = indexPath.item
         } else {
-            let data = viewModel.output.movieList.value[indexPath.item]
-            
-            let vc = MovieDetailViewController()
-            vc.idContents = data.id
-            vc.titleContents = data.title
-            vc.synopsisContents = data.overview
-            vc.releaseDateContents = data.releaseDate
-            vc.ratingContents = data.rating
-            
-            if data.genreList.count == 1 {
-                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-            } else if data.genreList.count >= 2 {
-                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-                vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
-            }
-            
-            navigationController?.pushViewController(vc, animated: true)
+            viewModel.input.movieTapped.value = indexPath.item
         }
     }
 }

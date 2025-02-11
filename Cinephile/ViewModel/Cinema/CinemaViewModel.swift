@@ -20,6 +20,7 @@ final class CinemaViewModel: BaseViewModel {
         let clearButtonTapped: Observable<Void?> = Observable(nil)
         let likeButtonTapped: Observable<Int> = Observable(-1)
         let searchTextTapped: Observable<Int> = Observable(-1)
+        let movieTapped: Observable<Int> = Observable(-1)
     }
     
     struct Output {
@@ -31,6 +32,7 @@ final class CinemaViewModel: BaseViewModel {
         let backgroundViewTapped: Observable<Void?> = Observable(nil)
         let likeButtonTapped: Observable<Void?> = Observable(nil)
         let searchText: Observable<String> = Observable("")
+        let movieData: Observable<MovieDetail?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -59,7 +61,7 @@ final class CinemaViewModel: BaseViewModel {
         }
         
         input.backgroundViewTapped.bind { _ in
-            self.dataTransfer()
+            self.profileDataTransfer()
         }
         
         input.removeButtonTapped.lazyBind { tag in
@@ -74,8 +76,12 @@ final class CinemaViewModel: BaseViewModel {
             self.likeMovie(tag: tag)
         }
         
-        input.searchTextTapped.lazyBind { item in
-            self.textTransfer(item: item)
+        input.searchTextTapped.lazyBind { index in
+            self.textTransfer(index: index)
+        }
+        
+        input.movieTapped.lazyBind { index in
+            self.movieDataTransfer(index: index)
         }
     }
     
@@ -112,7 +118,7 @@ final class CinemaViewModel: BaseViewModel {
         output.nicknameContents.value = UserDefaultsManager.shared.nickname
     }
     
-    private func dataTransfer() {
+    private func profileDataTransfer() {
         output.imageDataContents.value = UserDefaultsManager.shared.profileImage
         output.nicknameContents.value = UserDefaultsManager.shared.nickname
         self.output.backgroundViewTapped.value = ()
@@ -150,7 +156,11 @@ final class CinemaViewModel: BaseViewModel {
         output.likeButtonTapped.value = ()
     }
     
-    private func textTransfer(item: Int) {
-        output.searchText.value = output.searchList.value[item]
+    private func textTransfer(index: Int) {
+        output.searchText.value = output.searchList.value[index]
+    }
+    
+    private func movieDataTransfer(index: Int) {
+        output.movieData.value = output.movieList.value[index]
     }
 }
