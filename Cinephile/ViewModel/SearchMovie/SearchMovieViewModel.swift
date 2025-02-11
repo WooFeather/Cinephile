@@ -15,6 +15,7 @@ final class SearchMovieViewModel: BaseViewModel {
         let viewWillAppearTrigger: Observable<Void?> = Observable(nil)
         let viewDidAppearTrigger: Observable<Void?> = Observable(nil)
         let searchButtonTapped: Observable<String?> = Observable(nil)
+        let likeButtonTapped: Observable<Int> = Observable(-1)
     }
     
     struct Output {
@@ -28,6 +29,7 @@ final class SearchMovieViewModel: BaseViewModel {
         let searchList: Observable<[MovieDetail]> = Observable([])
         let tableViewHidden: Observable<Bool> = Observable(true)
         let emptyLabelHidden: Observable<Bool> = Observable(true)
+        let likeButtonTapped: Observable<Int> = Observable(-1)
     }
     
     // MARK: - Initializer
@@ -54,6 +56,11 @@ final class SearchMovieViewModel: BaseViewModel {
             self.output.page.value = 1
             self.callRequest(query: self.output.queryText.value)
             self.postSearchText(text: self.output.queryText.value)
+        }
+        
+        input.likeButtonTapped.lazyBind { tag in
+            self.likeMovie(tag: tag)
+            self.output.likeButtonTapped.value = tag
         }
     }
     
@@ -90,5 +97,20 @@ final class SearchMovieViewModel: BaseViewModel {
                 "searchText": text
             ]
         )
+    }
+    
+    private func likeMovie(tag: Int) {
+        let item = output.searchList.value[tag]
+        if LikeMovie.likeMovieIdList.contains(item.id) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
+                LikeMovie.likeMovieIdList.remove(at: index)
+                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+            }
+        } else {
+            LikeMovie.likeMovieIdList.append(item.id)
+            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+        }
     }
 }

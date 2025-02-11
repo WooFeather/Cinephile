@@ -51,6 +51,10 @@ final class SearchMovieViewController: BaseViewController {
             self.searchMovieView.emptyLabel.isHidden = self.viewModel.output.emptyLabelHidden.value
             self.searchMovieView.movieSearchBar.resignFirstResponder()
         }
+        
+        viewModel.output.likeButtonTapped.lazyBind { tag in
+            self.searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: tag, section: 0)], with: .none)
+        }
     }
     
     override func configureEssential() {
@@ -70,23 +74,7 @@ final class SearchMovieViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        let item = viewModel.output.searchList.value[sender.tag]
-        if LikeMovie.likeMovieIdList.contains(item.id) {
-            if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
-                LikeMovie.likeMovieIdList.remove(at: index)
-                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-            }
-        } else {
-            LikeMovie.likeMovieIdList.append(item.id)
-            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-        }
-        
-        print(LikeMovie.likeMovieIdList)
-        print(LikeMovie.likeMovieIdList.count)
-        
-        searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: sender.tag, section: 0)], with: .none)
+        viewModel.input.likeButtonTapped.value = sender.tag
     }
 }
 
