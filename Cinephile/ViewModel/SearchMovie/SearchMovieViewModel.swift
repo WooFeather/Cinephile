@@ -16,6 +16,7 @@ final class SearchMovieViewModel: BaseViewModel {
         let viewDidAppearTrigger: Observable<Void?> = Observable(nil)
         let searchButtonTapped: Observable<String?> = Observable(nil)
         let likeButtonTapped: Observable<Int> = Observable(-1)
+        let movieTapped: Observable<Int> = Observable(-1)
     }
     
     struct Output {
@@ -30,6 +31,7 @@ final class SearchMovieViewModel: BaseViewModel {
         let tableViewHidden: Observable<Bool> = Observable(true)
         let emptyLabelHidden: Observable<Bool> = Observable(true)
         let likeButtonTapped: Observable<Int> = Observable(-1)
+        let movieData: Observable<MovieDetail?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -58,9 +60,13 @@ final class SearchMovieViewModel: BaseViewModel {
             self.postSearchText(text: self.output.queryText.value)
         }
         
-        input.likeButtonTapped.lazyBind { tag in
-            self.likeMovie(tag: tag)
-            self.output.likeButtonTapped.value = tag
+        input.likeButtonTapped.lazyBind { index in
+            self.likeMovie(index: index)
+            self.output.likeButtonTapped.value = index
+        }
+        
+        input.movieTapped.lazyBind { index in
+            self.movieDataTransfer(index: index)
         }
     }
     
@@ -99,8 +105,8 @@ final class SearchMovieViewModel: BaseViewModel {
         )
     }
     
-    private func likeMovie(tag: Int) {
-        let item = output.searchList.value[tag]
+    private func likeMovie(index: Int) {
+        let item = output.searchList.value[index]
         if LikeMovie.likeMovieIdList.contains(item.id) {
             if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
                 LikeMovie.likeMovieIdList.remove(at: index)
@@ -112,5 +118,9 @@ final class SearchMovieViewModel: BaseViewModel {
             UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
             UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
         }
+    }
+    
+    private func movieDataTransfer(index: Int) {
+        output.movieData.value = output.searchList.value[index]
     }
 }

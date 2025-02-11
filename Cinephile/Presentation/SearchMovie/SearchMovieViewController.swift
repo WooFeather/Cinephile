@@ -52,8 +52,28 @@ final class SearchMovieViewController: BaseViewController {
             self.searchMovieView.movieSearchBar.resignFirstResponder()
         }
         
-        viewModel.output.likeButtonTapped.lazyBind { tag in
-            self.searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: tag, section: 0)], with: .none)
+        viewModel.output.likeButtonTapped.lazyBind { index in
+            self.searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }
+        
+        viewModel.output.movieData.lazyBind { data in
+            guard let data = data else { return }
+            let vc = MovieDetailViewController()
+            // TODO: 추후 DetailView 리팩토링시 VM로 바로 전달
+            vc.idContents = data.id
+            vc.titleContents = data.title
+            vc.synopsisContents = data.overview
+            vc.releaseDateContents = data.releaseDate
+            vc.ratingContents = data.rating
+            
+            if data.genreList.count == 1 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+            } else if data.genreList.count >= 2 {
+                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
+                vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
+            }
+            
+            self.navigationController?.pushViewController(vc, animated: true)
         }
     }
     
@@ -97,22 +117,7 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let data = viewModel.output.searchList.value[indexPath.row]
-        
-        let vc = MovieDetailViewController()
-        vc.idContents = data.id
-        vc.titleContents = data.title
-        vc.synopsisContents = data.overview
-        vc.releaseDateContents = data.releaseDate
-        vc.ratingContents = data.rating
-        
-        if data.genreList.count == 1 {
-            vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-        } else if data.genreList.count >= 2 {
-            vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-            vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
-        }
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.input.movieTapped.value = indexPath.item
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
