@@ -14,6 +14,8 @@ final class CinemaViewModel: BaseViewModel {
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
         let viewWillAppearTrigger: Observable<Void?> = Observable(nil)
+        let searchButtonTapped: Observable<Void?> = Observable(nil)
+        let backgroundViewTapped: Observable<Void?> = Observable(nil)
     }
     
     struct Output {
@@ -21,6 +23,8 @@ final class CinemaViewModel: BaseViewModel {
         let searchList: Observable<[String]> = Observable([])
         let imageDataContents: Observable<Data> = Observable(Data())
         let nicknameContents: Observable<String?> = Observable(nil)
+        let searchButtonTapped: Observable<Void?> = Observable(nil)
+        let backgroundViewTapped: Observable<Void?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -42,6 +46,14 @@ final class CinemaViewModel: BaseViewModel {
         
         input.viewWillAppearTrigger.lazyBind { _ in
             self.saveUserDefaultsValue()
+        }
+        
+        input.searchButtonTapped.bind { _ in
+            self.output.searchButtonTapped.value = ()
+        }
+        
+        input.backgroundViewTapped.bind { _ in
+            self.dataTransfer()
         }
     }
     
@@ -76,5 +88,11 @@ final class CinemaViewModel: BaseViewModel {
         // UserDefaults에 저장된 이미지, 닉네임 데이터 담기
         output.imageDataContents.value = UserDefaultsManager.shared.profileImage
         output.nicknameContents.value = UserDefaultsManager.shared.nickname
+    }
+    
+    private func dataTransfer() {
+        output.imageDataContents.value = UserDefaultsManager.shared.profileImage
+        output.nicknameContents.value = UserDefaultsManager.shared.nickname
+        self.output.backgroundViewTapped.value = ()
     }
 }

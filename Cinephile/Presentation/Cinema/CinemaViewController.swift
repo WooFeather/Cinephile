@@ -40,6 +40,31 @@ final class CinemaViewController: BaseViewController {
         viewModel.output.nicknameContents.bind { nickname in
             self.cinemaView.tableView.reloadData()
         }
+        
+        viewModel.output.searchButtonTapped.lazyBind { _ in
+            let vc = SearchMovieViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        viewModel.output.backgroundViewTapped.lazyBind { _ in
+            let vc = ProfileSettingViewController()
+            
+            // 기존의 이미지, 닉네임을 sheet로 전달
+            vc.imageContents = UIImage(data: self.viewModel.output.imageDataContents.value)
+            vc.nicknameContents = self.viewModel.output.nicknameContents.value
+            // TODO: 이 클로저 부분도 로직으로 뻴 수 없을까?
+            vc.viewModel.reSaveImage = { value in
+                UserDefaultsManager.shared.profileImage = value
+                self.viewModel.output.imageDataContents.value = value
+            }
+            vc.viewModel.reSaveNickname = { value in
+                UserDefaultsManager.shared.nickname = value
+                self.viewModel.output.nicknameContents.value = value
+            }
+            
+            let nav = UINavigationController(rootViewController: vc)
+            self.present(nav, animated: true)
+        }
     }
     
     override func configureEssential() {
@@ -58,47 +83,12 @@ final class CinemaViewController: BaseViewController {
     
     @objc
     private func searchButtonTapped() {
-        let vc = SearchMovieViewController()
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.input.searchButtonTapped.value = ()
     }
     
     @objc
     private func backgroundViewTapped() {
-        let vc = ProfileSettingViewController()
-        
-        // 기존의 이미지, 닉네임을 sheet로 전달
-        let imageData = UserDefaultsManager.shared.profileImage
-        
-        if let image = UIImage(data: imageData) {
-            vc.imageContents = image
-        }
-        vc.nicknameContents = UserDefaultsManager.shared.nickname
-        
-        let group = DispatchGroup()
-        
-        // sheet에서 다시 저장한 이미지 데이터 받기
-        group.enter()
-        vc.viewModel.reSaveImage = { value in
-            UserDefaultsManager.shared.profileImage = value
-            self.viewModel.output.imageDataContents.value = value
-            group.leave()
-        }
-        
-        // sheet에서 다시 저장한 닉네임 데이터 받기
-        group.enter()
-        vc.viewModel.reSaveNickname = { value in
-            UserDefaultsManager.shared.nickname = value
-            self.viewModel.output.nicknameContents.value = value
-            group.leave()
-        }
-        
-        // 한번에 UI업데이트를 위해 DispatchGroup 사용
-        group.notify(queue: .main) {
-            self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-        }
-        
-        let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated: true)
+        viewModel.input.backgroundViewTapped.value = ()
     }
     
     @objc
