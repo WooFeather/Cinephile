@@ -11,11 +11,6 @@ final class SearchMovieViewController: BaseViewController {
 
     private var searchMovieView = SearchMovieView()
     let viewModel = SearchMovieViewModel()
-//    private var searchList: [MovieDetail] = []
-//    private var page = 1
-//    private var maxNum = 0
-//    private lazy var queryText = searchMovieView.movieSearchBar.text?.trimmingCharacters(in: .whitespaces) ?? ""
-//    var searchTextContents: String?
     
     override func loadView() {
         view = searchMovieView
@@ -63,7 +58,7 @@ final class SearchMovieViewController: BaseViewController {
         searchMovieView.searchTableView.delegate = self
         searchMovieView.searchTableView.dataSource = self
         searchMovieView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
-        searchMovieView.searchTableView.prefetchDataSource = self
+        // searchMovieView.searchTableView.prefetchDataSource = self
         
         searchMovieView.movieSearchBar.delegate = self
     }
@@ -72,33 +67,6 @@ final class SearchMovieViewController: BaseViewController {
         searchMovieView.searchTableView.isHidden = true
         searchMovieView.emptyLabel.isHidden = true
     }
-    
-//    func callRequest(query: String) {
-//        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: page), type: Movie.self) { value in
-//            if self.page == 1 {
-//                self.searchList = value.results
-//            } else {
-//                self.searchList.append(contentsOf: value.results)
-//            }
-//            
-//            if self.searchList.isEmpty {
-//                self.searchMovieView.searchTableView.isHidden = true
-//                self.searchMovieView.emptyLabel.isHidden = false
-//            } else {
-//                self.searchMovieView.searchTableView.isHidden = false
-//                self.searchMovieView.emptyLabel.isHidden = true
-//            }
-//            
-//            self.maxNum = value.totalResults
-//            self.searchMovieView.searchTableView.reloadData()
-//            
-//            if self.page == 1 && self.searchList.count != 0 {
-//                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-//            }
-//        } failHandler: {
-//            print("❌ 네트워킹 실패")
-//        }
-//    }
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
@@ -164,42 +132,26 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     }
 }
 
-extension SearchMovieViewController: UITableViewDataSourcePrefetching {
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        print("🔗indexPath \(indexPaths)")
-        
-        for row in indexPaths {
-            if viewModel.output.searchList.value.count - 3 == row.row {
-                if viewModel.output.searchList.value.count < viewModel.output.maxNum.value {
-                    viewModel.output.page.value += 1
-                    viewModel.input.searchButtonTapped.value = viewModel.output.queryText.value
-                } else {
-                    print("❗️마지막 페이지")
-                }
-            }
-        }
-    }
-}
+// TODO: 페이지네이션 기능 구현
+//extension SearchMovieViewController: UITableViewDataSourcePrefetching {
+//    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+//        print("🔗indexPath \(indexPaths)")
+//        
+//        for row in indexPaths {
+//            if viewModel.output.searchList.value.count - 3 == row.row {
+//                if viewModel.output.searchList.value.count < viewModel.output.maxNum.value {
+//                    viewModel.output.page.value += 1
+//                    viewModel.input.searchButtonTapped.value = viewModel.output.queryText.value
+//                } else {
+//                    print("❗️마지막 페이지")
+//                }
+//            }
+//        }
+//    }
+//}
 
 extension SearchMovieViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         viewModel.input.searchButtonTapped.value = searchBar.text
-        
-//        guard let searchText = searchBar.text else { return }
-//        
-//        queryText = searchText.trimmingCharacters(in: .whitespaces)
-        
-        //viewModel.output.page.value = 1
-//        callRequest(query: queryText)
-        
-//        NotificationCenter.default.post(
-//            name: NSNotification.Name("SearchTextReceived"),
-//            object: nil,
-//            userInfo: [
-//                "searchText": queryText
-//            ]
-//        )
-        
-//        searchBar.resignFirstResponder()
     }
 }

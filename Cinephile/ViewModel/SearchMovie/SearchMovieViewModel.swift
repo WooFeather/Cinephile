@@ -54,7 +54,6 @@ final class SearchMovieViewModel: BaseViewModel {
             self.output.page.value = 1
             self.callRequest(query: self.output.queryText.value)
             self.postSearchText(text: self.output.queryText.value)
-            self.output.searchButtonTapped.value = () // 명시적으로 끝나는 시점 전달
         }
     }
     
@@ -75,6 +74,7 @@ final class SearchMovieViewModel: BaseViewModel {
             }
             
             self.output.maxNum.value = value.totalResults
+            self.output.searchButtonTapped.value = () // 명시적으로 끝나는 시점 전달
             
             print("====1====", self.output.searchList.value)
         } failHandler: {
