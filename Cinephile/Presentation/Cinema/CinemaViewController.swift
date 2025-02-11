@@ -10,8 +10,8 @@ import UIKit
 final class CinemaViewController: BaseViewController {
 
     private var cinemaView = CinemaView()
+    private let viewModel = CinemaViewModel()
     private var searchList: [String] = []
-    private var movieList: [MovieDetail] = []
     private var imageContents: UIImage?
     private var nicknameContents: String?
     
@@ -22,7 +22,6 @@ final class CinemaViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        callRequest()
         receiveSearchText()
         searchList = UserDefaultsManager.shared.searchList
         LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
@@ -33,6 +32,14 @@ final class CinemaViewController: BaseViewController {
         
         saveUserDefaultsValue()
         cinemaView.tableView.reloadData()
+    }
+    
+    override func bindData() {
+        viewModel.input.viewDidLoadTrigger.value = ()
+        
+        viewModel.output.movieList.bind { _ in
+            self.cinemaView.tableView.reloadData()
+        }
     }
     
     override func configureEssential() {
@@ -47,15 +54,6 @@ final class CinemaViewController: BaseViewController {
     
     override func configureView() {
         cinemaView.tableView.separatorStyle = .none
-    }
-    
-    private func callRequest() {
-        NetworkManager.shared.callTMDBAPI(api: .trending, type: Movie.self) { value in
-            self.movieList = value.results
-            self.cinemaView.tableView.reloadData()
-        } failHandler: {
-            print("네트워킹 실패")
-        }
     }
     
     private func receiveSearchText() {
@@ -94,46 +92,44 @@ final class CinemaViewController: BaseViewController {
     }
     
     @objc
-    private func backgroundViewTapped(sender: UITapGestureRecognizer) {
-        if sender.state == .ended {
-            let vc = ProfileSettingViewController()
-            
-            // 기존의 이미지, 닉네임을 sheet로 전달
-            let imageData = UserDefaultsManager.shared.profileImage
-
-            if let image = UIImage(data: imageData) {
-                vc.imageContents = image
-            }
-            vc.nicknameContents = UserDefaultsManager.shared.nickname
-            
-            let group = DispatchGroup()
-            
-            // sheet에서 다시 저장한 닉네임 데이터 받기
-            group.enter()
-            vc.reSaveImage = { value in
-                if let imageData = value.pngData() {
-                    UserDefaultsManager.shared.profileImage = imageData
-                }
-                self.imageContents = value
-                group.leave()
-            }
-            
-            // sheet에서 다시 저장한 이미지 데이터 받기
-            group.enter()
-            vc.reSaveNickname = { value in
-                UserDefaultsManager.shared.nickname = value
-                self.nicknameContents = value
-                group.leave()
-            }
-            
-            // 한번에 UI업데이트를 위해 DispatchGroup 사용
-            group.notify(queue: .main) {
-                self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
-            }
-            
-            let nav = UINavigationController(rootViewController: vc)
-            present(nav, animated: true)
+    private func backgroundViewTapped() {
+        let vc = ProfileSettingViewController()
+        
+        // 기존의 이미지, 닉네임을 sheet로 전달
+        let imageData = UserDefaultsManager.shared.profileImage
+        
+        if let image = UIImage(data: imageData) {
+            vc.imageContents = image
         }
+        vc.nicknameContents = UserDefaultsManager.shared.nickname
+        
+        let group = DispatchGroup()
+        
+        // sheet에서 다시 저장한 닉네임 데이터 받기
+        group.enter()
+        vc.reSaveImage = { value in
+            if let imageData = value.pngData() {
+                UserDefaultsManager.shared.profileImage = imageData
+            }
+            self.imageContents = value
+            group.leave()
+        }
+        
+        // sheet에서 다시 저장한 이미지 데이터 받기
+        group.enter()
+        vc.reSaveNickname = { value in
+            UserDefaultsManager.shared.nickname = value
+            self.nicknameContents = value
+            group.leave()
+        }
+        
+        // 한번에 UI업데이트를 위해 DispatchGroup 사용
+        group.notify(queue: .main) {
+            self.cinemaView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        }
+        
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true)
     }
     
     @objc
@@ -154,7 +150,7 @@ final class CinemaViewController: BaseViewController {
     private func likeButtonTapped(_ sender: UIButton) {
         // likeMovieIdList라는 배열에 선택한 영화의 id가 있으면 삭제하고, 없으면 등록하는 toggle형식의 동작
         // 동시에 LikeCount도 반영
-        let item = movieList[sender.tag]
+        let item = viewModel.output.movieList.value[sender.tag]
         if LikeMovie.likeMovieIdList.contains(item.id) {
             if let index = LikeMovie.likeMovieIdList.firstIndex(of: item.id) {
                 LikeMovie.likeMovieIdList.remove(at: index)
@@ -238,7 +234,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView.tag == 1 {
             return searchList.count
         } else {
-            return movieList.count
+            return viewModel.output.movieList.value.count
         }
     }
     
@@ -256,7 +252,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.id, for: indexPath) as? MovieCollectionViewCell else { return UICollectionViewCell() }
-            let data = movieList[indexPath.item]
+            let data = viewModel.output.movieList.value[indexPath.item]
             
             cell.configureData(data: data)
             
@@ -276,7 +272,7 @@ extension CinemaViewController: UICollectionViewDelegate, UICollectionViewDataSo
             vc.callRequest(query: data)
             navigationController?.pushViewController(vc, animated: true)
         } else {
-            let data = movieList[indexPath.item]
+            let data = viewModel.output.movieList.value[indexPath.item]
             
             let vc = MovieDetailViewController()
             vc.idContents = data.id
