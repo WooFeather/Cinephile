@@ -80,19 +80,7 @@ final class CinemaViewController: BaseViewController {
         viewModel.output.movieData.lazyBind { data in
             guard let data = data else { return }
             let vc = MovieDetailViewController()
-            // TODO: 추후 DetailView 리팩토링시 VM로 바로 전달
-            vc.idContents = data.id
-            vc.titleContents = data.title
-            vc.synopsisContents = data.overview
-            vc.releaseDateContents = data.releaseDate
-            vc.ratingContents = data.rating
-            
-            if data.genreList.count == 1 {
-                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-            } else if data.genreList.count >= 2 {
-                vc.firstGenreContents = SearchTableViewCell.genre[data.genreList[0]]
-                vc.secondGenreContents = SearchTableViewCell.genre[data.genreList[1]]
-            }
+            vc.viewModel.output.movieData.value = data
             
             self.navigationController?.pushViewController(vc, animated: true)
         }

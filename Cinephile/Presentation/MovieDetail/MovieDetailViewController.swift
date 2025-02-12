@@ -10,16 +10,17 @@ import UIKit
 final class MovieDetailViewController: BaseViewController {
     
     private var movieDetailView = MovieDetailView()
+    let viewModel = MovieDetailViewModel()
     private var backdropList: [Backdrop] = []
     private var posterList: [Poster] = []
     private var castList: [CastDetail] = []
-    var idContents: Int?
-    var titleContents: String?
-    var synopsisContents: String?
-    var releaseDateContents: String?
-    var firstGenreContents: String?
-    var secondGenreContents: String?
-    var ratingContents: Double?
+//    var idContents: Int?
+//    var titleContents: String?
+//    var synopsisContents: String?
+//    var releaseDateContents: String?
+//    var firstGenreContents: String?
+//    var secondGenreContents: String?
+//    var ratingContents: Double?
     
     override func loadView() {
         view = movieDetailView
@@ -31,12 +32,19 @@ final class MovieDetailViewController: BaseViewController {
         callRequest()
     }
     
+    override func bindData() {
+        viewModel.output.movieData.bind { data in
+            
+        }
+    }
+    
     override func configureEssential() {
-        navigationItem.title = titleContents
+        navigationItem.title = viewModel.output.movieData.value?.title
         navigationController?.navigationBar.barStyle = .black
+        // navigationBar 반투명 효과 제거
         navigationController?.navigationBar.isTranslucent = false
-        if let idContents {
-            setNavigationBarButton(id: idContents)
+        if let id = viewModel.output.movieData.value?.id {
+            setNavigationBarButton(id: id)
         }
         movieDetailView.tableView.delegate = self
         movieDetailView.tableView.dataSource = self
@@ -52,9 +60,10 @@ final class MovieDetailViewController: BaseViewController {
     
     private func callRequest() {
         let group = DispatchGroup()
+        guard let id = viewModel.output.movieData.value?.id else { return }
         
         group.enter()
-        NetworkManager.shared.callTMDBAPI(api: .images(id: idContents ?? 0), type: Images.self) { value in
+        NetworkManager.shared.callTMDBAPI(api: .images(id: id), type: Images.self) { value in
             if value.backdrops.count >= 5 {
                 for item in 0..<5 {
                     self.backdropList.append(value.backdrops[item])
@@ -70,7 +79,7 @@ final class MovieDetailViewController: BaseViewController {
         }
         
         group.enter()
-        NetworkManager.shared.callTMDBAPI(api: .credit(id: idContents ?? 0), type: Credit.self) { value in
+        NetworkManager.shared.callTMDBAPI(api: .credit(id: id), type: Credit.self) { value in
             self.castList = value.cast
             group.leave()
         } failHandler: {
@@ -92,15 +101,15 @@ final class MovieDetailViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        guard let idContents else { return }
-        if LikeMovie.likeMovieIdList.contains(idContents) {
-            if let index = LikeMovie.likeMovieIdList.firstIndex(of: idContents) {
+        guard let id = viewModel.output.movieData.value?.id else { return }
+        if LikeMovie.likeMovieIdList.contains(id) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: id) {
                 LikeMovie.likeMovieIdList.remove(at: index)
                 UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
                 UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
             }
         } else {
-            LikeMovie.likeMovieIdList.append(idContents)
+            LikeMovie.likeMovieIdList.append(id)
             UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
             UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
         }
@@ -109,7 +118,7 @@ final class MovieDetailViewController: BaseViewController {
         print(LikeMovie.likeMovieIdList.count)
         
         // tableView.reloadData() 하듯이 navigationBarButton도 refrash하고 싶은데 딱히 방법이 없어서 다시 세팅하는 방식을 택함
-        setNavigationBarButton(id: idContents)
+        setNavigationBarButton(id: id)
     }
 }
 
@@ -130,13 +139,13 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             cell.backdropCollectionView.register(BackdropCollectionViewCell.self, forCellWithReuseIdentifier: BackdropCollectionViewCell.id)
             cell.backdropCollectionView.reloadData()
             
-            cell.releaseDateButton.setTitle(releaseDateContents, for: .normal)
-            cell.ratingButton.setTitle(String(format: "%.1f", ratingContents ?? 0.0), for: .normal)
-            if let firstGenreContents {
-                if let secondGenreContents {
-                    cell.genreButton.setTitle("\(firstGenreContents), \(secondGenreContents)", for: .normal)
+            cell.releaseDateButton.setTitle(viewModel.output.movieData.value?.releaseDate, for: .normal)
+            cell.ratingButton.setTitle(String(format: "%.1f", viewModel.output.movieData.value?.rating ?? 0.0), for: .normal)
+            if let firstGenre = self.viewModel.output.firstGenre {
+                if let secondGenre = self.viewModel.output.secondGenre {
+                    cell.genreButton.setTitle("\(firstGenre), \(secondGenre)", for: .normal)
                 } else {
-                    cell.genreButton.setTitle("\(firstGenreContents)", for: .normal)
+                    cell.genreButton.setTitle("\(firstGenre)", for: .normal)
                 }
             } else {
                 cell.genreButton.setTitle("장르없음", for: .normal)
@@ -150,10 +159,10 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             // SynopsisTableViewCell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SynopsisTableViewCell.id, for: indexPath) as? SynopsisTableViewCell else { return UITableViewCell() }
             
-            if synopsisContents == "" {
+            if self.viewModel.output.movieData.value?.overview == "" {
                 cell.synopsisLabel.text = "줄거리 제공되지 않음"
             } else {
-                cell.synopsisLabel.text = synopsisContents
+                cell.synopsisLabel.text = self.viewModel.output.movieData.value?.overview
             }
             
             return cell
