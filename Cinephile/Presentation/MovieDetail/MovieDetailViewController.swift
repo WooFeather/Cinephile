@@ -26,6 +26,11 @@ final class MovieDetailViewController: BaseViewController {
         viewModel.output.viewDidLoadTrigger.lazyBind { _ in
             self.movieDetailView.tableView.reloadData()
         }
+        
+        viewModel.output.likeButtonTapped.lazyBind { [weak self] _ in
+            guard let id = self?.viewModel.output.movieData.value?.id else { return }
+            self?.setNavigationBarButton(id: id)
+        }
     }
     
     override func configureEssential() {
@@ -56,24 +61,7 @@ final class MovieDetailViewController: BaseViewController {
     
     @objc
     private func likeButtonTapped(_ sender: UIButton) {
-        guard let id = viewModel.output.movieData.value?.id else { return }
-        if LikeMovie.likeMovieIdList.contains(id) {
-            if let index = LikeMovie.likeMovieIdList.firstIndex(of: id) {
-                LikeMovie.likeMovieIdList.remove(at: index)
-                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-            }
-        } else {
-            LikeMovie.likeMovieIdList.append(id)
-            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
-            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
-        }
-        
-        print(LikeMovie.likeMovieIdList)
-        print(LikeMovie.likeMovieIdList.count)
-        
-        // tableView.reloadData() 하듯이 navigationBarButton도 refrash하고 싶은데 딱히 방법이 없어서 다시 세팅하는 방식을 택함
-        setNavigationBarButton(id: id)
+        viewModel.input.likeButtonTapped.value = ()
     }
 }
 

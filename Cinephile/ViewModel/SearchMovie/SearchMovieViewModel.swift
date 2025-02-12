@@ -126,6 +126,9 @@ final class SearchMovieViewModel: BaseViewModel {
             UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
             UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
         }
+        
+        print(LikeMovie.likeMovieIdList)
+        print(LikeMovie.likeMovieIdList.count)
     }
     
     private func movieDataTransfer(index: Int) {

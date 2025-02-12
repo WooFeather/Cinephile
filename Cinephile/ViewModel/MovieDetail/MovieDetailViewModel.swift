@@ -13,6 +13,7 @@ final class MovieDetailViewModel: BaseViewModel {
     
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let likeButtonTapped: Observable<Void?> = Observable(nil)
     }
     
     struct Output {
@@ -23,6 +24,7 @@ final class MovieDetailViewModel: BaseViewModel {
         let posterList: Observable<[Poster]> = Observable([])
         let castList: Observable<[CastDetail]> = Observable([])
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
+        let likeButtonTapped: Observable<Void?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -51,6 +53,10 @@ final class MovieDetailViewModel: BaseViewModel {
         
         input.viewDidLoadTrigger.lazyBind { [weak self] _ in
             self?.callRequest()
+        }
+        
+        input.likeButtonTapped.lazyBind { [weak self] _ in
+            self?.likeMovie()
         }
     }
     
@@ -86,5 +92,25 @@ final class MovieDetailViewModel: BaseViewModel {
         group.notify(queue: .main) { [weak self] in
             self?.output.viewDidLoadTrigger.value = ()
         }
+    }
+    
+    private func likeMovie() {
+        guard let id = output.movieData.value?.id else { return }
+        if LikeMovie.likeMovieIdList.contains(id) {
+            if let index = LikeMovie.likeMovieIdList.firstIndex(of: id) {
+                LikeMovie.likeMovieIdList.remove(at: index)
+                UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+                UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+            }
+        } else {
+            LikeMovie.likeMovieIdList.append(id)
+            UserDefaultsManager.shared.likeMovieIdList = LikeMovie.likeMovieIdList
+            UserDefaultsManager.shared.likeCount = LikeMovie.likeMovieIdList.count
+        }
+        
+        print(LikeMovie.likeMovieIdList)
+        print(LikeMovie.likeMovieIdList.count)
+        
+        output.likeButtonTapped.value = ()
     }
 }
