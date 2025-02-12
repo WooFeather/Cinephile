@@ -30,14 +30,6 @@ final class ProfileSettingViewController: BaseViewController {
         
         profileSettingView.doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         profileSettingView.nicknameTextField.addTarget(self, action: #selector(nicknameTextFieldEditingChanged), for: .editingChanged)
-        profileSettingView.mbtiEButton.addTarget(self, action: #selector(mbtiEButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiIButton.addTarget(self, action: #selector(mbtiIButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiSButton.addTarget(self, action: #selector(mbtiSButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiNButton.addTarget(self, action: #selector(mbtiNButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiTButton.addTarget(self, action: #selector(mbtiTButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiFButton.addTarget(self, action: #selector(mbtiFButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiJButton.addTarget(self, action: #selector(mbtiJButtonTapped), for: .touchUpInside)
-        profileSettingView.mbtiPButton.addTarget(self, action: #selector(mbtiPButtonTapped), for: .touchUpInside)
     }
     
     override func configureView() {
@@ -74,12 +66,9 @@ final class ProfileSettingViewController: BaseViewController {
             self.profileSettingView.statusLabel.text = text
         }
         
-        // 상태레이블 색상
-        viewModel.output.statusLabelTextColor.lazyBind { status in
+        // 상태레이블 색상 및 완료버튼 활성화
+        viewModel.output.nicknameValidation.lazyBind { status in
             self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
-        }
-        
-        viewModel.output.doneButtonEnabled.lazyBind { status in
             self.profileSettingView.doneButton.isEnabled = status
             if UserDefaultsManager.shared.isSigned {
                 self.navigationItem.rightBarButtonItem?.isEnabled = status
@@ -121,46 +110,6 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func closeButtonTapped() {
         viewModel.input.closeButtonTapped.value = ()
-    }
-    
-    @objc
-    private func mbtiEButtonTapped(_ sender: UIButton) {
-        viewModel.input.eButton.value = sender
-    }
-    
-    @objc
-    private func mbtiIButtonTapped(_ sender: UIButton) {
-        viewModel.input.iButton.value = sender
-    }
-    
-    @objc
-    private func mbtiSButtonTapped(_ sender: UIButton) {
-        viewModel.input.sButton.value = sender
-    }
-    
-    @objc
-    private func mbtiNButtonTapped(_ sender: UIButton) {
-        viewModel.input.nButton.value = sender
-    }
-    
-    @objc
-    private func mbtiTButtonTapped(_ sender: UIButton) {
-        viewModel.input.tButton.value = sender
-    }
-    
-    @objc
-    private func mbtiFButtonTapped(_ sender: UIButton) {
-        viewModel.input.fButton.value = sender
-    }
-    
-    @objc
-    private func mbtiJButtonTapped(_ sender: UIButton) {
-        viewModel.input.jButton.value = sender
-    }
-    
-    @objc
-    private func mbtiPButtonTapped(_ sender: UIButton) {
-        viewModel.input.pButton.value = sender
     }
 }
 

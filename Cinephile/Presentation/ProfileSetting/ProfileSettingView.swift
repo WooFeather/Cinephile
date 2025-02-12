@@ -13,37 +13,14 @@ final class ProfileSettingView: BaseView {
     private let textFieldUnderline = UIView()
     private let cameraImageView = UIImageView()
     private let imageList = ProfileImage.allCases
-    private let mbtiLabel = UILabel()
-    private let mbtiESTJStackView = UIStackView()
-    private let mbtiINFPStackView = UIStackView()
     let doneButton = ActionButton(title: "완료")
     let statusLabel = UILabel()
     let profileImageView = ProfileImageView()
     let nicknameTextField = UITextField()
     
-    let mbtiEButton = MBTIButton(title: "E")
-    let mbtiIButton = MBTIButton(title: "I")
-    
-    let mbtiSButton = MBTIButton(title: "S")
-    let mbtiNButton = MBTIButton(title: "N")
-    
-    let mbtiTButton = MBTIButton(title: "T")
-    let mbtiFButton = MBTIButton(title: "F")
-    
-    let mbtiJButton = MBTIButton(title: "J")
-    let mbtiPButton = MBTIButton(title: "P")
-    
     override func configureHierarchy() {
-        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField, mbtiLabel, mbtiESTJStackView, mbtiINFPStackView].forEach {
+        [doneButton, textFieldUnderline, statusLabel, profileImageView, cameraImageView, nicknameTextField].forEach {
             addSubview($0)
-        }
-        
-        [mbtiEButton, mbtiSButton, mbtiTButton, mbtiJButton].forEach {
-            mbtiESTJStackView.addArrangedSubview($0)
-        }
-        
-        [mbtiIButton, mbtiNButton, mbtiFButton, mbtiPButton].forEach {
-            mbtiINFPStackView.addArrangedSubview($0)
         }
     }
     
@@ -78,30 +55,6 @@ final class ProfileSettingView: BaseView {
             make.height.equalTo(16)
         }
         
-        mbtiLabel.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.bottom).offset(36)
-            make.leading.equalToSuperview().offset(20)
-            make.height.equalTo(20)
-        }
-        
-        mbtiESTJStackView.snp.makeConstraints { make in
-            make.top.equalTo(statusLabel.snp.bottom).offset(36)
-            make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(50)
-        }
-        
-        mbtiINFPStackView.snp.makeConstraints { make in
-            make.top.equalTo(mbtiESTJStackView.snp.bottom).offset(10)
-            make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(50)
-        }
-        
-        [mbtiEButton, mbtiIButton, mbtiSButton, mbtiNButton, mbtiTButton, mbtiFButton, mbtiJButton, mbtiPButton].forEach {
-            $0.snp.makeConstraints { make in
-                make.size.equalTo(50)
-            }
-        }
-        
         if !UserDefaultsManager.shared.isSigned {
             doneButton.snp.makeConstraints { make in
                 make.bottom.equalTo(safeAreaLayoutGuide).offset(-24)
@@ -132,14 +85,6 @@ final class ProfileSettingView: BaseView {
         
         statusLabel.textColor = .cineAccent
         statusLabel.font = .systemFont(ofSize: 14)
-        
-        mbtiLabel.text = "MBTI"
-        mbtiLabel.font = .boldSystemFont(ofSize: 16)
-        
-        mbtiESTJStackView.spacing = 10
-        mbtiINFPStackView.spacing = 10
-        
-        // TODO: MBTI버튼의 isSelected상태를 UserDefaults에 저장해서 UserDefaultsManager.shared.isSigned일때 뷰에 선택된 상태 표시하기
         
         if !UserDefaultsManager.shared.isSigned {
             doneButton.isEnabled = false
