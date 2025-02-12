@@ -9,9 +9,17 @@ import UIKit
 
 final class OnboardingViewController: BaseViewController {
     private var onboardingView = OnboardingView()
+    private let viewModel = OnboardingViewModel()
     
     override func loadView() {
         view = onboardingView
+    }
+    
+    override func bindData() {
+        viewModel.output.startButtonTapped.lazyBind { [weak self] _ in
+            let vc = ProfileSettingViewController()
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     override func configureEssential() {
@@ -20,9 +28,7 @@ final class OnboardingViewController: BaseViewController {
     
     @objc
     private func startButtonTapped() {
-        print(#function)
-        let vc = ProfileSettingViewController()
-        navigationController?.pushViewController(vc, animated: true)
+        viewModel.input.startButtonTapped.value = ()
     }
 }
 
