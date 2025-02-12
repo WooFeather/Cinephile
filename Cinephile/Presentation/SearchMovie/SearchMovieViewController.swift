@@ -42,7 +42,7 @@ final class SearchMovieViewController: BaseViewController {
         }
         
         viewModel.output.searchButtonTapped.lazyBind { _ in
-            print("====2====", self.viewModel.output.searchList.value)
+            print("====2====")
             self.searchMovieView.searchTableView.reloadData()
             if self.viewModel.output.page.value == 1 && self.viewModel.output.searchList.value.count != 0 {
                 self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
@@ -82,7 +82,7 @@ final class SearchMovieViewController: BaseViewController {
         searchMovieView.searchTableView.delegate = self
         searchMovieView.searchTableView.dataSource = self
         searchMovieView.searchTableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
-        // searchMovieView.searchTableView.prefetchDataSource = self
+        searchMovieView.searchTableView.prefetchDataSource = self
         
         searchMovieView.movieSearchBar.delegate = self
     }
@@ -125,23 +125,22 @@ extension SearchMovieViewController: UITableViewDelegate, UITableViewDataSource 
     }
 }
 
-// TODO: 페이지네이션 기능 구현
-//extension SearchMovieViewController: UITableViewDataSourcePrefetching {
-//    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-//        print("🔗indexPath \(indexPaths)")
-//        
-//        for row in indexPaths {
-//            if viewModel.output.searchList.value.count - 3 == row.row {
-//                if viewModel.output.searchList.value.count < viewModel.output.maxNum.value {
-//                    viewModel.output.page.value += 1
-//                    viewModel.input.searchButtonTapped.value = viewModel.output.queryText.value
-//                } else {
-//                    print("❗️마지막 페이지")
-//                }
-//            }
-//        }
-//    }
-//}
+extension SearchMovieViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        print("🔗indexPath \(indexPaths)")
+        
+        for row in indexPaths {
+            if viewModel.output.searchList.value.count - 3 == row.row {
+                if viewModel.output.searchList.value.count < viewModel.output.maxNum.value {
+                    viewModel.output.page.value += 1
+                    viewModel.input.pagination.value = viewModel.output.queryText.value
+                } else {
+                    print("❗️마지막 페이지")
+                }
+            }
+        }
+    }
+}
 
 extension SearchMovieViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

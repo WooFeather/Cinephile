@@ -17,6 +17,7 @@ final class SearchMovieViewModel: BaseViewModel {
         let searchButtonTapped: Observable<String?> = Observable(nil)
         let likeButtonTapped: Observable<Int> = Observable(-1)
         let movieTapped: Observable<Int> = Observable(-1)
+        let pagination: Observable<String?> = Observable(nil)
     }
     
     struct Output {
@@ -60,6 +61,11 @@ final class SearchMovieViewModel: BaseViewModel {
             self.postSearchText(text: self.output.queryText.value)
         }
         
+        input.pagination.lazyBind { text in
+            guard let text = text else { return }
+            self.callRequest(query: text)
+        }
+        
         input.likeButtonTapped.lazyBind { index in
             self.likeMovie(index: index)
             self.output.likeButtonTapped.value = index
@@ -72,6 +78,8 @@ final class SearchMovieViewModel: BaseViewModel {
     
     private func callRequest(query: String) {
         NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: output.page.value), type: Movie.self) { value in
+            print("✅ SUCCESS")
+            
             if self.output.page.value == 1 {
                 self.output.searchList.value = value.results
             } else {
@@ -89,7 +97,7 @@ final class SearchMovieViewModel: BaseViewModel {
             self.output.maxNum.value = value.totalResults
             self.output.searchButtonTapped.value = () // 명시적으로 끝나는 시점 전달
             
-            print("====1====", self.output.searchList.value)
+            print("====1====")
         } failHandler: {
             print("❌ 네트워킹 실패")
         }
