@@ -50,31 +50,31 @@ final class SettingViewController: BaseViewController {
             let imageData = UserDefaultsManager.shared.profileImage
 
             if let image = UIImage(data: imageData) {
-                vc.imageContents = image
+                vc.viewModel.output.imageDataContents.value = image.pngData() ?? Data()
             }
-            vc.nicknameContents = UserDefaultsManager.shared.nickname
+            vc.viewModel.output.nicknameContents.value = UserDefaultsManager.shared.nickname
             
             let group = DispatchGroup()
             
             // sheet에서 다시 저장한 닉네임 데이터 받기
             group.enter()
-            vc.viewModel.reSaveImage = { value in
+            vc.viewModel.reSaveImage = { [weak self] value in
                 UserDefaultsManager.shared.profileImage = value
-                self.imageContents = UIImage(data: value)
+                self?.imageContents = UIImage(data: value)
                 group.leave()
             }
             
             // sheet에서 다시 저장한 이미지 데이터 받기
             group.enter()
-            vc.viewModel.reSaveNickname = { value in
+            vc.viewModel.reSaveNickname = { [weak self] value in
                 UserDefaultsManager.shared.nickname = value
-                self.nicknameContents = value
+                self?.nicknameContents = value
                 group.leave()
             }
             
             // 한번에 UI업데이트를 위해 DispatchGroup 사용
-            group.notify(queue: .main) {
-                self.settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+            group.notify(queue: .main) { [weak self] in
+                self?.settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
             }
             
             let nav = UINavigationController(rootViewController: vc)
@@ -114,13 +114,13 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 4 {
-            showAlert(title: "탈퇴하기", message: "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?", button: "확인", isCancelButton: true) {
+            showAlert(title: "탈퇴하기", message: "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?", button: "확인", isCancelButton: true) { [weak self] in
                 // UserDefaults의 데이터 삭제
                 for key in UserDefaults.standard.dictionaryRepresentation().keys {
                     UserDefaults.standard.removeObject(forKey: key.description)
                 }
                 let vc = UINavigationController(rootViewController: OnboardingViewController())
-                self.changeRootViewController(vc: vc, isSigned: false)
+                self?.changeRootViewController(vc: vc, isSigned: false)
             }
         }
     }

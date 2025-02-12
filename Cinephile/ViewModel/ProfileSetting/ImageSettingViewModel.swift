@@ -37,12 +37,12 @@ final class ImageSettingViewModel: BaseViewModel {
     
     // MARK: - Functions
     func transform() {
-        input.profileImageData.lazyBind { image in
-            self.saveImage()
+        input.profileImageData.lazyBind { [weak self] image in
+            self?.saveImage()
         }
         
-        input.cellSelected.lazyBind { _ in
-            self.output.cellSelected.value = self.input.cellSelected.value
+        input.cellSelected.lazyBind { [weak self] _ in
+            self?.output.cellSelected.value = self?.input.cellSelected.value
         }
     }
     

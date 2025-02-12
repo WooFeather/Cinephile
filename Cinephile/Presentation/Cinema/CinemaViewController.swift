@@ -25,64 +25,64 @@ final class CinemaViewController: BaseViewController {
     override func bindData() {
         viewModel.input.viewDidLoadTrigger.value = ()
         
-        viewModel.output.movieList.bind { _ in
-            self.cinemaView.tableView.reloadData()
+        viewModel.output.movieList.bind { [weak self] _ in
+            self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.searchList.bind { _ in
-            self.cinemaView.tableView.reloadData()
+        viewModel.output.searchList.bind { [weak self] _ in
+            self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.imageDataContents.bind { data in
-            self.cinemaView.tableView.reloadData()
+        viewModel.output.imageDataContents.bind { [weak self] data in
+            self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.nicknameContents.bind { nickname in
-            self.cinemaView.tableView.reloadData()
+        viewModel.output.nicknameContents.bind { [weak self] nickname in
+            self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.searchButtonTapped.lazyBind { _ in
+        viewModel.output.searchButtonTapped.lazyBind { [weak self] _ in
             let vc = SearchMovieViewController()
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         
-        viewModel.output.backgroundViewTapped.lazyBind { _ in
+        viewModel.output.backgroundViewTapped.lazyBind { [weak self] _ in
             let vc = ProfileSettingViewController()
             
             // 기존의 이미지, 닉네임을 sheet로 전달
-            vc.imageContents = UIImage(data: self.viewModel.output.imageDataContents.value)
-            vc.nicknameContents = self.viewModel.output.nicknameContents.value
+            vc.viewModel.output.imageDataContents.value =  self?.viewModel.output.imageDataContents.value ?? Data()
+            vc.viewModel.output.nicknameContents.value = self?.viewModel.output.nicknameContents.value ?? ""
             // TODO: 이 클로저 부분도 로직으로 뻴 수 없을까?
             vc.viewModel.reSaveImage = { value in
                 UserDefaultsManager.shared.profileImage = value
-                self.viewModel.output.imageDataContents.value = value
+                self?.viewModel.output.imageDataContents.value = value
             }
             vc.viewModel.reSaveNickname = { value in
                 UserDefaultsManager.shared.nickname = value
-                self.viewModel.output.nicknameContents.value = value
+                self?.viewModel.output.nicknameContents.value = value
             }
             
             let nav = UINavigationController(rootViewController: vc)
-            self.present(nav, animated: true)
+            self?.present(nav, animated: true)
         }
         
-        viewModel.output.likeButtonTapped.bind { _ in
-            self.cinemaView.tableView.reloadData()
+        viewModel.output.likeButtonTapped.bind { [weak self] _ in
+            self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.searchText.lazyBind { text in
+        viewModel.output.searchText.lazyBind { [weak self] text in
             let vc = SearchMovieViewController()
             vc.viewModel.output.searchText.value = text
             vc.viewModel.input.searchButtonTapped.value = text
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         
-        viewModel.output.movieData.lazyBind { data in
+        viewModel.output.movieData.lazyBind { [weak self] data in
             guard let data = data else { return }
             let vc = MovieDetailViewController()
             vc.viewModel.output.movieData.value = data
             
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
     }
     

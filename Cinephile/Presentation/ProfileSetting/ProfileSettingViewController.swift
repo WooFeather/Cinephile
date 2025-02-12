@@ -11,8 +11,6 @@ final class ProfileSettingViewController: BaseViewController {
     
     private var profileSettingView = ProfileSettingView()
     let viewModel = ProfileSettingViewModel()
-    var imageContents: UIImage?
-    var nicknameContents: String?
     
     // MARK: - Functions
     override func loadView() {
@@ -38,55 +36,56 @@ final class ProfileSettingViewController: BaseViewController {
         if UserDefaultsManager.shared.isSigned {
             sheetPresentationController?.prefersGrabberVisible = true
             navigationItem.setRightBarButton(UIBarButtonItem(title: "저장", style: .done, target: self, action: #selector(doneButtonTapped)), animated: true)
+            navigationItem.rightBarButtonItem?.isEnabled = false
             navigationItem.setLeftBarButton(UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(closeButtonTapped)), animated: true)
         }
         
         if UserDefaultsManager.shared.isSigned {
-            profileSettingView.profileImageView.image = imageContents
-            profileSettingView.nicknameTextField.text = nicknameContents
+            profileSettingView.profileImageView.image = UIImage(data: viewModel.output.imageDataContents.value)
+            profileSettingView.nicknameTextField.text = viewModel.output.nicknameContents.value
         }
     }
     
     override func bindData() {
         viewModel.input.viewDidLoadTrigger.value = ()
         
-        viewModel.output.profileImageData.lazyBind { data in
-            guard let data = data else { return }
-            self.profileSettingView.profileImageView.image = UIImage(data: data)
+        viewModel.output.imageDataContents.lazyBind { [weak self] data in
+            self?.profileSettingView.profileImageView.image = UIImage(data: data)
+            self?.navigationItem.rightBarButtonItem?.isEnabled = true
         }
         
-        viewModel.output.imageViewTapped.lazyBind { _ in
+        viewModel.output.imageViewTapped.lazyBind { [weak self] _ in
             print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
-            vc.viewModel.output.profileImageData.value = self.profileSettingView.profileImageView.image?.pngData()
-            self.navigationController?.pushViewController(vc, animated: true)
+            vc.viewModel.output.profileImageData.value = self?.profileSettingView.profileImageView.image?.pngData()
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         
         // 상태레이블 텍스트
-        viewModel.output.statusLabelText.lazyBind { text in
-            self.profileSettingView.statusLabel.text = text
+        viewModel.output.statusLabelText.lazyBind { [weak self] text in
+            self?.profileSettingView.statusLabel.text = text
         }
         
         // 상태레이블 색상 및 완료버튼 활성화
-        viewModel.output.nicknameValidation.lazyBind { status in
-            self.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
-            self.profileSettingView.doneButton.isEnabled = status
+        viewModel.output.nicknameValidation.lazyBind { [weak self] status in
+            self?.profileSettingView.statusLabel.textColor = status ? .cineConditionBlue : .cineConditionRed
+            self?.profileSettingView.doneButton.isEnabled = status
             if UserDefaultsManager.shared.isSigned {
-                self.navigationItem.rightBarButtonItem?.isEnabled = status
+                self?.navigationItem.rightBarButtonItem?.isEnabled = status
             }
         }
         
-        viewModel.output.doneButtonTapped.lazyBind { _ in
+        viewModel.output.doneButtonTapped.lazyBind { [weak self] _ in
             if UserDefaultsManager.shared.isSigned {
-                self.dismiss(animated: true)
+                self?.dismiss(animated: true)
             } else {
                 let vc = TabBarController()
-                self.changeRootViewController(vc: vc, isSigned: true)
+                self?.changeRootViewController(vc: vc, isSigned: true)
             }
         }
         
-        viewModel.output.closeButtonTapped.lazyBind { _ in
-            self.dismiss(animated: true)
+        viewModel.output.closeButtonTapped.lazyBind { [weak self] _ in
+            self?.dismiss(animated: true)
         }
     }
     
@@ -98,7 +97,8 @@ final class ProfileSettingViewController: BaseViewController {
     
     @objc
     private func nicknameTextFieldEditingChanged() {
-        viewModel.input.nicknameTextFieldEditingChanged.value = profileSettingView.nicknameTextField.text
+        guard let textFieldText = profileSettingView.nicknameTextField.text else { return }
+        viewModel.input.nicknameTextFieldEditingChanged.value = textFieldText
     }
     
     @objc

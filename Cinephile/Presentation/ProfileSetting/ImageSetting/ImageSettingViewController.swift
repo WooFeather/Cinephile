@@ -36,13 +36,13 @@ final class ImageSettingViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.output.profileImageData.bind { data in
+        viewModel.output.profileImageData.bind { [weak self] data in
             guard let data = data else { return }
-            self.imageSettingView.previewImage.image = UIImage(data: data)
+            self?.imageSettingView.previewImage.image = UIImage(data: data)
         }
         
-        viewModel.output.cellSelected.lazyBind { data in
-            self.imageSettingView.previewImage.image = data?.image
+        viewModel.output.cellSelected.lazyBind { [weak self] data in
+            self?.imageSettingView.previewImage.image = data?.image
         }
     }
 }

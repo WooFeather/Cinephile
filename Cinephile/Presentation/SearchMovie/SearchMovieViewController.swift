@@ -29,39 +29,39 @@ final class SearchMovieViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.output.searchText.bind { text in
-            self.searchMovieView.movieSearchBar.text = text
+        viewModel.output.searchText.bind { [weak self] text in
+            self?.searchMovieView.movieSearchBar.text = text
         }
         
-        viewModel.output.viewWillAppearTrigger.bind { _ in
-            self.searchMovieView.searchTableView.reloadData()
+        viewModel.output.viewWillAppearTrigger.bind { [weak self] _ in
+            self?.searchMovieView.searchTableView.reloadData()
         }
         
-        viewModel.output.viewDidAppearTrigger.lazyBind { _ in
-            self.searchMovieView.movieSearchBar.becomeFirstResponder()
+        viewModel.output.viewDidAppearTrigger.lazyBind { [weak self] _ in
+            self?.searchMovieView.movieSearchBar.becomeFirstResponder()
         }
         
-        viewModel.output.searchButtonTapped.lazyBind { _ in
+        viewModel.output.searchButtonTapped.lazyBind { [weak self] _ in
             print("====2====")
-            self.searchMovieView.searchTableView.reloadData()
-            if self.viewModel.output.page.value == 1 && self.viewModel.output.searchList.value.count != 0 {
-                self.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            self?.searchMovieView.searchTableView.reloadData()
+            if self?.viewModel.output.page.value == 1 && self?.viewModel.output.searchList.value.count != 0 {
+                self?.searchMovieView.searchTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             }
-            self.searchMovieView.searchTableView.isHidden = self.viewModel.output.tableViewHidden.value
-            self.searchMovieView.emptyLabel.isHidden = self.viewModel.output.emptyLabelHidden.value
-            self.searchMovieView.movieSearchBar.resignFirstResponder()
+            self?.searchMovieView.searchTableView.isHidden = self?.viewModel.output.tableViewHidden.value ?? true
+            self?.searchMovieView.emptyLabel.isHidden = self?.viewModel.output.emptyLabelHidden.value ?? true
+            self?.searchMovieView.movieSearchBar.resignFirstResponder()
         }
         
-        viewModel.output.likeButtonTapped.lazyBind { index in
-            self.searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        viewModel.output.likeButtonTapped.lazyBind { [weak self] index in
+            self?.searchMovieView.searchTableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
         }
         
-        viewModel.output.movieData.lazyBind { data in
+        viewModel.output.movieData.lazyBind { [weak self] data in
             guard let data = data else { return }
             let vc = MovieDetailViewController()
             vc.viewModel.output.movieData.value = data
             
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
     }
     

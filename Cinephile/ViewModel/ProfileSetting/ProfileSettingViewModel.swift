@@ -14,9 +14,9 @@ final class ProfileSettingViewModel: BaseViewModel {
     var reSaveImage: ((Data) -> Void)?
     
     struct Input {
-        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
-        let imageViewTapped: Observable<Void?> = Observable(nil)
-        let nicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
+        let viewDidLoadTrigger: Observable<Void> = Observable(())
+        let imageViewTapped: Observable<Void> = Observable(())
+        let nicknameTextFieldEditingChanged: Observable<String> = Observable("")
         let doneButtonTapped: Observable<Void?> = Observable(nil)
         let nicknameTextFieldText: Observable<String?> = Observable(nil)
         let profileImageData: Observable<Data?> = Observable(nil)
@@ -24,12 +24,13 @@ final class ProfileSettingViewModel: BaseViewModel {
     }
     
     struct Output {
-        let profileImageData: Observable<Data?> = Observable(nil)
-        let imageViewTapped: Observable<Void?> = Observable(nil)
+        let nicknameContents: Observable<String> = Observable("")
+        let imageDataContents: Observable<Data> = Observable(Data())
+        let imageViewTapped: Observable<Void> = Observable(())
         let statusLabelText: Observable<String> = Observable("")
         let nicknameValidation: Observable<Bool> = Observable(false)
-        let doneButtonTapped: Observable<Void?> = Observable(nil)
-        let closeButtonTapped: Observable<Void?> = Observable(nil)
+        let doneButtonTapped: Observable<Void> = Observable(())
+        let closeButtonTapped: Observable<Void> = Observable(())
     }
     
     // MARK: - Initializer
@@ -46,27 +47,27 @@ final class ProfileSettingViewModel: BaseViewModel {
     
     // MARK: - Functions
     func transform() {
-        input.viewDidLoadTrigger.lazyBind { _ in
-            self.receiveImage()
+        input.viewDidLoadTrigger.lazyBind { [weak self] _ in
+            self?.receiveImage()
         }
         
-        input.imageViewTapped.lazyBind { _ in
+        input.imageViewTapped.lazyBind { [weak self] _ in
             print("inputImageViewTapped bind")
-            self.output.imageViewTapped.value = ()
+            self?.output.imageViewTapped.value = ()
         }
         
-        input.nicknameTextFieldEditingChanged.lazyBind { _ in
-            self.validateText()
+        input.nicknameTextFieldEditingChanged.lazyBind { [weak self] _ in
+            self?.validateText()
         }
         
-        input.doneButtonTapped.lazyBind { _ in
-            self.saveData()
-            self.output.doneButtonTapped.value = ()
+        input.doneButtonTapped.lazyBind { [weak self] _ in
+            self?.saveData()
+            self?.output.doneButtonTapped.value = ()
         }
         
-        input.closeButtonTapped.lazyBind { _ in
+        input.closeButtonTapped.lazyBind { [weak self] _ in
             if UserDefaultsManager.shared.isSigned {
-                self.output.closeButtonTapped.value = ()
+                self?.output.closeButtonTapped.value = ()
             }
         }
     }
@@ -83,12 +84,12 @@ final class ProfileSettingViewModel: BaseViewModel {
     @objc
     private func imageReceivedNotification(value: NSNotification) {
         if let imageData = value.userInfo!["imageData"] as? Data {
-            output.profileImageData.value = imageData
+            output.imageDataContents.value = imageData
         }
     }
     
     private func validateText() {
-        guard let text = input.nicknameTextFieldEditingChanged.value else { return }
+        let text = input.nicknameTextFieldEditingChanged.value
         let trimmingText = text.trimmingCharacters(in: .whitespaces)
         
         // 숫자가 포함되어있는지 확인하는법

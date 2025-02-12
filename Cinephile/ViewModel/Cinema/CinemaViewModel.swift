@@ -27,7 +27,7 @@ final class CinemaViewModel: BaseViewModel {
         let movieList: Observable<[MovieDetail]> = Observable([])
         let searchList: Observable<[String]> = Observable([])
         let imageDataContents: Observable<Data> = Observable(Data())
-        let nicknameContents: Observable<String?> = Observable(nil)
+        let nicknameContents: Observable<String> = Observable("")
         let searchButtonTapped: Observable<Void?> = Observable(nil)
         let backgroundViewTapped: Observable<Void?> = Observable(nil)
         let likeButtonTapped: Observable<Void?> = Observable(nil)
@@ -37,56 +37,62 @@ final class CinemaViewModel: BaseViewModel {
     
     // MARK: - Initializer
     init() {
+        print("CinemaViewModel Init")
+        
         input = Input()
         output = Output()
         transform()
     }
     
+    deinit {
+        print("CinemaViewModel Deinit")
+    }
+    
     // MARK: - Functions
     func transform() {
-        input.viewDidLoadTrigger.lazyBind { _ in
-            self.callRequest()
-            self.receiveSearchText()
-            self.output.searchList.value = UserDefaultsManager.shared.searchList
+        input.viewDidLoadTrigger.lazyBind { [weak self] _ in
+            self?.callRequest()
+            self?.receiveSearchText()
+            self?.output.searchList.value = UserDefaultsManager.shared.searchList
             LikeMovie.likeMovieIdList = UserDefaultsManager.shared.likeMovieIdList
         }
         
-        input.viewWillAppearTrigger.lazyBind { _ in
-            self.saveUserDefaultsValue()
+        input.viewWillAppearTrigger.lazyBind { [weak self] _ in
+            self?.saveUserDefaultsValue()
         }
         
-        input.searchButtonTapped.bind { _ in
-            self.output.searchButtonTapped.value = ()
+        input.searchButtonTapped.bind { [weak self] _ in
+            self?.output.searchButtonTapped.value = ()
         }
         
-        input.backgroundViewTapped.bind { _ in
-            self.profileDataTransfer()
+        input.backgroundViewTapped.bind { [weak self] _ in
+            self?.profileDataTransfer()
         }
         
-        input.removeButtonTapped.lazyBind { tag in
-            self.removeSearchText(tag: tag)
+        input.removeButtonTapped.lazyBind { [weak self] tag in
+            self?.removeSearchText(tag: tag)
         }
         
-        input.clearButtonTapped.lazyBind { _ in
-            self.clearSearchList()
+        input.clearButtonTapped.lazyBind { [weak self] _ in
+            self?.clearSearchList()
         }
         
-        input.likeButtonTapped.lazyBind { tag in
-            self.likeMovie(tag: tag)
+        input.likeButtonTapped.lazyBind { [weak self] tag in
+            self?.likeMovie(tag: tag)
         }
         
-        input.searchTextTapped.lazyBind { index in
-            self.textTransfer(index: index)
+        input.searchTextTapped.lazyBind { [weak self] index in
+            self?.textTransfer(index: index)
         }
         
-        input.movieTapped.lazyBind { index in
-            self.movieDataTransfer(index: index)
+        input.movieTapped.lazyBind { [weak self] index in
+            self?.movieDataTransfer(index: index)
         }
     }
     
     private func callRequest() {
-        NetworkManager.shared.callTMDBAPI(api: .trending, type: Movie.self) { value in
-            self.output.movieList.value = value.results
+        NetworkManager.shared.callTMDBAPI(api: .trending, type: Movie.self) { [weak self] value in
+            self?.output.movieList.value = value.results
         } failHandler: {
             print("네트워킹 실패")
         }

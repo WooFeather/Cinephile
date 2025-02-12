@@ -23,8 +23,8 @@ final class MovieDetailViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.output.viewDidLoadTrigger.lazyBind { _ in
-            self.movieDetailView.tableView.reloadData()
+        viewModel.output.viewDidLoadTrigger.lazyBind { [weak self] _ in
+            self?.movieDetailView.tableView.reloadData()
         }
         
         viewModel.output.likeButtonTapped.lazyBind { [weak self] _ in

@@ -37,65 +37,71 @@ final class SearchMovieViewModel: BaseViewModel {
     
     // MARK: - Initializer
     init() {
+        print("SearchMovieViewModel Init")
+        
         input = Input()
         output = Output()
         transform()
     }
     
+    deinit {
+        print("SearchMovieViewModel Deinit")
+    }
+    
     // MARK: - Functions
     func transform() {
-        input.viewWillAppearTrigger.bind { _ in
-            self.output.viewWillAppearTrigger.value = ()
+        input.viewWillAppearTrigger.bind { [weak self] _ in
+            self?.output.viewWillAppearTrigger.value = ()
         }
         
-        input.viewDidAppearTrigger.bind { _ in
-            self.output.viewDidAppearTrigger.value = ()
+        input.viewDidAppearTrigger.bind { [weak self] _ in
+            self?.output.viewDidAppearTrigger.value = ()
         }
         
-        input.searchButtonTapped.lazyBind { text in
+        input.searchButtonTapped.lazyBind { [weak self] text in
             guard let text = text else { return }
-            self.output.queryText.value = text.trimmingCharacters(in: .whitespaces)
+            self?.output.queryText.value = text.trimmingCharacters(in: .whitespaces)
             
-            self.output.page.value = 1
-            self.callRequest(query: self.output.queryText.value)
-            self.postSearchText(text: self.output.queryText.value)
+            self?.output.page.value = 1
+            self?.callRequest(query: self?.output.queryText.value ?? "")
+            self?.postSearchText(text: self?.output.queryText.value ?? "")
         }
         
-        input.pagination.lazyBind { text in
+        input.pagination.lazyBind { [weak self] text in
             guard let text = text else { return }
-            self.callRequest(query: text)
+            self?.callRequest(query: text)
         }
         
-        input.likeButtonTapped.lazyBind { index in
-            self.likeMovie(index: index)
-            self.output.likeButtonTapped.value = index
+        input.likeButtonTapped.lazyBind { [weak self] index in
+            self?.likeMovie(index: index)
+            self?.output.likeButtonTapped.value = index
         }
         
-        input.movieTapped.lazyBind { index in
-            self.movieDataTransfer(index: index)
+        input.movieTapped.lazyBind { [weak self] index in
+            self?.movieDataTransfer(index: index)
         }
     }
     
     private func callRequest(query: String) {
-        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: output.page.value), type: Movie.self) { value in
+        NetworkManager.shared.callTMDBAPI(api: .search(query: query, page: output.page.value), type: Movie.self) { [weak self] value in
             print("✅ SUCCESS")
             
-            if self.output.page.value == 1 {
-                self.output.searchList.value = value.results
+            if self?.output.page.value == 1 {
+                self?.output.searchList.value = value.results
             } else {
-                self.output.searchList.value.append(contentsOf: value.results)
+                self?.output.searchList.value.append(contentsOf: value.results)
             }
             
-            if self.output.searchList.value.isEmpty {
-                self.output.tableViewHidden.value = true
-                self.output.emptyLabelHidden.value = false
+            if self?.output.searchList.value.isEmpty ?? true {
+                self?.output.tableViewHidden.value = true
+                self?.output.emptyLabelHidden.value = false
             } else {
-                self.output.tableViewHidden.value = false
-                self.output.emptyLabelHidden.value = true
+                self?.output.tableViewHidden.value = false
+                self?.output.emptyLabelHidden.value = true
             }
             
-            self.output.maxNum.value = value.totalResults
-            self.output.searchButtonTapped.value = () // 명시적으로 끝나는 시점 전달
+            self?.output.maxNum.value = value.totalResults
+            self?.output.searchButtonTapped.value = () // 명시적으로 끝나는 시점 전달
             
             print("====1====")
         } failHandler: {
