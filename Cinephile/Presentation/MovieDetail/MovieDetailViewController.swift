@@ -11,16 +11,6 @@ final class MovieDetailViewController: BaseViewController {
     
     private var movieDetailView = MovieDetailView()
     let viewModel = MovieDetailViewModel()
-    private var backdropList: [Backdrop] = []
-    private var posterList: [Poster] = []
-    private var castList: [CastDetail] = []
-//    var idContents: Int?
-//    var titleContents: String?
-//    var synopsisContents: String?
-//    var releaseDateContents: String?
-//    var firstGenreContents: String?
-//    var secondGenreContents: String?
-//    var ratingContents: Double?
     
     override func loadView() {
         view = movieDetailView
@@ -29,12 +19,12 @@ final class MovieDetailViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        callRequest()
+        viewModel.input.viewDidLoadTrigger.value = ()
     }
     
     override func bindData() {
-        viewModel.output.movieData.bind { data in
-            
+        viewModel.output.viewDidLoadTrigger.lazyBind { _ in
+            self.movieDetailView.tableView.reloadData()
         }
     }
     
@@ -56,41 +46,6 @@ final class MovieDetailViewController: BaseViewController {
     
     override func configureView() {
         movieDetailView.tableView.separatorStyle = .none
-    }
-    
-    private func callRequest() {
-        let group = DispatchGroup()
-        guard let id = viewModel.output.movieData.value?.id else { return }
-        
-        group.enter()
-        NetworkManager.shared.callTMDBAPI(api: .images(id: id), type: Images.self) { value in
-            if value.backdrops.count >= 5 {
-                for item in 0..<5 {
-                    self.backdropList.append(value.backdrops[item])
-                }
-            } else {
-                self.backdropList = value.backdrops
-            }
-            self.posterList = value.posters
-            group.leave()
-        } failHandler: {
-            print("네트워킹 실패")
-            group.leave()
-        }
-        
-        group.enter()
-        NetworkManager.shared.callTMDBAPI(api: .credit(id: id), type: Credit.self) { value in
-            self.castList = value.cast
-            group.leave()
-        } failHandler: {
-            print("네트워킹 실패")
-            group.leave()
-        }
-
-        
-        group.notify(queue: .main) {
-            self.movieDetailView.tableView.reloadData()
-        }
     }
     
     private func setNavigationBarButton(id: Int) {
@@ -152,7 +107,7 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
             }
             
             BackdropTableViewCell.pageControl.currentPage = 0
-            BackdropTableViewCell.pageControl.numberOfPages = backdropList.count
+            BackdropTableViewCell.pageControl.numberOfPages =  viewModel.output.backdropList.value.count
             
             return cell
         } else if indexPath.row == 1 {
@@ -203,11 +158,11 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
-            return backdropList.count
+            return viewModel.output.backdropList.value.count
         } else if collectionView.tag == 2 {
-            return castList.count
+            return viewModel.output.castList.value.count
         } else if collectionView.tag == 3 {
-            return posterList.count
+            return viewModel.output.posterList.value.count
         } else {
             return 0
         }
@@ -218,21 +173,21 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         if collectionView.tag == 0 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as? BackdropCollectionViewCell else { return UICollectionViewCell() }
             
-            let data = backdropList[indexPath.item]
+            let data = viewModel.output.backdropList.value[indexPath.item]
             cell.configureData(data: data)
             
             return cell
         } else if collectionView.tag == 2 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
             
-            let data = castList[indexPath.item]
+            let data = viewModel.output.castList.value[indexPath.item]
             cell.configureData(data: data)
             
             return cell
         } else if collectionView.tag == 3 {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.id, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
             
-            let data = posterList[indexPath.item]
+            let data = viewModel.output.posterList.value[indexPath.item]
             cell.configureData(data: data)
             
             return cell

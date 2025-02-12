@@ -12,13 +12,17 @@ final class MovieDetailViewModel: BaseViewModel {
     private(set) var output: Output
     
     struct Input {
-        
+        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
     }
     
     struct Output {
         let movieData: Observable<MovieDetail?> = Observable(nil)
         var firstGenre: String?
         var secondGenre: String?
+        let backdropList: Observable<[Backdrop]> = Observable([])
+        let posterList: Observable<[Poster]> = Observable([])
+        let castList: Observable<[CastDetail]> = Observable([])
+        let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
     }
     
     // MARK: - Initializer
@@ -43,6 +47,44 @@ final class MovieDetailViewModel: BaseViewModel {
                 self?.output.firstGenre = SearchTableViewCell.genre[data.genreList[0]] ?? ""
                 self?.output.secondGenre = SearchTableViewCell.genre[data.genreList[1]] ?? ""
             }
+        }
+        
+        input.viewDidLoadTrigger.lazyBind { [weak self] _ in
+            self?.callRequest()
+        }
+    }
+    
+    private func callRequest() {
+        let group = DispatchGroup()
+        guard let id = output.movieData.value?.id else { return }
+        
+        group.enter()
+        NetworkManager.shared.callTMDBAPI(api: .images(id: id), type: Images.self) { [weak self] value in
+            if value.backdrops.count >= 5 {
+                for item in 0..<5 {
+                    self?.output.backdropList.value.append(value.backdrops[item])
+                }
+            } else {
+                self?.output.backdropList.value = value.backdrops
+            }
+            self?.output.posterList.value = value.posters
+            group.leave()
+        } failHandler: {
+            print("네트워킹 실패")
+            group.leave()
+        }
+        
+        group.enter()
+        NetworkManager.shared.callTMDBAPI(api: .credit(id: id), type: Credit.self) { [weak self] value in
+            self?.output.castList.value = value.cast
+            group.leave()
+        } failHandler: {
+            print("네트워킹 실패")
+            group.leave()
+        }
+        
+        group.notify(queue: .main) { [weak self] in
+            self?.output.viewDidLoadTrigger.value = ()
         }
     }
 }
