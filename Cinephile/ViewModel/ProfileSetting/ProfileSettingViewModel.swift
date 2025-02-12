@@ -5,7 +5,7 @@
 //  Created by 조우현 on 2/9/25.
 //
 
-import UIKit
+import Foundation
 
 final class ProfileSettingViewModel: BaseViewModel {
     private(set) var input: Input
@@ -19,12 +19,12 @@ final class ProfileSettingViewModel: BaseViewModel {
         let nicknameTextFieldEditingChanged: Observable<String?> = Observable(nil)
         let doneButtonTapped: Observable<Void?> = Observable(nil)
         let nicknameTextFieldText: Observable<String?> = Observable(nil)
-        let profileImage: Observable<Data?> = Observable(nil)
+        let profileImageData: Observable<Data?> = Observable(nil)
         let closeButtonTapped: Observable<Void?> = Observable(nil)
     }
     
     struct Output {
-        let profileImage: Observable<UIImage?> = Observable(nil)
+        let profileImageData: Observable<Data?> = Observable(nil)
         let imageViewTapped: Observable<Void?> = Observable(nil)
         let statusLabelText: Observable<String> = Observable("")
         let nicknameValidation: Observable<Bool> = Observable(false)
@@ -82,8 +82,8 @@ final class ProfileSettingViewModel: BaseViewModel {
     
     @objc
     private func imageReceivedNotification(value: NSNotification) {
-        if let image = value.userInfo!["image"] as? UIImage {
-            output.profileImage.value = image
+        if let imageData = value.userInfo!["imageData"] as? Data {
+            output.profileImageData.value = imageData
         }
     }
     
@@ -115,12 +115,12 @@ final class ProfileSettingViewModel: BaseViewModel {
     private func saveData() {
         if UserDefaultsManager.shared.isSigned {
             // TODO: isSigned됐을때도 분리 => settingView부분까지 수정해야해서 일단 보류
-            reSaveImage?(input.profileImage.value ?? Data())
+            reSaveImage?(input.profileImageData.value ?? Data())
             reSaveNickname?(input.nicknameTextFieldText.value ?? "")
         } else {
             UserDefaultsManager.shared.nickname = input.nicknameTextFieldText.value ?? ""
             UserDefaultsManager.shared.joinDate = Date().toJoinString()
-            if let imageData = input.profileImage.value {
+            if let imageData = input.profileImageData.value {
                 UserDefaultsManager.shared.profileImage = imageData
             }
         }

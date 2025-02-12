@@ -50,14 +50,15 @@ final class ProfileSettingViewController: BaseViewController {
     override func bindData() {
         viewModel.input.viewDidLoadTrigger.value = ()
         
-        viewModel.output.profileImage.lazyBind { image in
-            self.profileSettingView.profileImageView.image = image
+        viewModel.output.profileImageData.lazyBind { data in
+            guard let data = data else { return }
+            self.profileSettingView.profileImageView.image = UIImage(data: data)
         }
         
         viewModel.output.imageViewTapped.lazyBind { _ in
             print("outputImageViewTapped bind")
             let vc = ImageSettingViewController()
-            vc.viewModel.output.profileImage.value = self.profileSettingView.profileImageView.image
+            vc.viewModel.output.profileImageData.value = self.profileSettingView.profileImageView.image?.pngData()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -103,7 +104,7 @@ final class ProfileSettingViewController: BaseViewController {
     @objc
     private func doneButtonTapped() {
         viewModel.input.nicknameTextFieldText.value = profileSettingView.nicknameTextField.text
-        viewModel.input.profileImage.value = profileSettingView.profileImageView.image?.pngData()
+        viewModel.input.profileImageData.value = profileSettingView.profileImageView.image?.pngData()
         viewModel.input.doneButtonTapped.value = ()
     }
     

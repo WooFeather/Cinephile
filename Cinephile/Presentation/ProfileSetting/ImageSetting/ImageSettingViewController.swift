@@ -17,7 +17,7 @@ final class ImageSettingViewController: BaseViewController {
     // MARK: - LifeCycle
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.input.profileImage.value = imageSettingView.previewImage.image
+        viewModel.input.profileImageData.value = imageSettingView.previewImage.image?.pngData()
     }
     
     // MARK: - Functions
@@ -36,8 +36,9 @@ final class ImageSettingViewController: BaseViewController {
     }
     
     override func bindData() {
-        viewModel.output.profileImage.bind { image in
-            self.imageSettingView.previewImage.image = image
+        viewModel.output.profileImageData.bind { data in
+            guard let data = data else { return }
+            self.imageSettingView.previewImage.image = UIImage(data: data)
         }
         
         viewModel.output.cellSelected.lazyBind { data in

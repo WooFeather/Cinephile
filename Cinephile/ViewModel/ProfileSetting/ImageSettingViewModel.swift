@@ -5,7 +5,7 @@
 //  Created by 조우현 on 2/9/25.
 //
 
-import UIKit
+import Foundation
 
 final class ImageSettingViewModel: BaseViewModel {
     private(set) var input: Input
@@ -14,12 +14,12 @@ final class ImageSettingViewModel: BaseViewModel {
     struct Input {
         let viewDidLoadTrigger: Observable<Void?> = Observable(nil)
         let viewWillDisappearTrigger: Observable<Void?> = Observable(nil)
-        let profileImage: Observable<UIImage?> = Observable(nil)
+        let profileImageData: Observable<Data?> = Observable(nil)
         let cellSelected: Observable<ProfileImage?> = Observable(nil)
     }
     
     struct Output {
-        let profileImage: Observable<UIImage?> = Observable(nil)
+        let profileImageData: Observable<Data?> = Observable(nil)
         let cellSelected: Observable<ProfileImage?> = Observable(nil)
     }
     
@@ -37,7 +37,7 @@ final class ImageSettingViewModel: BaseViewModel {
     
     // MARK: - Functions
     func transform() {
-        input.profileImage.lazyBind { image in
+        input.profileImageData.lazyBind { image in
             self.saveImage()
         }
         
@@ -47,12 +47,12 @@ final class ImageSettingViewModel: BaseViewModel {
     }
     
     private func saveImage() {
-        guard let imageValue = input.profileImage.value else { return }
+        guard let imageDataValue = input.profileImageData.value else { return }
         NotificationCenter.default.post(
             name: NSNotification.Name("ImageReceived"),
             object: nil,
             userInfo: [
-                "image": imageValue
+                "imageData": imageDataValue
             ]
         )
     }
