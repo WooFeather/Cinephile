@@ -115,7 +115,6 @@ final class ProfileSettingViewModel: BaseViewModel {
     
     private func saveData() {
         if UserDefaultsManager.shared.isSigned {
-            // TODO: isSigned됐을때도 분리 => settingView부분까지 수정해야해서 일단 보류
             reSaveImage?(input.profileImageData.value ?? Data())
             reSaveNickname?(input.nicknameTextFieldText.value ?? "")
         } else {

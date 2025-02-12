@@ -21,6 +21,8 @@ final class CinemaViewModel: BaseViewModel {
         let likeButtonTapped: Observable<Int> = Observable(-1)
         let searchTextTapped: Observable<Int> = Observable(-1)
         let movieTapped: Observable<Int> = Observable(-1)
+        let imageReSave: Observable<Data> = Observable(Data())
+        let nicknameReSave: Observable<String> = Observable("")
     }
     
     struct Output {
@@ -87,6 +89,14 @@ final class CinemaViewModel: BaseViewModel {
         
         input.movieTapped.lazyBind { [weak self] index in
             self?.movieDataTransfer(index: index)
+        }
+        
+        input.imageReSave.lazyBind { [weak self] data in
+            self?.reSaveImage(data: data)
+        }
+        
+        input.nicknameReSave.lazyBind { text in
+            self.reSaveNickname(text: text)
         }
     }
     
@@ -167,5 +177,15 @@ final class CinemaViewModel: BaseViewModel {
     
     private func movieDataTransfer(index: Int) {
         output.movieData.value = output.movieList.value[index]
+    }
+    
+    private func reSaveImage(data: Data) {
+        UserDefaultsManager.shared.profileImage = data
+        output.imageDataContents.value = data
+    }
+    
+    private func reSaveNickname(text: String) {
+        UserDefaultsManager.shared.nickname = text
+        output.nicknameContents.value = text
     }
 }

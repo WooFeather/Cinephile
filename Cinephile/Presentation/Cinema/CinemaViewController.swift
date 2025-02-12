@@ -33,11 +33,11 @@ final class CinemaViewController: BaseViewController {
             self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.imageDataContents.bind { [weak self] data in
+        viewModel.output.imageDataContents.bind { [weak self] _ in
             self?.cinemaView.tableView.reloadData()
         }
         
-        viewModel.output.nicknameContents.bind { [weak self] nickname in
+        viewModel.output.nicknameContents.bind { [weak self] _ in
             self?.cinemaView.tableView.reloadData()
         }
         
@@ -52,14 +52,11 @@ final class CinemaViewController: BaseViewController {
             // 기존의 이미지, 닉네임을 sheet로 전달
             vc.viewModel.output.imageDataContents.value =  self?.viewModel.output.imageDataContents.value ?? Data()
             vc.viewModel.output.nicknameContents.value = self?.viewModel.output.nicknameContents.value ?? ""
-            // TODO: 이 클로저 부분도 로직으로 뻴 수 없을까?
             vc.viewModel.reSaveImage = { value in
-                UserDefaultsManager.shared.profileImage = value
-                self?.viewModel.output.imageDataContents.value = value
+                self?.viewModel.input.imageReSave.value = value
             }
             vc.viewModel.reSaveNickname = { value in
-                UserDefaultsManager.shared.nickname = value
-                self?.viewModel.output.nicknameContents.value = value
+                self?.viewModel.input.nicknameReSave.value = value
             }
             
             let nav = UINavigationController(rootViewController: vc)
